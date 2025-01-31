@@ -29,6 +29,9 @@ To get started with this project, follow these steps:
 Video Overview:
 https://youtu.be/DLKB5NiqYps
 
+Shapes Update:
+https://youtu.be/djP-CLFCj6o
+
 ### Donation
 Consider making me work faster with a coffee:
 https://www.buymeacoffee.com/forlornu
