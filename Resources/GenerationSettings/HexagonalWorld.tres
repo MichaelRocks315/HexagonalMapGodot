@@ -1,23 +1,52 @@
-[gd_resource type="Resource" script_class="GenerationSettings" load_steps=7 format=3 uid="uid://d05e2hqkuydoe"]
+[gd_resource type="Resource" script_class="GenerationSettings" load_steps=9 format=3 uid="uid://d05e2hqkuydoe"]
 
-[ext_resource type="Script" path="res://scripts/generation_settings.gd" id="1_5uvv2"]
-[ext_resource type="Script" path="res://scripts/tile_mesh_data.gd" id="2_lqoci"]
+[ext_resource type="Script" path="res://scripts/WorldGen/generation_settings.gd" id="1_wofvt"]
+[ext_resource type="Script" path="res://scripts/WorldGen/tile_mesh_data.gd" id="2_rlfew"]
 [ext_resource type="Resource" uid="uid://bbnfty2f3t1g1" path="res://Resources/Tiles/Desert.tres" id="3_iuy4d"]
 [ext_resource type="Resource" uid="uid://dldfjjhoeqrfu" path="res://Resources/Tiles/Grassland.tres" id="4_8uo6o"]
-[ext_resource type="Resource" uid="uid://3nrb2x1h7p1f" path="res://Resources/Tiles/Ocean.tres" id="5_3nrsr"]
+[ext_resource type="Resource" uid="uid://6wunq1xerf3p" path="res://Resources/Tiles/Mountain.tres" id="6_v2evs"]
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_g5j8m"]
-frequency = 0.1083
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_ecmek"]
+noise_type = 2
+frequency = 0.16
+fractal_type = 2
+fractal_octaves = 2
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_nasrd"]
+noise_type = 0
+frequency = 0.1
+fractal_type = 3
+fractal_octaves = 1
+fractal_lacunarity = 1.81
+fractal_gain = 0.43
+fractal_weighted_strength = 1.0
+fractal_ping_pong_strength = 0.565
+domain_warp_type = 2
+domain_warp_amplitude = 30.225
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_yg8qn"]
+frequency = 0.0752
+fractal_type = 0
+fractal_octaves = 2
+fractal_lacunarity = 2.03
 
 [resource]
-script = ExtResource("1_5uvv2")
-tiles = Array[ExtResource("2_lqoci")]([ExtResource("3_iuy4d"), ExtResource("4_8uo6o"), ExtResource("5_3nrsr")])
-biome_weights = Array[float]([0.6, 1.0, 0.75])
+script = ExtResource("1_wofvt")
+tiles = Array[ExtResource("2_rlfew")]([ExtResource("6_v2evs"), ExtResource("3_iuy4d"), ExtResource("4_8uo6o")])
+biome_weights = Array[float]([0.05, 0.9, 1.0])
 tile_size = 1.0
-radius = 20
-noise = SubResource("FastNoiseLite_g5j8m")
 debug = false
+seed = 0
 map_shape = 1
+radius = 14
+biome_noise = SubResource("FastNoiseLite_ecmek")
+fill_gaps = true
+raised_height = 0.5
+heightmap_treshold = 0.682
+heightmap_noise = SubResource("FastNoiseLite_nasrd")
+create_water = true
+ocean_noise = SubResource("FastNoiseLite_yg8qn")
+ocean_treshold = 0.65
 spawn_villages = true
-map_edge_buffer = 2
-spacing = 6
+map_edge_buffer = 5
+spacing = 7

@@ -1,11 +1,11 @@
-[gd_scene load_steps=14 format=3 uid="uid://bbqxpsy3vniy8"]
+[gd_scene load_steps=15 format=3 uid="uid://bbqxpsy3vniy8"]
 
 [ext_resource type="Script" path="res://scripts/camera_script.gd" id="1_1xefc"]
 [ext_resource type="Texture2D" uid="uid://dvbkqw12i4obk" path="res://assets/Materials/SkyBG.png" id="2_l7mlp"]
-[ext_resource type="Script" path="res://scripts/world_gen.gd" id="3_davhy"]
+[ext_resource type="Script" path="res://scripts/WorldGen/world_gen.gd" id="3_davhy"]
 [ext_resource type="Resource" uid="uid://d05e2hqkuydoe" path="res://Resources/GenerationSettings/HexagonalWorld.tres" id="4_ft865"]
 [ext_resource type="PackedScene" uid="uid://grijaagmqw4" path="res://scenes/Units/prototype_unit.tscn" id="8_r58of"]
-[ext_resource type="Script" path="res://scripts/object_placer.gd" id="9_p13dw"]
+[ext_resource type="Script" path="res://scripts/WorldGen/object_placer.gd" id="9_p13dw"]
 [ext_resource type="Script" path="res://scripts/pathfinder.gd" id="10_0b4my"]
 [ext_resource type="PackedScene" uid="uid://5hq7deseilvo" path="res://scenes/POI/VillageScene.tscn" id="10_hcqfn"]
 [ext_resource type="PackedScene" uid="uid://xm2lgya4capr" path="res://scenes/Cursors/hexagon_cursor.tscn" id="11_rshvd"]
@@ -19,6 +19,8 @@ background_color = Color(0, 0.214146, 0.346416, 1)
 background_canvas_max_layer = -100
 reflected_light_source = 1
 tonemap_mode = 3
+tonemap_exposure = 0.8
+tonemap_white = 2.0
 ssao_enabled = true
 ssil_enabled = true
 sdfgi_enabled = true
@@ -29,23 +31,31 @@ fog_density = 0.015
 fog_sky_affect = 0.0
 fog_height = 1.0
 
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_1lvu4"]
+dof_blur_far_enabled = true
+dof_blur_far_distance = 40.0
+dof_blur_far_transition = 45.0
+
 [node name="World" type="Node3D"]
 
-[node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.984196, 0.177085, 0, -0.177085, 0.984196, -0.117906, 15.1842, 10.1434)
+[node name="CameraParent" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.117906, 15.1842, 10.1434)
+
+[node name="Camera3D" type="Camera3D" parent="CameraParent" node_paths=PackedStringArray("sun")]
+transform = Transform3D(1, 0, 0, 0, 0.998537, -0.0540788, 0, 0.0540788, 0.998537, 0, 0, 0)
 script = ExtResource("1_1xefc")
 movespeed = 9
-minzoom = 30.0
-maxheight = 40.0
+rot = Vector2(-15, -80)
+sun = NodePath("../../Scene/DirectionalLight3D")
 
 [node name="Scene" type="Node3D" parent="."]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="Scene"]
 environment = SubResource("Environment_f2ci6")
+camera_attributes = SubResource("CameraAttributesPractical_1lvu4")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Scene"]
 transform = Transform3D(0.946097, 0.0435415, -0.320944, 0.323884, -0.127189, 0.937509, 0, -0.990922, -0.134436, 0, -1.03826, 0)
-light_energy = 0.75
 directional_shadow_mode = 0
 sky_mode = 1
 metadata/_edit_lock_ = true
@@ -89,5 +99,5 @@ highlight_marker = ExtResource("12_0kgq4")
 script = ExtResource("12_tt8b8")
 tile_cursor_scene = ExtResource("11_rshvd")
 unit_cursor_scene = ExtResource("13_ydfkh")
-main_camera = NodePath("../../Camera3D")
+main_camera = NodePath("../../CameraParent/Camera3D")
 p_finder = NodePath("../Pathfinder")

@@ -1,46 +1,9 @@
 extends Node
 class_name Pathfinder
 
-const HEXAGONAL_NEIGHBOR_DIRECTIONS = [
-	Vector2(1, 0),
-	Vector2(1, -1),
-	Vector2(0, -1), 
-	Vector2(-1, 0),
-	Vector2(-1, 1),
-	Vector2(0, 1)
-]
-# Neighbor directions for even/odd rows
-const NEIGHBOR_DIRECTIONS_EVEN = [
-	Vector2(1, 0),   # Bottom-right
-	Vector2(1, -1),  # Top-right
-	Vector2(0, -1),  # Top
-	Vector2(-1, -1), # Top-left
-	Vector2(-1, 0),  # Bottom-left
-	Vector2(0, 1)    # Bottom
-]
-const NEIGHBOR_DIRECTIONS_ODD = [
-	Vector2(1, 0),   # Bottom-right
-	Vector2(0, -1),  # Top-right
-	Vector2(-1, 0),  # Top
-	Vector2(-1, 1),  # Top-left
-	Vector2(0, 1),   # Bottom-left
-	Vector2(1, 1)    # Bottom
-]
-
-var neighbor_positions = HEXAGONAL_NEIGHBOR_DIRECTIONS
-var stagger = false
-
+var neighbor_positions = WorldMap.HEXAGONAL_NEIGHBOR_DIRECTIONS
 @export var highlight_marker : PackedScene
-var world_map : Dictionary = {}
 var markers = []
-
-
-func init_map_info(map : Array[Tile], map_data : MappingData):
-	world_map.clear()
-	for t in map:
-		world_map[Vector2(t.pos_data.grid_position.x, t.pos_data.grid_position.y)] = t
-	stagger = map_data.staggered_columns
-	print("Pathtfinder initialized")
 
 
 func find_reachable_tiles(start : Tile, movement_range: int) -> Array[Node3D]:
@@ -65,18 +28,18 @@ func find_reachable_tiles(start : Tile, movement_range: int) -> Array[Node3D]:
 
 		var current_pos = current_tile.pos_data.grid_position
 		
-		if stagger:
+		if WorldMap.is_map_staggered:
 			if current_pos.x % 2 == 0:
-				neighbor_positions = NEIGHBOR_DIRECTIONS_EVEN
+				neighbor_positions = WorldMap.NEIGHBOR_DIRECTIONS_EVEN
 			else:
-				neighbor_positions = NEIGHBOR_DIRECTIONS_ODD
+				neighbor_positions = WorldMap.NEIGHBOR_DIRECTIONS_ODD
 		
 		# Explore neighbors
 		for direction in neighbor_positions:
 			var neighbor_coords = Vector2(current_pos.x + int(direction.x), current_pos.y + int(direction.y))
 			if not is_tile_valid(neighbor_coords) or visited.has(neighbor_coords):
 				continue
-			var neighbor_tile = world_map[neighbor_coords]
+			var neighbor_tile = WorldMap.map_as_dict[neighbor_coords]
 			queue.append({"tile": neighbor_tile, "distance": current_distance + 1})
 			visited.append(neighbor_coords)
 
@@ -85,8 +48,11 @@ func find_reachable_tiles(start : Tile, movement_range: int) -> Array[Node3D]:
 
 func is_tile_valid(coords : Vector2) -> bool:
 	var valid = false
-	if coords in world_map:
-		var tile = world_map[coords]
+	if not WorldMap.map_as_dict.has(coords):
+		push_warning("Tile not in map!")
+		return false
+	var tile = WorldMap.map_as_dict[coords]
+	if tile:
 		if tile.occupier == null and tile.mesh_data.type != Tile.biome_type.Ocean:
 			valid = true
 	return valid

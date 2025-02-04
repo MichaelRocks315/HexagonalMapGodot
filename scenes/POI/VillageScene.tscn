@@ -1,7 +1,7 @@
 [gd_scene load_steps=13 format=3 uid="uid://5hq7deseilvo"]
 
-[ext_resource type="PackedScene" uid="uid://clrxoi4yqjv2y" path="res://assets/Meshes/hut.glb" id="1_0a0r6"]
-[ext_resource type="PackedScene" uid="uid://brdh662e3tx8f" path="res://assets/Meshes/hut2.0.glb" id="2_j1lqh"]
+[ext_resource type="PackedScene" uid="uid://clrxoi4yqjv2y" path="res://assets/Meshes/Structures/hut.glb" id="1_0a0r6"]
+[ext_resource type="PackedScene" uid="uid://brdh662e3tx8f" path="res://assets/Meshes/Structures/hut2.0.glb" id="2_j1lqh"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_chw8l"]
 albedo_color = Color(0.439049, 0.439049, 0.439049, 1)

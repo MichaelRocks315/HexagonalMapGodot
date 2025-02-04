@@ -3,16 +3,15 @@ extends Camera3D
 @export_category("Movement")
 @export var movespeed = 8
 @export var zoomspeed = 2
-@export var minzoom = 25.0
-@export var maxzoom = 90.0
-@export var minheight : float = 10
-@export var maxheight : float = 30
-var minRot = deg_to_rad(-50.0)
-var maxRot = deg_to_rad(-80.0)
-@onready var sun: DirectionalLight3D = $"../Scene/DirectionalLight3D"
+@export var zoom = Vector2(25.0, 90.0)
+@export var height = Vector2(0, 40)
+@export var rot = Vector2(-20, -80)
+@export var sun: DirectionalLight3D
+var parent
 
 
 func _ready() -> void:
+	parent = get_parent()
 	adjust_height()
 	adjust_rotation()
 
@@ -22,19 +21,25 @@ func _process(delta: float) -> void:
 
 
 func move_camera(delta):
+	## Movement
 	var move_vector : Vector3 = Vector3.ZERO
 	if Input.is_action_pressed("MoveForward"):
-		move_vector += Vector3.FORWARD
+		move_vector += -parent.transform.basis.z
 	if Input.is_action_pressed("MoveBackwards"):
-		move_vector += Vector3.BACK
+		move_vector += parent.transform.basis.z
 	if Input.is_action_pressed("MoveLeft"):
-		move_vector += Vector3.LEFT
+		move_vector += -parent.transform.basis.x
 	if Input.is_action_pressed("MoveRight"):
-		move_vector += Vector3.RIGHT
-
+		move_vector += parent.transform.basis.x
+	## Rotation
+	if Input.is_action_pressed("RotateCameraLeft"):
+		parent.rotate(Vector3.UP, 0.005)
+	if Input.is_action_pressed("RotateCameraRight"):
+		parent.rotate(Vector3.UP, -0.005)
+	## Apply movement & rotation
 	if move_vector != Vector3.ZERO:
 		move_vector = move_vector.normalized() * movespeed * delta
-		position += move_vector
+		parent.position += move_vector
 
 
 func _input(event: InputEvent) -> void:
@@ -48,18 +53,21 @@ func _input(event: InputEvent) -> void:
 
 func change_fov(index):
 	if index == MOUSE_BUTTON_WHEEL_UP:
-		fov = max(minzoom, fov - zoomspeed)  # Zoom in by decreasing FOV
+		fov = max(zoom.x, fov - zoomspeed)  # Zoom in by decreasing FOV
 	elif index == MOUSE_BUTTON_WHEEL_DOWN:
-		fov = min(maxzoom, fov + zoomspeed)  # Zoom out by increasing FOV
+		fov = min(zoom.y, fov + zoomspeed)  # Zoom out by increasing FOV
 	
 
 func adjust_height():
-	var new_height = inverse_lerp(minzoom, maxzoom, fov)
-	position.y = lerpf(minheight, maxheight, new_height)
+	var new_height = inverse_lerp(zoom.x, zoom.y, fov)
+	position.y = lerpf(height.x, height.y, new_height)
+
 
 func adjust_rotation():
-	var new_rot = inverse_lerp(minzoom, maxzoom, fov)
-	rotation.x = lerpf(minRot, maxRot, new_rot)
+	var min = deg_to_rad(rot.x)
+	var max = deg_to_rad(rot.y)
+	var new_rot = inverse_lerp(zoom.x, zoom.y, fov)
+	rotation.x = lerpf(min, max, new_rot)
 
 
 ## Test to see if we can turn shadows on or off when getting closer to the scene
