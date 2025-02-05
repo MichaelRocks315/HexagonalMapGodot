@@ -6,5 +6,5 @@
 [resource]
 script = ExtResource("1_odvnn")
 mesh = ExtResource("1_t7ci4")
-color = Color(0.724129, 0.609194, 0.296689, 1)
+color = Color(0.799571, 0.678868, 0.35403, 1)
 type = 2

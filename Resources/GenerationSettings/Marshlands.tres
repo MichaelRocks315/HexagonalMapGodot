@@ -1,0 +1,55 @@
+[gd_resource type="Resource" script_class="GenerationSettings" load_steps=10 format=3 uid="uid://d05e2hqkuydoe"]
+
+[ext_resource type="Script" path="res://scripts/WorldGen/generation_settings.gd" id="1_5jawe"]
+[ext_resource type="Script" path="res://scripts/WorldGen/tile_mesh_data.gd" id="2_ofhyo"]
+[ext_resource type="Resource" uid="uid://6wunq1xerf3p" path="res://Resources/Tiles/Mountain.tres" id="3_odbi0"]
+[ext_resource type="Resource" uid="uid://bbnfty2f3t1g1" path="res://Resources/Tiles/Desert.tres" id="4_y6x08"]
+[ext_resource type="Resource" uid="uid://dldfjjhoeqrfu" path="res://Resources/Tiles/Grassland.tres" id="5_7o4yo"]
+[ext_resource type="Resource" uid="uid://dovp8blqiv3x7" path="res://Resources/Tiles/Swamp.tres" id="6_4rqgg"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_ecmek"]
+frequency = 0.1
+fractal_octaves = 2
+fractal_lacunarity = -0.075
+fractal_gain = 1.0
+metadata/_preview_in_3d_space_ = true
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_nasrd"]
+noise_type = 0
+frequency = 0.1
+fractal_type = 3
+fractal_octaves = 1
+fractal_lacunarity = 1.81
+fractal_gain = 0.43
+fractal_weighted_strength = 1.0
+fractal_ping_pong_strength = 0.565
+domain_warp_type = 2
+domain_warp_amplitude = 30.225
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_yg8qn"]
+noise_type = 3
+frequency = 0.055
+fractal_octaves = 2
+fractal_lacunarity = 11.06
+fractal_gain = 0.515
+
+[resource]
+script = ExtResource("1_5jawe")
+tiles = Array[ExtResource("2_ofhyo")]([ExtResource("3_odbi0"), ExtResource("4_y6x08"), ExtResource("5_7o4yo"), ExtResource("6_4rqgg")])
+biome_weights = Array[float]([0.05, 0.1, 1.0, 1.0])
+tile_size = 1.0
+debug = false
+map_seed = 0
+map_shape = 1
+radius = 50
+biome_noise = SubResource("FastNoiseLite_ecmek")
+fill_gaps = true
+raised_height = 0.5
+heightmap_treshold = 0.682
+heightmap_noise = SubResource("FastNoiseLite_nasrd")
+create_water = true
+ocean_noise = SubResource("FastNoiseLite_yg8qn")
+ocean_treshold = 0.62
+spawn_villages = false
+map_edge_buffer = 5
+spacing = 7

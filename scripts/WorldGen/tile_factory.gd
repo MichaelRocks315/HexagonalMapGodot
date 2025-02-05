@@ -38,7 +38,7 @@ func create_map(map_data : MappingData) -> Array[Tile]:
 		var new_mat = StandardMaterial3D.new()
 		new_mat.albedo_color = m.color
 		tile_materials.append(new_mat)
-		
+	
 	## Generate the tiles
 	for pos in map_data.positions:
 		var new_tile
@@ -154,6 +154,7 @@ func instantiate_ocean_tile():
 	# Set up the tile
 	tile.set_script(tile_script)
 	tile.mesh_data = OCEAN
+	tile.mesh_data.index = 99
 	var mesh_instance: MeshInstance3D = tile.get_child(0) as MeshInstance3D
 	if mesh_instance:
 		mesh_instance.material_override = WATER_SHADER
@@ -173,10 +174,10 @@ func init_tile(tile : Tile, position : PositionData):
 	
 	# Set up material override
 	var mesh_instance: MeshInstance3D = tile.get_child(0) as MeshInstance3D
-	if mesh_instance and tile.mesh_data.index:
+	if mesh_instance and tile.mesh_data.index != 99: #99 signifies ocean
 		mesh_instance.material_override = tile_materials[tile.mesh_data.index]
 	#else:
-	#	push_warning("No child of tile - init_tile hexboard.gd")
+	#	print("Issue with tile material - init_tile hexboard.gd ", tile.mesh_data.index)
 		
 	tile.position = position.world_position
 	tile_parent.add_child(tile)

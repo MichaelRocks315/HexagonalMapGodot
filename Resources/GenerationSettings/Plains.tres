@@ -1,0 +1,38 @@
+[gd_resource type="Resource" script_class="GenerationSettings" load_steps=8 format=3 uid="uid://syfsjhs1wb2g"]
+
+[ext_resource type="Script" path="res://scripts/WorldGen/generation_settings.gd" id="1_patw6"]
+[ext_resource type="Script" path="res://scripts/WorldGen/tile_mesh_data.gd" id="2_pqacv"]
+[ext_resource type="Resource" uid="uid://dldfjjhoeqrfu" path="res://Resources/Tiles/Grassland.tres" id="3_82nst"]
+[ext_resource type="Resource" uid="uid://tkox1fxd324t" path="res://Resources/Tiles/Flat_Grassland.tres" id="4_slfci"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_fvu5l"]
+frequency = 0.025
+fractal_gain = 0.485
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_q8vkx"]
+frequency = 0.025
+fractal_gain = 0.8
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_3udsx"]
+frequency = 0.0217
+
+[resource]
+script = ExtResource("1_patw6")
+tiles = Array[ExtResource("2_pqacv")]([ExtResource("3_82nst"), ExtResource("4_slfci")])
+biome_weights = Array[float]([1.0, 1.0])
+tile_size = 1.0
+debug = false
+map_seed = 0
+map_shape = 3
+radius = 50
+biome_noise = SubResource("FastNoiseLite_fvu5l")
+fill_gaps = true
+raised_height = 0.5
+heightmap_treshold = 0.7
+heightmap_noise = SubResource("FastNoiseLite_q8vkx")
+create_water = true
+ocean_noise = SubResource("FastNoiseLite_3udsx")
+ocean_treshold = 0.7
+spawn_villages = true
+map_edge_buffer = 2
+spacing = 6

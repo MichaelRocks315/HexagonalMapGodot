@@ -19,22 +19,24 @@ func _ready() -> void:
 
 
 func init_seed():
-	if settings.seed == 0 or settings.seed == null:
+	if settings.map_seed == 0 or settings.map_seed == null:
 		print("Randomizing seed")
-		settings.biome_noise.seed = randi() #New seed for this generation
+		settings.biome_noise.seed = randi() #New map_seed for this generation
 		settings.heightmap_noise.seed = randi()
 		settings.ocean_noise.seed = randi()
 	else:
-		settings.biome_noise.seed = settings.seed
-		settings.heightmap_noise.seed = settings.seed
-		settings.ocean_noise.seed = settings.seed
+		settings.biome_noise.seed = settings.map_seed
+		settings.heightmap_noise.seed = settings.map_seed
+		settings.ocean_noise.seed = settings.map_seed
 
 
 func create_starting_units(count : int):
+	var safety_count = 0
 	## Test pathfinder
-	while count > 0:
+	while count > 0 and safety_count < 50:
 		var r_tile : Tile = WorldMap.map.pick_random()
 		if r_tile.mesh_data.type == Tile.biome_type.Ocean or r_tile.occupier != null:
+			safety_count += 1
 			continue
 		var unit : Unit = proto_unit.instantiate()
 		add_child(unit)

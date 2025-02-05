@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="TileMeshData" load_steps=3 format=3 uid="uid://dmd6imb8prkj7"]
+
+[ext_resource type="PackedScene" uid="uid://dkibj7jx3x1db" path="res://assets/Meshes/Tiles/flathexagon.glb" id="1_gdi84"]
+[ext_resource type="Script" path="res://scripts/WorldGen/tile_mesh_data.gd" id="2_d7xk5"]
+
+[resource]
+script = ExtResource("2_d7xk5")
+mesh = ExtResource("1_gdi84")
+color = Color(0.83746, 0.738405, 0.456176, 1)
+type = 2

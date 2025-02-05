@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://scripts/camera_script.gd" id="1_1xefc"]
 [ext_resource type="Texture2D" uid="uid://dvbkqw12i4obk" path="res://assets/Materials/SkyBG.png" id="2_l7mlp"]
 [ext_resource type="Script" path="res://scripts/WorldGen/world_gen.gd" id="3_davhy"]
-[ext_resource type="Resource" uid="uid://d05e2hqkuydoe" path="res://Resources/GenerationSettings/HexagonalWorld.tres" id="4_ft865"]
+[ext_resource type="Resource" uid="uid://d2vlx6mnfatwt" path="res://Resources/GenerationSettings/Islands.tres" id="4_s47g6"]
 [ext_resource type="PackedScene" uid="uid://grijaagmqw4" path="res://scenes/Units/prototype_unit.tscn" id="8_r58of"]
 [ext_resource type="Script" path="res://scripts/WorldGen/object_placer.gd" id="9_p13dw"]
 [ext_resource type="Script" path="res://scripts/pathfinder.gd" id="10_0b4my"]
@@ -44,7 +44,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.117906, 15.1842, 10.1434)
 transform = Transform3D(1, 0, 0, 0, 0.998537, -0.0540788, 0, 0.0540788, 0.998537, 0, 0, 0)
 script = ExtResource("1_1xefc")
 movespeed = 9
-rot = Vector2(-15, -80)
+height = Vector2(0, 60)
+rot = Vector2(-25, -80)
 sun = NodePath("../../Scene/DirectionalLight3D")
 
 [node name="Scene" type="Node3D" parent="."]
@@ -80,7 +81,7 @@ stretch_mode = 4
 
 [node name="WorldGenerator" type="Node" parent="Builder" node_paths=PackedStringArray("object_placer", "tile_parent", "pfinder")]
 script = ExtResource("3_davhy")
-settings = ExtResource("4_ft865")
+settings = ExtResource("4_s47g6")
 object_placer = NodePath("../ObjectPlacer")
 tile_parent = NodePath("../../Scene/TileParent")
 pfinder = NodePath("../Pathfinder")
