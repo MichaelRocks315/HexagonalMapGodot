@@ -7,9 +7,6 @@ func calculate_map_positions(in_settings: GenerationSettings) -> MappingData:
 	settings = in_settings
 	var map = MappingData.new()
 	var positions : Array[PositionData]
-	var min_noise = 999999.0
-	var max_noise = -999999.0
-
 
 ## Diamond and Circle also use the rectangular bounds. They carve our their shape from that rectangle
 ## using their individual shape filters 
@@ -27,16 +24,9 @@ func calculate_map_positions(in_settings: GenerationSettings) -> MappingData:
 		3:
 			stagger = true
 			positions = generate_map(rectangle_bounds(), stagger, circular_buffer_filter, circle_shape_filter)
-	
-	## Remember the min and max noise generated as this is important for matching noise and weights later
-	for pos in positions:
-		if pos.noise < min_noise:
-			min_noise = pos.noise
-		if pos.noise > max_noise:
-			max_noise = pos.noise
 
 	map.positions = positions
-	map.noise_data = Vector2(min_noise, max_noise)
+	map.noise_data = find_noise_caps(positions)
 	WorldMap.is_map_staggered = stagger
 	return map
 
@@ -47,18 +37,30 @@ func generate_map(loop_bounds: Callable, stagger: bool, buffer_filter: Callable,
 		for r in loop_bounds.call(c):
 			if shape_filter and not shape_filter.call(c, r):
 				continue
-			var pos = PositionData.new()
-			if buffer_filter.call(c, r, settings.radius - settings.map_edge_buffer):
-				pos.buffer = true
-			pos.world_position = tile_to_world(c, r, stagger)
-			if noise_at_tile(c, r, settings.heightmap_noise) > settings.heightmap_treshold:
-				pos.world_position.y += settings.raised_height
-			if settings.create_water and noise_at_tile(c, r, settings.ocean_noise) > settings.ocean_treshold:
-				pos.water = true
-			pos.grid_position = Vector2(c, r)
+			var pos = generate_position(c, r, stagger)
+			modify_position(pos, buffer_filter) #Hills, ocean, buffer
 			pos.noise = noise_at_tile(c, r, settings.biome_noise)
 			map_data.append(pos)
 	return map_data
+
+
+func generate_position(c, r, stagger) -> PositionData:
+	var new_pos = PositionData.new()
+	new_pos.world_position = tile_to_world(c, r, stagger)
+	new_pos.grid_position = Vector2(c, r)
+	return new_pos
+
+
+## Apply ocean noise, hills noise and find buffer tiles
+func modify_position(pos : PositionData, buffer_filter):
+	var c = pos.grid_position.x
+	var r = pos.grid_position.y
+	if noise_at_tile(c, r, settings.heightmap_noise) > settings.heightmap_treshold:
+		pos.world_position.y += settings.raised_height
+	if settings.create_water and noise_at_tile(c, r, settings.ocean_noise) > settings.ocean_treshold:
+		pos.water = true
+	if buffer_filter.call(c, r, settings.radius - settings.map_edge_buffer):
+		pos.buffer = true
 
 
 ## Get the world position for flat-side hexagons
@@ -78,6 +80,15 @@ func noise_at_tile(c, r, texture : FastNoiseLite) -> float:
 	var value : float = texture.get_noise_2d(c, r)
 	return (value + 1) / 2 # normalize [0, 1]
 
+
+func find_noise_caps(positions) -> Vector2:
+	var min_max_noise = Vector2(999999.0, -999999.0)
+	for pos in positions:
+		if pos.noise < min_max_noise.x:
+			min_max_noise.x = pos.noise
+		if pos.noise > min_max_noise.y:
+			min_max_noise.y = pos.noise
+	return min_max_noise
 
 ### Bounds
 ### # Specific bounds functions for each shape
