@@ -17,7 +17,7 @@ enum shape {HEXAGONAL, RECTANGULAR, DIAMOND, CIRCLE}
 
 @export_category("Hills")
 @export var fill_gaps = true
-@export var raised_height = 0.5
+@export_range(0.1, 1.0) var raised_height = 0.5
 @export_range(0.0, 1.0) var heightmap_treshold = 0.6
 @export var heightmap_noise : FastNoiseLite
 
@@ -29,4 +29,4 @@ enum shape {HEXAGONAL, RECTANGULAR, DIAMOND, CIRCLE}
 @export_category("Villages")
 @export var spawn_villages = true
 @export var map_edge_buffer = 2
-@export var spacing = 3
+@export var spacing = 5
