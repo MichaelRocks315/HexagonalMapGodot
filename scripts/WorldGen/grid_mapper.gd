@@ -39,7 +39,6 @@ func generate_map(loop_bounds: Callable, stagger: bool, buffer_filter: Callable,
 				continue
 			var pos = generate_position(c, r, stagger)
 			modify_position(pos, buffer_filter) #Hills, ocean, buffer
-			pos.noise = noise_at_tile(c, r, settings.biome_noise)
 			map_data.append(pos)
 	return map_data
 
@@ -55,6 +54,7 @@ func generate_position(c, r, stagger) -> PositionData:
 func modify_position(pos : PositionData, buffer_filter):
 	var c = pos.grid_position.x
 	var r = pos.grid_position.y
+	pos.noise = noise_at_tile(c, r, settings.biome_noise)
 	if noise_at_tile(c, r, settings.heightmap_noise) > settings.heightmap_treshold:
 		pos.world_position.y += settings.raised_height
 	if settings.create_water and noise_at_tile(c, r, settings.ocean_noise) > settings.ocean_treshold:
@@ -89,6 +89,7 @@ func find_noise_caps(positions) -> Vector2:
 		if pos.noise > min_max_noise.y:
 			min_max_noise.y = pos.noise
 	return min_max_noise
+
 
 ### Bounds
 ### # Specific bounds functions for each shape
