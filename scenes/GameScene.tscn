@@ -55,10 +55,9 @@ environment = SubResource("Environment_f2ci6")
 camera_attributes = SubResource("CameraAttributesPractical_1lvu4")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Scene"]
-transform = Transform3D(0.946097, 0.0435415, -0.320944, 0.323884, -0.127189, 0.937509, 0, -0.990922, -0.134436, 0, -1.03826, 0)
+transform = Transform3D(0.172923, -0.634301, 0.753499, 0.000308392, 0.765058, 0.643961, -0.984935, -0.111123, 0.132492, 0, 0, 0)
 directional_shadow_mode = 0
 sky_mode = 1
-metadata/_edit_lock_ = true
 
 [node name="TileParent" type="Node3D" parent="Scene"]
 
