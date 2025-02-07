@@ -104,6 +104,7 @@ func create_hills(hills : Array[Tile]):
 func create_edges(edge_tiles : Array[Tile]):
 	## Create map edges
 	for edge : Tile in edge_tiles:
+		edge.placeable = false
 		for neighbor_dir in WorldMap.NEIGHBOR_WORLD_OFFSET:
 			var pos = edge.position + neighbor_dir
 			var has_neighbor = false
@@ -122,6 +123,7 @@ func create_edges(edge_tiles : Array[Tile]):
 func create_ocean_transitions(ocean_tiles : Array[Tile]):
 	## Fill ocean gaps
 	for water_tile in ocean_tiles:
+		water_tile.placeable = false
 		for neighbor in water_tile.neighbors:
 			if neighbor.mesh_data.type != Tile.biome_type.Ocean:
 				var filler = OCEAN_GAPFILL.instantiate()

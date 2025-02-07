@@ -75,6 +75,7 @@ func generate_world():
 	print_generation_results(starttime, interval)
 
 
+
 func print_generation_results(start : float, dict : Dictionary):
 	print("\n")
 	var last_val = start
@@ -99,7 +100,7 @@ func print_generation_results(start : float, dict : Dictionary):
 func get_placeable_tiles() -> Array[Tile]:
 	var placeable_tiles : Array[Tile] = []
 	for tile : Tile in WorldMap.map:
-		if tile.pos_data.buffer or tile.mesh_data.type == Tile.biome_type.Ocean:
+		if tile.pos_data.buffer or not tile.placeable:
 			continue
 		placeable_tiles.append(tile)
 	print(str(placeable_tiles.size()) + " placeable tiles")

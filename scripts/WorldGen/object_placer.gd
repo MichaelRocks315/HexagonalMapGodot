@@ -13,6 +13,9 @@ func place_villages(tiles : Array[Tile], spacing : int):
 		# Select random tile from array
 		var candidate : Tile = tiles_copy[current_index]
 		current_index += 1
+		
+		if not candidate.placeable:
+			continue
 		var valid = true
 		
 		# check against previous villages
@@ -29,8 +32,7 @@ func place_villages(tiles : Array[Tile], spacing : int):
 			placed_positions.append(Vector2(candidate.pos_data.grid_position.x, candidate.pos_data.grid_position.y))
 			spawn_on_tile(candidate, village)
 			for n in candidate.neighbors:
-				if tiles_copy.has(n):
-					tiles_copy.erase(n)
+				n.placeable = false
 	print("placed " + str(placed_positions.size()) + " in " + str(current_index) + " attempts")
 
 
