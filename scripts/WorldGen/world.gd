@@ -4,6 +4,7 @@ var map : Array[Tile]
 var map_as_dict : Dictionary = {}
 var is_map_staggered = false
 
+## Shorthand for different layout/neighbor configurations depending on map-shape
 const HEXAGONAL_NEIGHBOR_DIRECTIONS = [
 	Vector2(1, 0),
 	Vector2(1, -1),
@@ -31,6 +32,7 @@ const NEIGHBOR_DIRECTIONS_ODD = [
 ]
 var neighbor_positions = HEXAGONAL_NEIGHBOR_DIRECTIONS
 
+# Distances to neighbors assuming tile_size of 1
 const NEIGHBOR_WORLD_OFFSET = [
 	Vector3(0, 0, -1),        # Top
 	Vector3(0.866, 0, -0.5),  # Top-right
@@ -47,6 +49,7 @@ func set_map(all_tiles):
 		map_as_dict[Vector2(t.pos_data.grid_position.x, t.pos_data.grid_position.y)] = t
 
 
+## Handy function for finding all neigbors of a tile
 func get_tile_neighbors(tile : Tile) -> Array[Tile]:
 	var neighbors : Array[Tile] = []
 	if is_map_staggered:

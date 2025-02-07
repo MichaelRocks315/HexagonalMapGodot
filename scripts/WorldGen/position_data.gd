@@ -5,3 +5,4 @@ var world_position : Vector3
 var noise : float
 var buffer : bool = false
 var water : bool = false
+var hill : bool = false

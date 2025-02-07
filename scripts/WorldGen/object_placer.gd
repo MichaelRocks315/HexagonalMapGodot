@@ -2,7 +2,6 @@ extends Node
 class_name ObjectPlacer
 
 @export var village : PackedScene
-@export var debug : bool
 
 func place_villages(tiles : Array[Tile], spacing : int):
 	var tiles_copy = tiles.duplicate(true) #copy tiles and leave original unaffected
@@ -14,6 +13,9 @@ func place_villages(tiles : Array[Tile], spacing : int):
 		# Select random tile from array
 		var candidate : Tile = tiles_copy[current_index]
 		current_index += 1
+		
+		if not candidate.placeable:
+			continue
 		var valid = true
 		
 		# check against previous villages
@@ -24,24 +26,17 @@ func place_villages(tiles : Array[Tile], spacing : int):
 			var ring_distance = max(c_diff, r_diff, delta)
 			if ring_distance <= spacing:
 				valid = false
-				if debug:
-					debug_tile(candidate, previous)
 				break
 				
 		if valid:
 			placed_positions.append(Vector2(candidate.pos_data.grid_position.x, candidate.pos_data.grid_position.y))
 			spawn_on_tile(candidate, village)
-			if debug:
-				candidate.debug_label.modulate = Color.WEB_GREEN
+			for n in candidate.neighbors:
+				n.placeable = false
 	print("placed " + str(placed_positions.size()) + " in " + str(current_index) + " attempts")
 
 
-func debug_tile(tile : Tile, neighbor : Vector2):
-	tile.debug_label.modulate = Color.RED
-	tile.debug_label.text = "BLOCKED:\n" + str(neighbor)
-
-
-# Spawn a unit at a specific tile
+# Spawn an object on a tile
 func spawn_on_tile(tile : Tile, scene : PackedScene):
 	if not tile or not scene:
 		push_warning("tile not found!")

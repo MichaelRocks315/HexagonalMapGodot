@@ -5,22 +5,20 @@ class_name TileFactory
 const HEX_TILE_COLLIDER = preload("res://assets/Meshes/Tiles/HexTileCollider.tscn")
 const OCEAN_GAPFILL = preload("res://assets/Meshes/Tiles/ocean_gapfill.glb")
 const EDGE_GAPFILL = preload("res://assets/Meshes/Tiles/edge_gapfill.glb")
+const TILE_SCRIPT = preload("res://scripts/WorldGen/tile.gd")
 
 # Variables
-var tile_script = preload("res://scripts/WorldGen/tile.gd")
 var tile_materials : Array[Material]
 var settings : GenerationSettings
 var tile_parent : Node3D
 
-const OCEAN = preload("res://Resources/Tiles/Ocean.tres")
-const WATER_SHADER = preload("res://assets/Materials/Shaders/water_shader.tres")
 
 func init_factory(in_settings : GenerationSettings, in_tile_parent : Node3D):
 	settings = in_settings
 	tile_parent = in_tile_parent
 
 
-## total tiles placed follows: 3 * radius * radius + 3 * radius + 1
+# Main function, instantiate the map and returns it
 func create_map(map_data : MappingData) -> Array[Tile]:
 	var new_map : Array[Tile] = []
 	## Calculate weights for choosing tiles/biomes
@@ -45,60 +43,72 @@ func create_map(map_data : MappingData) -> Array[Tile]:
 		if pos.water == true:
 			new_tile = instantiate_ocean_tile()
 		else:
-			#var new_tile : Tile = tile_at_biome(pos.noise, weights, total, map_data.noise_data)
 			var biome = select_biome(pos.noise, weights, total, map_data.noise_data)
 			new_tile = instantiate_tile(biome)
 			
 		init_tile(new_tile, pos)
 		new_map.append(new_tile)
 		debug_tile(new_tile, pos.grid_position)
-			
+		
 	print("Tiles placed: " + str(new_map.size()))
 	return new_map
 
 
-func repair_gaps():
+# Mark tiles for modification
+func modify_terrain():
 	var edge_tiles : Array[Tile] = []
 	var ocean_tiles : Array[Tile] = []
-	var raised_tiles : Array[Tile] = []
+	var hills : Array[Tile] = []
 	
 	## Find all edges and ocean tiles respectively
 	for t in WorldMap.map:
 		var neighbors = WorldMap.get_tile_neighbors(t)
+		invalidate_ocean_hill_neighbors(t, neighbors)
 		if neighbors.size() < 6: #Find edges
 			edge_tiles.append(t)
+			t.pos_data.hill = false #edges cannot be hills
 		if t.mesh_data.type == Tile.biome_type.Ocean:
 			ocean_tiles.append(t) #Find ocean
-		if t.position.y > 0:
-			raised_tiles.append(t) #Find raised tiles
+		if t.pos_data.hill == true:
+			hills.append(t) #Find raised tiles
+	
+	create_edges(edge_tiles)
+	create_hills(hills)
+	create_ocean_transitions(ocean_tiles)
+	print("Terrain height and edges have been adjusted")
+
+
+# Hills and ocean should not spawn next to one another, water takes precedence
+func invalidate_ocean_hill_neighbors(tile: Tile, neighbors: Array[Tile]):
+	for n in neighbors:
+		tile.neighbors.append(n)
+		if tile.pos_data.hill and n.pos_data.water:
+			tile.pos_data.hill = false
+
+
+func create_hills(hills : Array[Tile]):
+	for hill : Tile in hills:
+		hill.position.y = settings.hill_height ## Raise hill
 		
-	## Lower ineligble raised tiles
-	for raised in raised_tiles:
-		if raised.mesh_data.type == Tile.biome_type.Ocean:
-			raised.position.y = 0.0
-			continue
-		var n = WorldMap.get_tile_neighbors(raised)
-		for neighbor in n:
-			if neighbor.mesh_data.type == Tile.biome_type.Ocean or edge_tiles.has(neighbor):
-				raised.position.y = 0.0
-				
-	## Fill raised gaps
-	for raised_tile in raised_tiles:
-		for neighbor in WorldMap.get_tile_neighbors(raised_tile):
-			if neighbor.position.y < raised_tile.position.y:
+		## Fill gaps
+		for neighbor in hill.neighbors:
+			if not neighbor.pos_data.hill:
 				var filler = OCEAN_GAPFILL.instantiate()
 				var neutral = neighbor.position
-				neutral.y = raised_tile.position.y
+				neutral.y = hill.position.y
 				tile_parent.add_child(filler)
-				filler.position = raised_tile.position
+				filler.position = hill.position
 				filler.look_at(neutral)
-	
+
+
+func create_edges(edge_tiles : Array[Tile]):
 	## Create map edges
-	for edge in edge_tiles:
+	for edge : Tile in edge_tiles:
+		edge.placeable = false
 		for neighbor_dir in WorldMap.NEIGHBOR_WORLD_OFFSET:
 			var pos = edge.position + neighbor_dir
 			var has_neighbor = false
-			for n in WorldMap.get_tile_neighbors(edge):
+			for n in edge.neighbors:
 				if n.position.distance_to(pos) < 1:
 					has_neighbor = true
 					break
@@ -109,15 +119,19 @@ func repair_gaps():
 				filler.position = edge.position
 				filler.look_at(edge.position + neighbor_dir)
 
+
+func create_ocean_transitions(ocean_tiles : Array[Tile]):
 	## Fill ocean gaps
 	for water_tile in ocean_tiles:
-		for neighbor in WorldMap.get_tile_neighbors(water_tile):
+		water_tile.placeable = false
+		for neighbor in water_tile.neighbors:
 			if neighbor.mesh_data.type != Tile.biome_type.Ocean:
 				var filler = OCEAN_GAPFILL.instantiate()
 				tile_parent.add_child(filler)
 				filler.position = neighbor.position
 				filler.look_at(water_tile.position)
-		water_tile.position.y -= 0.4
+		water_tile.position.y = settings.ocean_height
+
 
 ## Function to select a biome based on weighted probabilities
 func select_biome(local_noise: float, weights: Array[float], total: float, noisedata: Vector2) -> int:
@@ -142,22 +156,22 @@ func instantiate_tile(selected_biome: int) -> Tile:
 	var t = biome.instantiate()
 	
 	# Set up the tile
-	t.set_script(tile_script)
+	t.set_script(TILE_SCRIPT)
 	t.mesh_data = data
 	t.mesh_data.index = selected_biome
-	
 	return t as Tile
 
+
 func instantiate_ocean_tile():
-	var tile = OCEAN.mesh.instantiate()
+	var tile = settings.ocean_tile.mesh.instantiate()
 	
 	# Set up the tile
-	tile.set_script(tile_script)
-	tile.mesh_data = OCEAN
+	tile.set_script(TILE_SCRIPT)
+	tile.mesh_data = settings.ocean_tile
 	tile.mesh_data.index = 99
 	var mesh_instance: MeshInstance3D = tile.get_child(0) as MeshInstance3D
 	if mesh_instance:
-		mesh_instance.material_override = WATER_SHADER
+		mesh_instance.material_override = settings.ocean_tile.shader_override
 	
 	return tile as Tile
 
@@ -176,9 +190,7 @@ func init_tile(tile : Tile, position : PositionData):
 	var mesh_instance: MeshInstance3D = tile.get_child(0) as MeshInstance3D
 	if mesh_instance and tile.mesh_data.index != 99: #99 signifies ocean
 		mesh_instance.material_override = tile_materials[tile.mesh_data.index]
-	#else:
-	#	print("Issue with tile material - init_tile hexboard.gd ", tile.mesh_data.index)
-		
+
 	tile.position = position.world_position
 	tile_parent.add_child(tile)
 	tile.pos_data = position

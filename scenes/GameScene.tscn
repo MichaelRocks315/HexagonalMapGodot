@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://scripts/camera_script.gd" id="1_1xefc"]
 [ext_resource type="Texture2D" uid="uid://dvbkqw12i4obk" path="res://assets/Materials/SkyBG.png" id="2_l7mlp"]
 [ext_resource type="Script" path="res://scripts/WorldGen/world_gen.gd" id="3_davhy"]
-[ext_resource type="Resource" uid="uid://d2vlx6mnfatwt" path="res://Resources/GenerationSettings/Islands.tres" id="4_s47g6"]
+[ext_resource type="Resource" uid="uid://bulbwto8ivwib" path="res://Resources/GenerationSettings/Default.tres" id="4_58wc8"]
 [ext_resource type="PackedScene" uid="uid://grijaagmqw4" path="res://scenes/Units/prototype_unit.tscn" id="8_r58of"]
 [ext_resource type="Script" path="res://scripts/WorldGen/object_placer.gd" id="9_p13dw"]
 [ext_resource type="Script" path="res://scripts/pathfinder.gd" id="10_0b4my"]
@@ -55,10 +55,9 @@ environment = SubResource("Environment_f2ci6")
 camera_attributes = SubResource("CameraAttributesPractical_1lvu4")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Scene"]
-transform = Transform3D(0.946097, 0.0435415, -0.320944, 0.323884, -0.127189, 0.937509, 0, -0.990922, -0.134436, 0, -1.03826, 0)
+transform = Transform3D(0.172923, -0.634301, 0.753499, 0.000308392, 0.765058, 0.643961, -0.984935, -0.111123, 0.132492, 0, 0, 0)
 directional_shadow_mode = 0
 sky_mode = 1
-metadata/_edit_lock_ = true
 
 [node name="TileParent" type="Node3D" parent="Scene"]
 
@@ -81,7 +80,7 @@ stretch_mode = 4
 
 [node name="WorldGenerator" type="Node" parent="Builder" node_paths=PackedStringArray("object_placer", "tile_parent", "pfinder")]
 script = ExtResource("3_davhy")
-settings = ExtResource("4_s47g6")
+settings = ExtResource("4_58wc8")
 object_placer = NodePath("../ObjectPlacer")
 tile_parent = NodePath("../../Scene/TileParent")
 pfinder = NodePath("../Pathfinder")

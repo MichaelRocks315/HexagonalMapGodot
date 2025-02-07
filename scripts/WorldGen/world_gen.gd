@@ -15,9 +15,10 @@ extends Node
 func _ready() -> void:
 	init_seed()
 	generate_world()
-	create_starting_units(settings.radius/2)  ## prototyping pathfinding and units
+	create_starting_units(floor(settings.radius/2))  ## prototyping pathfinding and units
 
 
+# Randomize if no seed has been set
 func init_seed():
 	if settings.map_seed == 0 or settings.map_seed == null:
 		print("Randomizing seed")
@@ -30,8 +31,9 @@ func init_seed():
 		settings.ocean_noise.seed = settings.map_seed
 
 
+## placeholder functionality for placing units onto the map
 func create_starting_units(count : int):
-	var safety_count = 0
+	var safety_count = 0 #Add safety counter in case no valid tiles
 	## Test pathfinder
 	while count > 0 and safety_count < 50:
 		var r_tile : Tile = WorldMap.map.pick_random()
@@ -45,6 +47,7 @@ func create_starting_units(count : int):
 		count -= 1
 
 
+## Start of world_generation, time each step
 func generate_world():
 	var starttime = Time.get_ticks_msec()
 	var interval = {"Start of Generation!" : starttime}
@@ -62,9 +65,9 @@ func generate_world():
 	interval["Create Map -- "] = Time.get_ticks_msec()
 
 	## Fill all gaps
-	if settings.fill_gaps:
-		factory.repair_gaps()
-		interval["Fill Gaps -- "] = Time.get_ticks_msec()
+	if settings.modify_height:
+		factory.modify_terrain()
+		interval["Modify terrain and fill Gaps -- "] = Time.get_ticks_msec()
 	
 	## Spawn villages
 	if settings.spawn_villages:
@@ -75,6 +78,7 @@ func generate_world():
 	print_generation_results(starttime, interval)
 
 
+## This mess of a function loops through the timing results of generate_world and prints them
 func print_generation_results(start : float, dict : Dictionary):
 	print("\n")
 	var last_val = start
@@ -95,11 +99,11 @@ func print_generation_results(start : float, dict : Dictionary):
 	print("Total completion time: ", total, s)
 
 
-## Ignore buffer and ocean to send to object placer
+## Ignore buffer and ocean to return for object placer
 func get_placeable_tiles() -> Array[Tile]:
 	var placeable_tiles : Array[Tile] = []
 	for tile : Tile in WorldMap.map:
-		if tile.pos_data.buffer or tile.mesh_data.type == Tile.biome_type.Ocean:
+		if tile.pos_data.buffer or not tile.placeable:
 			continue
 		placeable_tiles.append(tile)
 	print(str(placeable_tiles.size()) + " placeable tiles")
