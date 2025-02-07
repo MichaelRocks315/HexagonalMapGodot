@@ -1,6 +1,7 @@
-[gd_resource type="Resource" script_class="GenerationSettings" load_steps=10 format=3 uid="uid://d05e2hqkuydoe"]
+[gd_resource type="Resource" script_class="GenerationSettings" load_steps=11 format=3 uid="uid://d05e2hqkuydoe"]
 
 [ext_resource type="Script" path="res://scripts/WorldGen/generation_settings.gd" id="1_5jawe"]
+[ext_resource type="Resource" uid="uid://3nrb2x1h7p1f" path="res://Resources/Tiles/Ocean.tres" id="1_6go16"]
 [ext_resource type="Script" path="res://scripts/WorldGen/tile_mesh_data.gd" id="2_ofhyo"]
 [ext_resource type="Resource" uid="uid://6wunq1xerf3p" path="res://Resources/Tiles/Mountain.tres" id="3_odbi0"]
 [ext_resource type="Resource" uid="uid://bbnfty2f3t1g1" path="res://Resources/Tiles/Desert.tres" id="4_y6x08"]
@@ -43,12 +44,14 @@ map_seed = 0
 map_shape = 1
 radius = 50
 biome_noise = SubResource("FastNoiseLite_ecmek")
-fill_gaps = true
-raised_height = 0.5
+modify_height = true
+hill_height = 0.5
 heightmap_treshold = 0.682
 heightmap_noise = SubResource("FastNoiseLite_nasrd")
 create_water = true
+ocean_tile = ExtResource("1_6go16")
 ocean_noise = SubResource("FastNoiseLite_yg8qn")
+ocean_height = -0.4
 ocean_treshold = 0.62
 spawn_villages = false
 map_edge_buffer = 5

@@ -5,8 +5,6 @@ class_name TileFactory
 const HEX_TILE_COLLIDER = preload("res://assets/Meshes/Tiles/HexTileCollider.tscn")
 const OCEAN_GAPFILL = preload("res://assets/Meshes/Tiles/ocean_gapfill.glb")
 const EDGE_GAPFILL = preload("res://assets/Meshes/Tiles/edge_gapfill.glb")
-const OCEAN = preload("res://Resources/Tiles/Ocean.tres")
-const WATER_SHADER = preload("res://assets/Materials/Shaders/water_shader.tres")
 const TILE_SCRIPT = preload("res://scripts/WorldGen/tile.gd")
 
 # Variables
@@ -149,7 +147,7 @@ func select_biome(local_noise: float, weights: Array[float], total: float, noise
 
 
 ## Function to instantiate a tile based on the selected biome
-func instantiate_tile(selected_biome: int) -> Tile:
+func instantiate_tile(selected_biome: int, ocean: bool = false) -> Tile:
 	# Get the biome data from settings
 	var data = settings.tiles[selected_biome]
 	
@@ -165,15 +163,15 @@ func instantiate_tile(selected_biome: int) -> Tile:
 
 
 func instantiate_ocean_tile():
-	var tile = OCEAN.mesh.instantiate()
+	var tile = settings.ocean_tile.mesh.instantiate()
 	
 	# Set up the tile
 	tile.set_script(TILE_SCRIPT)
-	tile.mesh_data = OCEAN
+	tile.mesh_data = settings.ocean_tile
 	tile.mesh_data.index = 99
 	var mesh_instance: MeshInstance3D = tile.get_child(0) as MeshInstance3D
 	if mesh_instance:
-		mesh_instance.material_override = WATER_SHADER
+		mesh_instance.material_override = settings.ocean_tile.shader_override
 	
 	return tile as Tile
 
