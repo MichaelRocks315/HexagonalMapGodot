@@ -30,4 +30,4 @@ enum shape {HEXAGONAL, RECTANGULAR, DIAMOND, CIRCLE}
 @export_category("Villages")
 @export var spawn_villages = true
 @export var map_edge_buffer = 2
-@export var spacing = 5
+@export_range(1, 99) var spacing = 6

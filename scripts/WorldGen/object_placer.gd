@@ -28,6 +28,9 @@ func place_villages(tiles : Array[Tile], spacing : int):
 		if valid:
 			placed_positions.append(Vector2(candidate.pos_data.grid_position.x, candidate.pos_data.grid_position.y))
 			spawn_on_tile(candidate, village)
+			for n in candidate.neighbors:
+				if tiles_copy.has(n):
+					tiles_copy.erase(n)
 	print("placed " + str(placed_positions.size()) + " in " + str(current_index) + " attempts")
 
 
