@@ -64,10 +64,10 @@ func adjust_height():
 
 
 func adjust_rotation():
-	var min = deg_to_rad(rot.x)
-	var max = deg_to_rad(rot.y)
+	var min_r = deg_to_rad(rot.x)
+	var max_r = deg_to_rad(rot.y)
 	var new_rot = inverse_lerp(zoom.x, zoom.y, fov)
-	rotation.x = lerpf(min, max, new_rot)
+	rotation.x = lerpf(min_r, max_r, new_rot)
 
 
 ## Test to see if we can turn shadows on or off when getting closer to the scene

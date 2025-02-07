@@ -147,7 +147,7 @@ func select_biome(local_noise: float, weights: Array[float], total: float, noise
 
 
 ## Function to instantiate a tile based on the selected biome
-func instantiate_tile(selected_biome: int, ocean: bool = false) -> Tile:
+func instantiate_tile(selected_biome: int) -> Tile:
 	# Get the biome data from settings
 	var data = settings.tiles[selected_biome]
 	

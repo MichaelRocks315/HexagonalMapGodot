@@ -15,7 +15,7 @@ extends Node
 func _ready() -> void:
 	init_seed()
 	generate_world()
-	create_starting_units(settings.radius/2)  ## prototyping pathfinding and units
+	create_starting_units(floor(settings.radius/2))  ## prototyping pathfinding and units
 
 
 # Randomize if no seed has been set
