@@ -56,6 +56,7 @@ func create_map(map_data : MappingData) -> Array[Tile]:
 	return new_map
 
 
+# Mark tiles for modification
 func modify_terrain():
 	var edge_tiles : Array[Tile] = []
 	var ocean_tiles : Array[Tile] = []
@@ -79,6 +80,7 @@ func modify_terrain():
 	print("Terrain height and edges have been adjusted")
 
 
+# Hills and ocean should not spawn next to one another, water takes precedence
 func invalidate_ocean_hill_neighbors(tile: Tile, neighbors: Array[Tile]):
 	for n in neighbors:
 		tile.neighbors.append(n)

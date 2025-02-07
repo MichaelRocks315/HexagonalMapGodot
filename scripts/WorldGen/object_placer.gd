@@ -36,12 +36,7 @@ func place_villages(tiles : Array[Tile], spacing : int):
 	print("placed " + str(placed_positions.size()) + " in " + str(current_index) + " attempts")
 
 
-func debug_tile(tile : Tile, neighbor : Vector2):
-	tile.debug_label.modulate = Color.RED
-	tile.debug_label.text = "BLOCKED:\n" + str(neighbor)
-
-
-# Spawn a unit at a specific tile
+# Spawn an object on a tile
 func spawn_on_tile(tile : Tile, scene : PackedScene):
 	if not tile or not scene:
 		push_warning("tile not found!")
