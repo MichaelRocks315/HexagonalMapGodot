@@ -2,7 +2,6 @@ extends Node
 class_name ObjectPlacer
 
 @export var village : PackedScene
-@export var debug : bool
 
 func place_villages(tiles : Array[Tile], spacing : int):
 	var tiles_copy = tiles.duplicate(true) #copy tiles and leave original unaffected
@@ -24,15 +23,11 @@ func place_villages(tiles : Array[Tile], spacing : int):
 			var ring_distance = max(c_diff, r_diff, delta)
 			if ring_distance <= spacing:
 				valid = false
-				if debug:
-					debug_tile(candidate, previous)
 				break
 				
 		if valid:
 			placed_positions.append(Vector2(candidate.pos_data.grid_position.x, candidate.pos_data.grid_position.y))
 			spawn_on_tile(candidate, village)
-			if debug:
-				candidate.debug_label.modulate = Color.WEB_GREEN
 	print("placed " + str(placed_positions.size()) + " in " + str(current_index) + " attempts")
 
 

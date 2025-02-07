@@ -130,6 +130,7 @@ func create_ocean_transitions(ocean_tiles : Array[Tile]):
 				filler.look_at(water_tile.position)
 		water_tile.position.y = settings.ocean_height
 
+
 ## Function to select a biome based on weighted probabilities
 func select_biome(local_noise: float, weights: Array[float], total: float, noisedata: Vector2) -> int:
 	# Normalize the noise value to the total weight range
