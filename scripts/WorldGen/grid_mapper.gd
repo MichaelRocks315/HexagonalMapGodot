@@ -55,10 +55,13 @@ func modify_position(pos : PositionData, buffer_filter):
 	var c = pos.grid_position.x
 	var r = pos.grid_position.y
 	pos.noise = noise_at_tile(c, r, settings.biome_noise)
-	if noise_at_tile(c, r, settings.heightmap_noise) > settings.heightmap_treshold:
-		pos.world_position.y += settings.raised_height
+	
+	##We prioritize water since hills cannot be created with surrounding ocean anyway
 	if settings.create_water and noise_at_tile(c, r, settings.ocean_noise) > settings.ocean_treshold:
 		pos.water = true
+	elif noise_at_tile(c, r, settings.heightmap_noise) > settings.heightmap_treshold:
+		pos.hill = true
+
 	if buffer_filter.call(c, r, settings.radius - settings.map_edge_buffer):
 		pos.buffer = true
 
