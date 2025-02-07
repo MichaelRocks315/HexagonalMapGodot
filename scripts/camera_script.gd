@@ -72,7 +72,7 @@ func adjust_rotation():
 
 ## Test to see if we can turn shadows on or off when getting closer to the scene
 func adjust_shadows():
-	if fov < 50:
+	if fov < 40 or position.y < 10:
 		sun.shadow_enabled = true
 	elif sun.shadow_enabled:
 		sun.shadow_enabled = false
