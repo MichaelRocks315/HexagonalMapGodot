@@ -16,14 +16,15 @@ enum shape {HEXAGONAL, RECTANGULAR, DIAMOND, CIRCLE}
 @export var biome_noise : FastNoiseLite
 
 @export_category("Hills")
-@export var fill_gaps = true
-@export_range(0.1, 1.0) var raised_height = 0.5
+@export var modify_height = true
+@export_range(0.1, 1.0) var hill_height = 0.5
 @export_range(0.0, 1.0) var heightmap_treshold = 0.6
 @export var heightmap_noise : FastNoiseLite
 
 @export_category("Water/Ocean")
 @export var create_water = true
 @export var ocean_noise : FastNoiseLite
+@export_range(-1.0, -0.1) var ocean_height = -0.4
 @export_range(0.0, 1.0) var ocean_treshold : float
 
 @export_category("Villages")

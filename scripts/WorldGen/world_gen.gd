@@ -31,7 +31,7 @@ func init_seed():
 
 
 func create_starting_units(count : int):
-	var safety_count = 0
+	var safety_count = 0 #Add safety counter in case no valid tiles
 	## Test pathfinder
 	while count > 0 and safety_count < 50:
 		var r_tile : Tile = WorldMap.map.pick_random()
@@ -62,9 +62,9 @@ func generate_world():
 	interval["Create Map -- "] = Time.get_ticks_msec()
 
 	## Fill all gaps
-	if settings.fill_gaps:
-		factory.repair_gaps()
-		interval["Fill Gaps -- "] = Time.get_ticks_msec()
+	if settings.modify_height:
+		factory.modify_terrain()
+		interval["Modify terrain and fill Gaps -- "] = Time.get_ticks_msec()
 	
 	## Spawn villages
 	if settings.spawn_villages:
