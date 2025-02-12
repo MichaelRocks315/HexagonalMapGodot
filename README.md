@@ -6,6 +6,8 @@ Small lightweight procedural hexagonal map generator
 Made in godot entirely written in gdscript
 Created by ForlornU
 
+This is still under heavy development!
+
 ## Features:
 - Procedural map generation
 - Lightweight resources for different type of tiles
@@ -22,13 +24,16 @@ To get started with this project, follow these steps:
 
 ## Video 
 
-Video Overview:
+Starting Overview:
 https://youtu.be/DLKB5NiqYps
 
 Shapes Update:
 https://youtu.be/djP-CLFCj6o
 
-More in progress...
+Height Update:
+https://youtu.be/pVckYwh_fKk
+
+Updates and videos in progress...
 
 
 ### Donation
