@@ -24,17 +24,17 @@ func create_map(map_data : MappingData) -> Array[Tile]:
 	## Calculate weights for choosing tiles/biomes
 	var weights = calculate_biome_weights()
 	var total = 0.0
-	for w in settings.biome_weights:
-		total += w
+	for w in settings.tiles:
+		total += w.weight
 		
 	## Create new materials for each tile type/color
-	for m in settings.tiles:
+	for biome in settings.tiles:
 		## Allow for shader overrides
-		if m.shader_override != null:
-			tile_materials.append(m.shader_override)
+		if biome.tile.shader_override != null:
+			tile_materials.append(biome.shader_override)
 			continue
 		var new_mat = StandardMaterial3D.new()
-		new_mat.albedo_color = m.color
+		new_mat.albedo_color = biome.tile.color
 		tile_materials.append(new_mat)
 	
 	## Generate the tiles
@@ -149,7 +149,7 @@ func select_biome(local_noise: float, weights: Array[float], total: float, noise
 ## Function to instantiate a tile based on the selected biome
 func instantiate_tile(selected_biome: int) -> Tile:
 	# Get the biome data from settings
-	var data = settings.tiles[selected_biome]
+	var data = settings.tiles[selected_biome].tile
 	
 	# Instantiate the biome mesh
 	var biome = data.mesh
@@ -200,8 +200,8 @@ func init_tile(tile : Tile, position : PositionData):
 func calculate_biome_weights() -> Array[float]:
 	var sum = 0.0
 	var cumulative_weights : Array[float]
-	for weight in settings.biome_weights:
-		sum += weight
+	for weight in settings.tiles:
+		sum += weight.weight
 		cumulative_weights.append(sum)
 	return cumulative_weights
 

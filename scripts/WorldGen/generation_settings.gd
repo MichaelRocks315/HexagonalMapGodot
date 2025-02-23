@@ -4,8 +4,7 @@ class_name GenerationSettings
 enum shape {HEXAGONAL, RECTANGULAR, DIAMOND, CIRCLE}
 
 @export_category("Tiles")
-@export var tiles : Array[TileMeshData]
-@export var biome_weights : Array[float]
+@export var tiles : Array[Biome]
 @export var tile_size : float = 1 #Scalar for different size tiles, leave at 1 if not using your own mesh
 @export var debug = false
 
