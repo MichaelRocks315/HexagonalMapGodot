@@ -1,8 +1,8 @@
 [gd_resource type="Resource" script_class="GenerationSettings" load_steps=10 format=3 uid="uid://bulbwto8ivwib"]
 
 [ext_resource type="Resource" uid="uid://3nrb2x1h7p1f" path="res://Resources/Tiles/Ocean.tres" id="1_3tupl"]
-[ext_resource type="Script" path="res://scripts/WorldGen/generation_settings.gd" id="1_30d36"]
-[ext_resource type="Script" path="res://scripts/WorldGen/tile_mesh_data.gd" id="2_ncl3i"]
+[ext_resource type="Script" uid="uid://cyt7pxd2qvvdw" path="res://scripts/WorldGen/generation_settings.gd" id="1_30d36"]
+[ext_resource type="Script" uid="uid://7ydn2adxn7ew" path="res://scripts/WorldGen/tile_mesh_data.gd" id="2_ncl3i"]
 [ext_resource type="Resource" uid="uid://dldfjjhoeqrfu" path="res://Resources/Tiles/Grassland.tres" id="3_f5ryx"]
 [ext_resource type="Resource" uid="uid://tkox1fxd324t" path="res://Resources/Tiles/Flat_Grassland.tres" id="4_bhwte"]
 [ext_resource type="Resource" uid="uid://bbnfty2f3t1g1" path="res://Resources/Tiles/Desert.tres" id="5_wdlhr"]
