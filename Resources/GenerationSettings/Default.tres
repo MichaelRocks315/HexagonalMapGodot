@@ -26,7 +26,6 @@ metadata/_custom_type_script = "uid://wm3k7i453bcf"
 [resource]
 script = ExtResource("1_30d36")
 tiles = Array[ExtResource("3_lvfux")]([SubResource("Resource_hvdso")])
-tile_size = 1.0
 debug = false
 map_seed = 0
 map_shape = 3
@@ -40,7 +39,7 @@ create_water = true
 ocean_tile = ExtResource("1_3tupl")
 ocean_noise = SubResource("FastNoiseLite_3udsx")
 ocean_height = -0.4
-ocean_treshold = 0.65
+ocean_treshold = 0.295
 spawn_villages = true
 map_edge_buffer = 2
 spacing = 6
