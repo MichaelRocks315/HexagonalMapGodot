@@ -10,5 +10,4 @@ albedo_texture = ExtResource("1_t1hbs")
 rim = 0.0
 ao_light_affect = 1.0
 heightmap_scale = -2.62
-uv1_offset = Vector3(-0.1, 0, 0)
 uv2_scale = Vector3(1.755, 1.755, 1.755)

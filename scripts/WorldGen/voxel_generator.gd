@@ -69,12 +69,20 @@ func _create_top_face(indices: PackedInt32Array, verts: PackedVector3Array, heig
 
 
 # Function to create UVs
-func create_uvs(uvs: PackedVector2Array, vertex_count: int) -> void:
-	for i in range(vertex_count):
-		# Simple UV mapping: stretch the texture evenly across the prism
-		var u = float(i % sides) / float(sides)
-		var v = float(i / sides) / 2.0  # Base and top vertices
-		uvs.append(Vector2(u, v))
+func create_uvs(uvs: PackedVector2Array, verts: int) -> void:
+	for i in range(sides):
+		var angle = (float(i) / float(sides)) * 2.0 * PI
+		var u = 0.5 + 0.5 * cos(angle)  # Map to 0..1 range
+		uvs.append(Vector2(u, 0.0))  # Bottom vertex UV
+
+	for i in range(sides):
+		var angle = (float(i) / float(sides)) * 2.0 * PI
+		var u = 0.5 + 0.5 * cos(angle)  # Map to 0..1 range
+		var v = 0.5 + 0.5 * sin(angle)  # Map to 0..1 range
+		uvs.append(Vector2(u, v))  # Top face vertex UV
+		
+	# Top center vertex UV
+	uvs.append(Vector2(0.5, 0.5))  # Center of the top face
 
 
 # Function to get the vertices for the base and top hexagon
