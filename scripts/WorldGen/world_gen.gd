@@ -23,11 +23,11 @@ func _ready() -> void:
 
 func test_generate_voxel():
 	var vg = VoxelGenerator.new()
-	var count = 50
+	var count = 10
 	var hex_width = 3.0 / 2.0
 	var hex_height = sqrt(3)
 	#var mat = StandardMaterial3D.new()
-	var mat = load("res://assets/Materials/red.tres")
+	var mat = load("res://assets/Materials/checker_material.tres")
 	for col in range(count):
 		for row in range(count):
 			var prism = vg.generate_hex_prism(1.0)

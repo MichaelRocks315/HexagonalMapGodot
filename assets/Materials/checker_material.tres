@@ -1,0 +1,14 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://donbpnkd4icmf"]
+
+[ext_resource type="Texture2D" uid="uid://dbpjcjq1seha7" path="res://assets/Materials/checkerpattern.png" id="1_t1hbs"]
+
+[resource]
+shading_mode = 2
+diffuse_mode = 3
+specular_mode = 1
+albedo_texture = ExtResource("1_t1hbs")
+rim = 0.0
+ao_light_affect = 1.0
+heightmap_scale = -2.62
+uv1_offset = Vector3(-0.1, 0, 0)
+uv2_scale = Vector3(1.755, 1.755, 1.755)
