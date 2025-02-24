@@ -1,3 +1,4 @@
+@tool
 extends Node
 
 # Dependencies
@@ -14,8 +15,41 @@ extends Node
 ## Starting point: Generate a random seed, create the tiles, place POI's
 func _ready() -> void:
 	init_seed()
-	generate_world()
-	create_starting_units(floor(settings.radius/2))  ## prototyping pathfinding and units
+	#generate_world()
+	
+	test_generate_voxel()
+	#create_starting_units(floor(settings.radius/2))  ## prototyping pathfinding and units
+
+
+func test_generate_voxel():
+	var vg = VoxelGenerator.new()
+	var count = 50
+	var hex_width = 3.0 / 2.0
+	var hex_height = sqrt(3)
+	#var mat = StandardMaterial3D.new()
+	var mat = load("res://assets/Materials/red.tres")
+	for col in range(count):
+		for row in range(count):
+			var prism = vg.generate_hex_prism(1.0)
+			var mesh_instance = MeshInstance3D.new()
+			
+			mesh_instance.material_override = mat
+			mesh_instance.mesh = prism
+
+			add_child(mesh_instance)
+			
+			var x_offset = col * hex_width
+			var z_offset = row * hex_height
+			
+			if row % 2 != 0:
+				x_offset += hex_width / 2
+			
+			var noise = settings.biome_noise.get_noise_2d(x_offset, z_offset) * 4
+			var y = snapped(noise, 1)
+			#var y = round(settings.biome_noise.get_noise_2d(x_offset, z_offset))
+			mesh_instance.position = Vector3(x_offset, y, z_offset)
+				
+			#mesh_instance.rotate_y(deg_to_rad(30))
 
 
 # Randomize if no seed has been set

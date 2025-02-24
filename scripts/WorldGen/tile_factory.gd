@@ -189,7 +189,8 @@ func init_tile(tile : Tile, position : PositionData):
 	# Set up material override
 	var mesh_instance: MeshInstance3D = tile.get_child(0) as MeshInstance3D
 	if mesh_instance and tile.mesh_data.index != 99: #99 signifies ocean
-		mesh_instance.material_override = tile_materials[tile.mesh_data.index]
+		var mat : StandardMaterial3D = tile_materials[tile.mesh_data.index]
+		mesh_instance.material_override = mat
 
 	tile.position = position.world_position
 	tile_parent.add_child(tile)
