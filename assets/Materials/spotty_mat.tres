@@ -1,0 +1,10 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://555nq2albd0o"]
+
+[ext_resource type="Shader" uid="uid://vsxqyxbhx02r" path="res://assets/Materials/Shaders/spotty_shader.gdshader" id="1_qklfu"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_qklfu")
+shader_parameter/color_base = Color(0.388887, 0.292925, 0.124581, 1)
+shader_parameter/color_add = Color(0.148105, 0.540072, 0.326817, 1)
+shader_parameter/noise_scale = 2.0

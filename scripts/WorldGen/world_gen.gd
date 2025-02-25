@@ -23,33 +23,38 @@ func _ready() -> void:
 
 func test_generate_voxel():
 	var vg = VoxelGenerator.new()
-	var count = 10
-	var hex_width = 3.0 / 2.0
-	var hex_height = sqrt(3)
-	#var mat = StandardMaterial3D.new()
-	var mat = load("res://assets/Materials/checker_material.tres")
+	var count = 25
+	var size = 0.25  # Distance from center to vertex
+	var depth = 2.0
+	
+	var hex_width = sqrt(3) * size  # Horizontal distance between hexagons
+	var hex_height = 1.5 * size  # Vertical distance between hexagons
+	
+	# Load material
+	var mat = load("res://assets/Materials/spotty_mat.tres")
+	
+	# Generate hexagonal grid
 	for col in range(count):
 		for row in range(count):
-			var prism = vg.generate_hex_prism(1.0)
+			# Generate hexagonal prism
+			var prism = vg.generate_hex_prism(size, depth)
 			var mesh_instance = MeshInstance3D.new()
-			
 			mesh_instance.material_override = mat
 			mesh_instance.mesh = prism
-
 			add_child(mesh_instance)
 			
+			# Calculate position
 			var x_offset = col * hex_width
 			var z_offset = row * hex_height
 			
+			# Offset every alternate row
 			if row % 2 != 0:
 				x_offset += hex_width / 2
 			
-			var noise = settings.biome_noise.get_noise_2d(x_offset, z_offset) * 4
+			var noise = settings.biome_noise.get_noise_2d(x_offset, z_offset) * 5
 			var y = snapped(noise, 1)
-			#var y = round(settings.biome_noise.get_noise_2d(x_offset, z_offset))
+
 			mesh_instance.position = Vector3(x_offset, y, z_offset)
-				
-			#mesh_instance.rotate_y(deg_to_rad(30))
 
 
 # Randomize if no seed has been set

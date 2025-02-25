@@ -6,17 +6,17 @@
 [ext_resource type="Resource" uid="uid://dldfjjhoeqrfu" path="res://Resources/Tiles/Grassland.tres" id="4_isbjt"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_fvu5l"]
-seed = 1404020968
+seed = -1860248640
 frequency = 0.0175
 fractal_gain = 0.48
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_q8vkx"]
-seed = -426300133
+seed = 584335852
 frequency = 0.025
 fractal_gain = 0.8
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_3udsx"]
-seed = -523151382
+seed = -125086738
 frequency = 0.0217
 fractal_gain = 0.735
 
