@@ -15,9 +15,9 @@ extends Node
 ## Starting point: Generate a random seed, create the tiles, place POI's
 func _ready() -> void:
 	init_seed()
-	#generate_world()
+	generate_world()
 	
-	test_generate_voxel()
+	#test_generate_voxel()
 	#create_starting_units(floor(settings.radius/2))  ## prototyping pathfinding and units
 
 
@@ -25,36 +25,37 @@ func test_generate_voxel():
 	var vg = VoxelGenerator.new()
 	var count = 25
 	var size = 0.25  # Distance from center to vertex
-	var depth = 2.0
+	var depth = 1.0
 	
 	var hex_width = sqrt(3) * size  # Horizontal distance between hexagons
 	var hex_height = 1.5 * size  # Vertical distance between hexagons
 	
 	# Load material
-	var mat = load("res://assets/Materials/spotty_mat.tres")
+	#var mat = load("res://assets/Materials/spotty_mat.tres") #Custom
+	var mat = load("res://assets/Materials/voxel_mat.tres")
 	
 	# Generate hexagonal grid
-	for col in range(count):
-		for row in range(count):
-			# Generate hexagonal prism
-			var prism = vg.generate_hex_prism(size, depth)
-			var mesh_instance = MeshInstance3D.new()
-			mesh_instance.material_override = mat
-			mesh_instance.mesh = prism
-			add_child(mesh_instance)
+	#for col in range(count):
+		#for row in range(count):
+	# Generate hexagonal prism
+	var prism = vg.generate_hex_prism(size, depth)
+	var mesh_instance = MeshInstance3D.new()
+	mesh_instance.material_override = mat
+	mesh_instance.mesh = prism
+	add_child(mesh_instance)
 			
-			# Calculate position
-			var x_offset = col * hex_width
-			var z_offset = row * hex_height
-			
-			# Offset every alternate row
-			if row % 2 != 0:
-				x_offset += hex_width / 2
-			
-			var noise = settings.biome_noise.get_noise_2d(x_offset, z_offset) * 5
-			var y = snapped(noise, 1)
-
-			mesh_instance.position = Vector3(x_offset, y, z_offset)
+			## Calculate position
+			#var x_offset = col * hex_width
+			#var z_offset = row * hex_height
+			#
+			## Offset every alternate row
+			#if row % 2 != 0:
+				#x_offset += hex_width / 2
+			#
+			#var noise = settings.biome_noise.get_noise_2d(x_offset, z_offset) * 5
+			#var y = snapped(noise, 1)
+#
+			#mesh_instance.position = Vector3(x_offset, y, z_offset)
 
 
 # Randomize if no seed has been set
@@ -96,23 +97,32 @@ func generate_world():
 	var positions = mapper.calculate_map_positions(settings)
 	interval["Calculate Map Positions -- "] = Time.get_ticks_msec()
 	
-	## Create the tiles
-	var factory = TileFactory.new()
-	factory.init_factory(settings, tile_parent)
-	var map = factory.create_map(positions)
-	WorldMap.set_map(map)
-	interval["Create Map -- "] = Time.get_ticks_msec()
-
-	## Fill all gaps
-	if settings.modify_height:
-		factory.modify_terrain()
-		interval["Modify terrain and fill Gaps -- "] = Time.get_ticks_msec()
-	
-	## Spawn villages
-	if settings.spawn_villages:
-		var placeable = get_placeable_tiles()
-		object_placer.place_villages(placeable, settings.spacing)
-		interval["Spawn Villages -- "] = Time.get_ticks_msec()
+	var mat = load("res://assets/Materials/voxel_mat.tres")
+	var vg = VoxelGenerator.new()
+	var chunk = vg.generate_chunk(positions, settings.radius, 1, 1)
+	var mesh_instance = MeshInstance3D.new()
+	mesh_instance.material_override = mat
+	mesh_instance.mesh = chunk
+	add_child(mesh_instance)
+	interval["Create Voxel Grid -- "] = Time.get_ticks_msec()
+	#
+	### Create the tiles
+	#var factory = TileFactory.new()
+	#factory.init_factory(settings, tile_parent)
+	#var map = factory.create_map(positions)
+	#WorldMap.set_map(map)
+	#interval["Create Map -- "] = Time.get_ticks_msec()
+#
+	### Fill all gaps
+	#if settings.modify_height:
+		#factory.modify_terrain()
+		#interval["Modify terrain and fill Gaps -- "] = Time.get_ticks_msec()
+	#
+	### Spawn villages
+	#if settings.spawn_villages:
+		#var placeable = get_placeable_tiles()
+		#object_placer.place_villages(placeable, settings.spacing)
+		#interval["Spawn Villages -- "] = Time.get_ticks_msec()
 	
 	print_generation_results(starttime, interval)
 

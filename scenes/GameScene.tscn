@@ -65,6 +65,7 @@ sky_mode = 1
 
 [node name="BGCanvasLayer" type="CanvasLayer" parent="."]
 layer = -100
+visible = false
 
 [node name="SpaceBG_img" type="TextureRect" parent="BGCanvasLayer"]
 anchors_preset = 15

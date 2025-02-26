@@ -1,0 +1,10 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://m21sefqltasa"]
+
+[resource]
+specular_mode = 1
+roughness = 0.48
+normal_scale = 8.08
+anisotropy = -0.24
+heightmap_scale = 3.905
+grow_amount = -0.036
+point_size = 13.4
