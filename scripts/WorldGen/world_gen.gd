@@ -1,4 +1,3 @@
-@tool
 extends Node
 
 # Dependencies
@@ -101,7 +100,7 @@ func generate_world():
 	var vg = VoxelGenerator.new()
 	var chunk = vg.generate_chunk(positions, settings.radius, 1, 1)
 	var mesh_instance = MeshInstance3D.new()
-	mesh_instance.material_override = mat
+	#mesh_instance.material_override = mat
 	mesh_instance.mesh = chunk
 	add_child(mesh_instance)
 	interval["Create Voxel Grid -- "] = Time.get_ticks_msec()

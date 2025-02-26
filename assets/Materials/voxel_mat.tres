@@ -2,7 +2,7 @@
 
 [resource]
 specular_mode = 1
-roughness = 0.48
+metallic_specular = 0.0
 normal_scale = 8.08
 anisotropy = -0.24
 heightmap_scale = 3.905

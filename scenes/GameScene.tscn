@@ -57,7 +57,7 @@ environment = SubResource("Environment_f2ci6")
 camera_attributes = SubResource("CameraAttributesPractical_1lvu4")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Scene"]
-transform = Transform3D(0.172923, -0.634301, 0.753499, 0.000308392, 0.765058, 0.643961, -0.984935, -0.111123, 0.132492, 0, 0, 0)
+transform = Transform3D(0.151402, -0.877164, 0.455698, 0.0622852, 0.468562, 0.881232, -0.986508, -0.105037, 0.125576, 0, 4.09007, 0)
 directional_shadow_mode = 0
 sky_mode = 1
 
@@ -105,5 +105,5 @@ main_camera = NodePath("../../CameraParent/Camera3D")
 p_finder = NodePath("../Pathfinder")
 
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.04546, 2.38419e-07, 0.00752449)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0)
 material_override = ExtResource("13_w22tq")

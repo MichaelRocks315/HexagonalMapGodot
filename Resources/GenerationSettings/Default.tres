@@ -6,17 +6,17 @@
 [ext_resource type="Resource" uid="uid://dldfjjhoeqrfu" path="res://Resources/Tiles/Grassland.tres" id="4_isbjt"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_fvu5l"]
-seed = 528102447
+seed = 1893793770
 frequency = 0.0175
 fractal_gain = 0.48
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_q8vkx"]
-seed = -414440297
+seed = -1489435915
 frequency = 0.025
 fractal_gain = 0.8
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_3udsx"]
-seed = -1945618969
+seed = 513610316
 frequency = 0.0217
 fractal_gain = 0.735
 
@@ -32,7 +32,7 @@ tiles = Array[ExtResource("3_lvfux")]([SubResource("Resource_hvdso")])
 debug = false
 map_seed = 0
 map_shape = 3
-radius = 99
+radius = 20
 biome_noise = SubResource("FastNoiseLite_fvu5l")
 modify_height = true
 hill_height = 0.5
