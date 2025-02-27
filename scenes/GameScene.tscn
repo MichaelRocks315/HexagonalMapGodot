@@ -11,7 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://xm2lgya4capr" path="res://scenes/Cursors/hexagon_cursor.tscn" id="11_rshvd"]
 [ext_resource type="PackedScene" uid="uid://bb3hit25an5ti" path="res://scenes/Cursors/path_overlay.tscn" id="12_0kgq4"]
 [ext_resource type="Script" uid="uid://ym76xrk8f3fr" path="res://scripts/interaction.gd" id="12_tt8b8"]
-[ext_resource type="Material" uid="uid://donbpnkd4icmf" path="res://assets/Materials/checker_material.tres" id="13_w22tq"]
+[ext_resource type="Material" uid="uid://dmi1l2yaecsqy" path="res://assets/Materials/hex_cursor_mat.tres" id="13_w22tq"]
 [ext_resource type="PackedScene" uid="uid://cqxjxq25t6wuy" path="res://scenes/Cursors/unit_cursor.tscn" id="13_ydfkh"]
 
 [sub_resource type="Environment" id="Environment_f2ci6"]
@@ -46,8 +46,8 @@ transform = Transform3D(1, 0, 0, 0, 0.998537, -0.0540788, 0, 0.0540788, 0.998537
 script = ExtResource("1_1xefc")
 movespeed = 9
 zoom = Vector2(40, 90)
-height = Vector2(-10, 20)
-rot = Vector2(-10, -80)
+height = Vector2(-20, 20)
+rot = Vector2(-60, -90)
 sun = NodePath("../../Scene/DirectionalLight3D")
 
 [node name="Scene" type="Node3D" parent="."]
@@ -81,13 +81,14 @@ stretch_mode = 4
 
 [node name="Builder" type="Node" parent="."]
 
-[node name="WorldGenerator" type="Node" parent="Builder" node_paths=PackedStringArray("object_placer", "tile_parent", "pfinder")]
+[node name="WorldGenerator" type="Node" parent="Builder" node_paths=PackedStringArray("object_placer", "tile_parent", "pfinder", "box")]
 script = ExtResource("3_davhy")
 settings = ExtResource("4_58wc8")
 object_placer = NodePath("../ObjectPlacer")
 tile_parent = NodePath("../../Scene/TileParent")
 pfinder = NodePath("../Pathfinder")
 proto_unit = ExtResource("8_r58of")
+box = NodePath("../../CSGBox3D")
 
 [node name="ObjectPlacer" type="Node" parent="Builder"]
 script = ExtResource("9_p13dw")
@@ -105,5 +106,5 @@ main_camera = NodePath("../../CameraParent/Camera3D")
 p_finder = NodePath("../Pathfinder")
 
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0)
+transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, -0.388571, -3.8633, -1.36748)
 material_override = ExtResource("13_w22tq")

@@ -5,13 +5,27 @@ var map_as_dict : Dictionary = {}
 var is_map_staggered = false
 
 ## Shorthand for different layout/neighbor configurations depending on map-shape
-const HEXAGONAL_NEIGHBOR_DIRECTIONS = [
-	Vector2(1, 0),
-	Vector2(1, -1),
-	Vector2(0, -1), 
-	Vector2(-1, 0),
-	Vector2(-1, 1),
-	Vector2(0, 1)
+const HEXAGONAL_NEIGHBOR_DIRECTIONS : Array[Vector2i] = [
+	Vector2i(1, -1),  # Face 0: Top-Right → NE
+	Vector2i(1, 0),   # Face 1: Right → E
+	Vector2i(0, 1),   # Face 2: Bottom-Right → SE
+	Vector2i(-1, 1),  # Face 3: Bottom-Left → SW
+	Vector2i(-1, 0),  # Face 4: Left → W
+	Vector2i(0, -1)   # Face 5: Top-Left → NW
+	
+	#Vector2(1, 1),
+	#Vector2(1, 0),
+	#Vector2(0, -1), 
+	#Vector2(-1, 0),
+	#Vector2(-1, 1),
+	#Vector2(0, 1),
+	
+	#Vector2(-1, 1),
+	#Vector2(-1, 0),
+	#Vector2(0, -1),
+	#Vector2(1, -1),
+	#Vector2(1, 0),
+	#Vector2(0, 1),
 ]
 # Neighbor directions for even/odd rows
 const NEIGHBOR_DIRECTIONS_EVEN = [

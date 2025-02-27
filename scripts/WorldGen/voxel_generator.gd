@@ -1,17 +1,8 @@
 class_name VoxelGenerator
 
 var map : MappingData
-var prism_positions = []
+var map_dict = {}
 const sides = 6
-
-var neighbor_directions = [
-	Vector3(1, 0, 0),        # Right
-	Vector3(0.5, 0, -0.866),  # Top-right
-	Vector3(-0.5, 0, -0.866), # Top-left
-	Vector3(-1, 0, 0),        # Left
-	Vector3(-0.5, 0, 0.866),  # Bottom-left
-	Vector3(0.5, 0, 0.866)    # Bottom-right
-]
 
 func generate_chunk(_map : MappingData, radius, prism_size : float, height: float) -> Mesh:
 	map = _map
@@ -22,27 +13,15 @@ func generate_chunk(_map : MappingData, radius, prism_size : float, height: floa
 	
 	var surface = SurfaceTool.new()
 	surface.begin(Mesh.PRIMITIVE_TRIANGLES)
-	surface.set_color(Color.ORANGE_RED)
 	surface.set_smooth_group(-1)
 
-	var hex_width = sqrt(3) * prism_size  # Horizontal distance between hexagons
-	var hex_height = 1.5 * prism_size  # Vertical distance between hexagons
-	
-	# Generate verticies
-	for col in range(radius):
-		for row in range(radius):
-			var x_offset = col * hex_width
-			var z_offset = row * hex_height
-			if row % 2 != 0:
-				x_offset += hex_width / 2
-			var y = 0 #+ randi_range(0, 3)
-			var next_position = Vector3(x_offset, y, z_offset)
-			verts.append_array(get_verts(next_position, prism_size, height, surface))
-			prism_positions.append(next_position)
-			#gridpositions.append(Vector2(row, col))
+	for pos in map.positions:
+		var next_position = pos.world_position
+		verts.append_array(get_verts(next_position, prism_size, height, surface))
+		map_dict[pos.grid_position] = pos.world_position
 
-	create_uvs(uvs, verts.size(), radius * radius)
-	build_geometry(verts, indices, normals, radius * radius)
+	create_uvs(uvs, verts.size(), map.positions.size())
+	build_geometry(verts, indices, normals, map.positions.size())
 	
 	# Create & assign mesh
 	var arrays = []
@@ -60,13 +39,12 @@ func build_geometry(verts: PackedVector3Array, indices: PackedInt32Array, normal
 	# Construct edges and faces
 	for prism in range(prism_count):
 		var first_prism_vert = prism * 13  # Each prism has 13 vertices
-		var current_prism = prism_positions[prism]
+		var current_prism = map.positions[prism]
+		
 		## Construct sides
-		for i in range(sides):
-			var neighbor = current_prism + neighbor_directions[i]
-			print("current ",current_prism)
-			print("First neighbor ", neighbor)
-			if not prism_positions.has(neighbor):
+		for i in range(WorldMap.HEXAGONAL_NEIGHBOR_DIRECTIONS.size()):
+			var neighbor = current_prism.grid_position + WorldMap.HEXAGONAL_NEIGHBOR_DIRECTIONS[i]
+			if not map_dict.has(neighbor):
 				var bottom_vert = first_prism_vert + i
 				var next_bottom_vert = first_prism_vert + ((i + 1) % sides)
 				var top_vert = first_prism_vert + 6 + i
@@ -82,7 +60,9 @@ func build_geometry(verts: PackedVector3Array, indices: PackedInt32Array, normal
 				indices.append(next_top_vert)      # Next top vertex
 				indices.append(top_vert)           # Top vertex
 			else:
-				print(neighbor)
+				print("prism at : ", current_prism.grid_position)
+				print("Found neighbor at: ", neighbor)
+				
 			
 		## Construct top
 		var top_center_vert = first_prism_vert + 12  # Index of the top center vertex
@@ -121,12 +101,12 @@ func create_uvs(uvs: PackedVector2Array, verts: int, prism_count: int) -> void:
 func get_verts(position : Vector3, size : float, height: float, surface) -> PackedVector3Array:
 	# Define the base hexagon
 	var base_vertices = [
-		Vector3(0.0, 0.0, -size),    # Left
-		Vector3(size * 0.866, 0.0, -size * 0.5),   # Top-left
-		Vector3(size * 0.866, 0.0, size * 0.5),    # Top-right
-		Vector3(0.0, 0.0, size),      # Right
-		Vector3(size * -0.866, 0.0, size * 0.5),   # Bottom-right
-		Vector3(size * -0.866, 0.0, size * -0.5)   # Bottom-left
+	Vector3(size * 0.5, 0.0, size * -0.866),  # Left
+	Vector3(size, 0.0, 0.0),  # Top-right
+	Vector3(size * 0.5, 0.0, size * 0.866),  # Bottom-right
+	Vector3(-size * 0.5, 0.0, size * 0.866),  # Bottom-left
+	Vector3(-size, 0.0, 0.0),  # Left
+	Vector3(-size * 0.5, 0.0, size * -0.866)  # Top-left
 	]
 
 	var verts = PackedVector3Array()

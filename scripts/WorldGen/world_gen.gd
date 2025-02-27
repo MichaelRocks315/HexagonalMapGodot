@@ -9,6 +9,7 @@ extends Node
 # Test-only!
 @export var pfinder : Pathfinder
 @export var proto_unit : PackedScene
+@export var box : Node3D
 
 
 ## Starting point: Generate a random seed, create the tiles, place POI's
