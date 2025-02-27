@@ -21,43 +21,6 @@ func _ready() -> void:
 	#create_starting_units(floor(settings.radius/2))  ## prototyping pathfinding and units
 
 
-func test_generate_voxel():
-	var vg = VoxelGenerator.new()
-	var count = 25
-	var size = 0.25  # Distance from center to vertex
-	var depth = 1.0
-	
-	var hex_width = sqrt(3) * size  # Horizontal distance between hexagons
-	var hex_height = 1.5 * size  # Vertical distance between hexagons
-	
-	# Load material
-	#var mat = load("res://assets/Materials/spotty_mat.tres") #Custom
-	var mat = load("res://assets/Materials/voxel_mat.tres")
-	
-	# Generate hexagonal grid
-	#for col in range(count):
-		#for row in range(count):
-	# Generate hexagonal prism
-	var prism = vg.generate_hex_prism(size, depth)
-	var mesh_instance = MeshInstance3D.new()
-	mesh_instance.material_override = mat
-	mesh_instance.mesh = prism
-	add_child(mesh_instance)
-			
-			## Calculate position
-			#var x_offset = col * hex_width
-			#var z_offset = row * hex_height
-			#
-			## Offset every alternate row
-			#if row % 2 != 0:
-				#x_offset += hex_width / 2
-			#
-			#var noise = settings.biome_noise.get_noise_2d(x_offset, z_offset) * 5
-			#var y = snapped(noise, 1)
-#
-			#mesh_instance.position = Vector3(x_offset, y, z_offset)
-
-
 # Randomize if no seed has been set
 func init_seed():
 	if settings.map_seed == 0 or settings.map_seed == null:
@@ -97,11 +60,12 @@ func generate_world():
 	var positions = mapper.calculate_map_positions(settings)
 	interval["Calculate Map Positions -- "] = Time.get_ticks_msec()
 	
-	var mat = load("res://assets/Materials/voxel_mat.tres")
+	#var mat = load("res://assets/Materials/checker_material.tres")
+	var mat = load("res://assets/Materials/triplanar_mat.tres")
 	var vg = VoxelGenerator.new()
 	var chunk = vg.generate_chunk(positions, settings.radius, 1, 1)
 	var mesh_instance = MeshInstance3D.new()
-	#mesh_instance.material_override = mat
+	mesh_instance.material_override = mat
 	mesh_instance.mesh = chunk
 	add_child(mesh_instance)
 	interval["Create Voxel Grid -- "] = Time.get_ticks_msec()

@@ -36,18 +36,22 @@ func generate_map(loop_bounds: Callable, stagger: bool, buffer_filter: Callable,
 	var map_data: Array[PositionData] = []
 	for c in loop_bounds.call():
 		for r in loop_bounds.call(c):
-			if shape_filter and not shape_filter.call(c, r):
-				continue
-			var pos = generate_position(c, r, stagger)
-			modify_position(pos, buffer_filter) #Hills, ocean, buffer
-			map_data.append(pos)
+			for h in range(4):#in loop_bounds.call(c):
+				if shape_filter and not shape_filter.call(c, r):
+					continue
+				#if randf() < 0.2:
+				#	continue
+				var p = Vector3(c, h, r)
+				var pos = generate_position(p, stagger)
+				modify_position(pos, buffer_filter) #Hills, ocean, buffer
+				map_data.append(pos)
 	return map_data
 
 
-func generate_position(c, r, stagger) -> PositionData:
+func generate_position(p, stagger) -> PositionData:
 	var new_pos = PositionData.new()
-	new_pos.world_position = tile_to_world(c, r, stagger)
-	new_pos.grid_position = Vector2(c, r)
+	new_pos.world_position = tile_to_world(p, stagger)
+	new_pos.grid_position = Vector3(p.x, p.y, p.z)
 	return new_pos
 
 
@@ -68,15 +72,15 @@ func modify_position(pos : PositionData, buffer_filter):
 
 
 ## Get the world position for flat-side hexagons
-func tile_to_world(col: int, row: int, stagger: bool) -> Vector3:
+func tile_to_world(p, stagger: bool) -> Vector3:
 	var SQRT3 = sqrt(3)
-	var x: float = 3.0 / 2.0 * col  # Horizontal spacing
+	var x: float = 3.0 / 2.0 * p.x  # Horizontal spacing
 	var z: float
 	if stagger:
-		z = row * SQRT3 + ((col % 2 + 2) % 2) * (SQRT3 / 2)
+		z = p.z * SQRT3 + ((p.x % 2 + 2) % 2) * (SQRT3 / 2)
 	else:
-		z = (row * SQRT3 + (col * SQRT3 / 2))
-	return Vector3(x * settings.tile_size, 0, z * settings.tile_size)
+		z = (p.z * SQRT3 + (p.x * SQRT3 / 2))
+	return Vector3(x * settings.tile_size, p.y, z * settings.tile_size)
 
 
 ## Get noise at position of tile

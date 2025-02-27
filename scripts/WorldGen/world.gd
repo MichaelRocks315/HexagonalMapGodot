@@ -12,20 +12,6 @@ const HEXAGONAL_NEIGHBOR_DIRECTIONS : Array[Vector2i] = [
 	Vector2i(-1, 1),  # Face 3: Bottom-Left → SW
 	Vector2i(-1, 0),  # Face 4: Left → W
 	Vector2i(0, -1)   # Face 5: Top-Left → NW
-	
-	#Vector2(1, 1),
-	#Vector2(1, 0),
-	#Vector2(0, -1), 
-	#Vector2(-1, 0),
-	#Vector2(-1, 1),
-	#Vector2(0, 1),
-	
-	#Vector2(-1, 1),
-	#Vector2(-1, 0),
-	#Vector2(0, -1),
-	#Vector2(1, -1),
-	#Vector2(1, 0),
-	#Vector2(0, 1),
 ]
 # Neighbor directions for even/odd rows
 const NEIGHBOR_DIRECTIONS_EVEN = [

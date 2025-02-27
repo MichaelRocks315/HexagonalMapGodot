@@ -13,7 +13,7 @@ func generate_chunk(_map : MappingData, radius, prism_size : float, height: floa
 	
 	var surface = SurfaceTool.new()
 	surface.begin(Mesh.PRIMITIVE_TRIANGLES)
-	surface.set_smooth_group(-1)
+	#surface.set_smooth_group(-1)
 
 	for pos in map.positions:
 		var next_position = pos.world_position
@@ -31,20 +31,24 @@ func generate_chunk(_map : MappingData, radius, prism_size : float, height: floa
 	arrays[Mesh.ARRAY_TEX_UV] = uvs
 	arrays[Mesh.ARRAY_NORMAL] = normals
 	surface.create_from_arrays(arrays, Mesh.PRIMITIVE_TRIANGLES)
-	surface.generate_normals(false)
+	surface.optimize_indices_for_cache()
+	surface.generate_normals()
 	surface.generate_tangents()
 	return surface.commit()
 
 func build_geometry(verts: PackedVector3Array, indices: PackedInt32Array, normals: PackedVector3Array, prism_count: int):
 	# Construct edges and faces
+	var current_prism
 	for prism in range(prism_count):
 		var first_prism_vert = prism * 13  # Each prism has 13 vertices
-		var current_prism = map.positions[prism]
-		
+		current_prism = map.positions[prism]
+		var dirs = WorldMap.HEXAGONAL_NEIGHBOR_DIRECTIONS
 		## Construct sides
 		for i in range(WorldMap.HEXAGONAL_NEIGHBOR_DIRECTIONS.size()):
-			var neighbor = current_prism.grid_position + WorldMap.HEXAGONAL_NEIGHBOR_DIRECTIONS[i]
-			if not map_dict.has(neighbor):
+			var neutral_neighbor : Vector3i = current_prism.grid_position
+			neutral_neighbor.x += dirs[i].x 
+			neutral_neighbor.z += dirs[i].y
+			if not map_dict.has(neutral_neighbor):
 				var bottom_vert = first_prism_vert + i
 				var next_bottom_vert = first_prism_vert + ((i + 1) % sides)
 				var top_vert = first_prism_vert + 6 + i
@@ -59,12 +63,12 @@ func build_geometry(verts: PackedVector3Array, indices: PackedInt32Array, normal
 				indices.append(next_bottom_vert)   # Next bottom vertex
 				indices.append(next_top_vert)      # Next top vertex
 				indices.append(top_vert)           # Top vertex
-			else:
-				print("prism at : ", current_prism.grid_position)
-				print("Found neighbor at: ", neighbor)
-				
 			
 		## Construct top
+		var top_neighbor = current_prism.grid_position
+		top_neighbor.y += 1
+		if map_dict.has(top_neighbor):
+			continue
 		var top_center_vert = first_prism_vert + 12  # Index of the top center vertex
 		for i in range(sides):
 			var top_vert = first_prism_vert + 6 + i
@@ -75,26 +79,40 @@ func build_geometry(verts: PackedVector3Array, indices: PackedInt32Array, normal
 			indices.append(next_top_vert)      # Next top vertex
 			indices.append(top_center_vert)    # Top center vertex
 
-
-func create_uvs(uvs: PackedVector2Array, verts: int, prism_count: int) -> void:
-	for prism in range(prism_count):
-		var first_prism_vert = prism * 13  # Each prism has 13 vertices
+func create_uvs(uvs: PackedVector2Array, vert_count: int, prism_count: int) -> void:
+	var tiles_per_row = 4  # Match your texture atlas layout
+	var tile_size = 1.0 / tiles_per_row
+	for prism in prism_count:
+		# Bottom vertices (sides) - Planar projection
+		for i in 6:
+			uvs.append(Vector2(i * tile_size, 0.0))
+		# Top vertices (radial)
+		for i in 6:
+			var angle = (float(i)/6.0) * 2.0 * PI
+			uvs.append(Vector2(0.5 + 0.5 * cos(angle), 0.5 + 0.5 * sin(angle)))
 		
-		# UVs for the bottom vertices (sides)
-		for i in range(sides):
-			var angle = (float(i) / float(sides)) * 2.0 * PI
-			var u = 0.5 + 0.5 * cos(angle)  # Map to 0..1 range
-			uvs.append(Vector2(u, 0.0))  # Bottom vertex UV
+		# Top center
+		uvs.append(Vector2(0.5, 0.5))
 		
-		# UVs for the top vertices (top face)
-		for i in range(sides):
-			var angle = (float(i) / float(sides)) * 2.0 * PI
-			var u = 0.5 + 0.5 * cos(angle)  # Map to 0..1 range
-			var v = 0.5 + 0.5 * sin(angle)  # Map to 0..1 range
-			uvs.append(Vector2(u, v))  # Top face vertex UV
-		
-		# UV for the top center vertex
-		uvs.append(Vector2(0.5, 0.5))  # Center of the top face
+#func create_uvs(uvs: PackedVector2Array, verts: int, prism_count: int) -> void:
+	#for prism in range(prism_count):
+		#var first_prism_vert = prism * 13  # Each prism has 13 vertices
+		#
+		## UVs for the bottom vertices (sides)
+		#for i in range(sides):
+			#var angle = (float(i) / float(sides)) * 2.0 * PI
+			#var u = 0.5 + 0.5 * cos(angle)  # Map to 0..1 range
+			#uvs.append(Vector2(u, 0.0))  # Bottom vertex UV
+		#
+		## UVs for the top vertices (top face)
+		#for i in range(sides):
+			#var angle = (float(i) / float(sides)) * 2.0 * PI
+			#var u = 0.5 + 0.5 * cos(angle)  # Map to 0..1 range
+			#var v = 0.5 + 0.5 * sin(angle)  # Map to 0..1 range
+			#uvs.append(Vector2(u, v))  # Top face vertex UV
+		#
+		## UV for the top center vertex
+		#uvs.append(Vector2(0.5, 0.5))  # Center of the top face
 
 
 # Function to get the vertices for the base and top hexagon

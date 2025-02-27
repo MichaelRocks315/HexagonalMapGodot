@@ -46,8 +46,8 @@ transform = Transform3D(1, 0, 0, 0, 0.998537, -0.0540788, 0, 0.0540788, 0.998537
 script = ExtResource("1_1xefc")
 movespeed = 9
 zoom = Vector2(40, 90)
-height = Vector2(-20, 20)
-rot = Vector2(-60, -90)
+height = Vector2(-10, 40)
+rot = Vector2(-40, -90)
 sun = NodePath("../../Scene/DirectionalLight3D")
 
 [node name="Scene" type="Node3D" parent="."]
