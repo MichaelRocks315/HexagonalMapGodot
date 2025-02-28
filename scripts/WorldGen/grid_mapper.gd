@@ -36,11 +36,11 @@ func generate_map(loop_bounds: Callable, stagger: bool, buffer_filter: Callable,
 	var map_data: Array[PositionData] = []
 	for c in loop_bounds.call():
 		for r in loop_bounds.call(c):
-			for h in range(4):#in loop_bounds.call(c):
+			for h in range(settings.height):#in loop_bounds.call(c):
 				if shape_filter and not shape_filter.call(c, r):
 					continue
-				#if randf() < 0.2:
-				#	continue
+				if randf() < 0.0:
+					continue
 				var p = Vector3(c, h, r)
 				var pos = generate_position(p, stagger)
 				modify_position(pos, buffer_filter) #Hills, ocean, buffer

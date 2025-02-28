@@ -12,6 +12,7 @@ var tile_size : float = 1 #Scalar for different size tiles, leave at 1 if not us
 @export var map_seed : int
 @export var map_shape : shape = shape.HEXAGONAL
 @export_range(0, 99, 1) var radius: int = 5
+@export_range(1, 20, 1) var height: int = 3
 @export var biome_noise : FastNoiseLite
 
 @export_category("Hills")
