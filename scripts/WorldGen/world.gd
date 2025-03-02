@@ -5,7 +5,7 @@ var map_as_dict : Dictionary = {}
 var is_map_staggered = false
 
 ## Shorthand for different layout/neighbor configurations depending on map-shape
-const HEXAGONAL_NEIGHBOR_DIRECTIONS : Array[Vector2i] = [
+const HEXAGONAL_NEIGHBOR_DIRECTIONS: Array[Vector2i] = [
 	Vector2i(1, -1),  # Face 0: Top-Right → NE
 	Vector2i(1, 0),   # Face 1: Right → E
 	Vector2i(0, 1),   # Face 2: Bottom-Right → SE
@@ -13,23 +13,42 @@ const HEXAGONAL_NEIGHBOR_DIRECTIONS : Array[Vector2i] = [
 	Vector2i(-1, 0),  # Face 4: Left → W
 	Vector2i(0, -1)   # Face 5: Top-Left → NW
 ]
+const NEIGHBOR_DIRECTIONS_EVEN: Array[Vector2i] = [
+	# For even rows (x % 2 == 0)
+	Vector2i(1, -1),  # Northeast
+	Vector2i(1, 0),   # East
+	Vector2i(0, 1),   # Southeast
+	Vector2i(-1, 0),  # Southwest
+	Vector2i(-1, -1), # Northwest
+	Vector2i(0, -1)   # West
+]
+
+const NEIGHBOR_DIRECTIONS_ODD: Array[Vector2i] = [
+	# For odd rows (x % 2 == 1)
+	Vector2i(1, 0),   # Northeast
+	Vector2i(1, 1),   # East
+	Vector2i(0, 1),   # Southeast
+	Vector2i(-1, 1),  # Southwest
+	Vector2i(-1, 0),  # Northwest
+	Vector2i(0, -1)   # West
+]
 # Neighbor directions for even/odd rows
-const NEIGHBOR_DIRECTIONS_EVEN = [
-	Vector2(1, 0),   # Bottom-right
-	Vector2(1, -1),  # Top-right
-	Vector2(0, -1),  # Top
-	Vector2(-1, -1), # Top-left
-	Vector2(-1, 0),  # Bottom-left
-	Vector2(0, 1)    # Bottom
-]
-const NEIGHBOR_DIRECTIONS_ODD = [
-	Vector2(1, 0),   # Bottom-right
-	Vector2(0, -1),  # Top-right
-	Vector2(-1, 0),  # Top
-	Vector2(-1, 1),  # Top-left
-	Vector2(0, 1),   # Bottom-left
-	Vector2(1, 1)    # Bottom
-]
+#const NEIGHBOR_DIRECTIONS_EVEN = [
+	#Vector2(1, 0),   # Bottom-right
+	#Vector2(1, -1),  # Top-right
+	#Vector2(0, -1),  # Top
+	#Vector2(-1, -1), # Top-left
+	#Vector2(-1, 0),  # Bottom-left
+	#Vector2(0, 1)    # Bottom
+#]
+#const NEIGHBOR_DIRECTIONS_ODD = [
+	#Vector2(1, 0),   # Bottom-right
+	#Vector2(0, -1),  # Top-right
+	#Vector2(-1, 0),  # Top
+	#Vector2(-1, 1),  # Top-left
+	#Vector2(0, 1),   # Bottom-left
+	#Vector2(1, 1)    # Bottom
+#]
 var neighbor_positions = HEXAGONAL_NEIGHBOR_DIRECTIONS
 
 # Distances to neighbors assuming tile_size of 1
@@ -63,3 +82,12 @@ func get_tile_neighbors(tile : Tile) -> Array[Tile]:
 		if neighbor_coords in map_as_dict:
 			neighbors.append(map_as_dict[neighbor_coords])
 	return neighbors
+	
+func get_tile_neighbor_table(row) -> Array[Vector2i]:
+	if is_map_staggered:
+		if row % 2 == 0:
+			return NEIGHBOR_DIRECTIONS_EVEN
+		else:
+			return NEIGHBOR_DIRECTIONS_ODD
+	else:
+		return HEXAGONAL_NEIGHBOR_DIRECTIONS

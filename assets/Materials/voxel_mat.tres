@@ -1,7 +1,10 @@
-[gd_resource type="StandardMaterial3D" format=3 uid="uid://m21sefqltasa"]
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://m21sefqltasa"]
+
+[ext_resource type="Texture2D" uid="uid://dftavov4guobx" path="res://assets/Materials/tile_atlas.png" id="1_t7pvv"]
 
 [resource]
 specular_mode = 1
+albedo_texture = ExtResource("1_t7pvv")
 metallic_specular = 0.0
 normal_scale = 8.08
 anisotropy = -0.24

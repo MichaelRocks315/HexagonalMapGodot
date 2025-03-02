@@ -60,10 +60,9 @@ func generate_world():
 	var positions = mapper.calculate_map_positions(settings)
 	interval["Calculate Map Positions -- "] = Time.get_ticks_msec()
 	
-	#var mat = load("res://assets/Materials/checker_material.tres")
 	var mat = load("res://assets/Materials/triplanar_mat.tres")
 	var vg = VoxelGenerator.new()
-	var chunk = vg.generate_chunk(positions, settings.radius, 1, 1)
+	var chunk = vg.generate_chunk(positions, 1, 1)
 	var mesh_instance = MeshInstance3D.new()
 	mesh_instance.material_override = mat
 	mesh_instance.mesh = chunk

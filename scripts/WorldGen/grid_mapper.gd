@@ -71,16 +71,25 @@ func modify_position(pos : PositionData, buffer_filter):
 		pos.buffer = true
 
 
-## Get the world position for flat-side hexagons
-func tile_to_world(p, stagger: bool) -> Vector3:
+func tile_to_world(pos, stagger: bool) -> Vector3:
 	var SQRT3 = sqrt(3)
-	var x: float = 3.0 / 2.0 * p.x  # Horizontal spacing
+	var x: float = 3.0 / 2.0 * pos.x  # Horizontal spacing
 	var z: float
 	if stagger:
-		z = p.z * SQRT3 + ((p.x % 2 + 2) % 2) * (SQRT3 / 2)
+		z = pos.z * SQRT3 + ((int(pos.x) % 2 + 2) % 2) * (SQRT3 / 2) #fmod(pos.x, 2.0) + 2 % 2 * (SQRT3 / 2.0)
 	else:
-		z = (p.z * SQRT3 + (p.x * SQRT3 / 2))
-	return Vector3(x * settings.tile_size, p.y, z * settings.tile_size)
+		z = (pos.z * SQRT3 + (int(pos.x) * SQRT3 / 2))
+	return Vector3(x * settings.tile_size, pos.y, z * settings.tile_size)
+## Get the world position for flat-side hexagons
+#func tile_to_world(col: int, row: int, stagger: bool) -> Vector3:
+	#var SQRT3 = sqrt(3)
+	#var x: float = 3.0 / 2.0 * col  # Horizontal spacing
+	#var z: float
+	#if stagger:
+		#z = row * SQRT3 + ((col % 2 + 2) % 2) * (SQRT3 / 2)
+	#else:
+		#z = (row * SQRT3 + (col * SQRT3 / 2))
+	#return Vector3(x * settings.tile_size, 0, z * settings.tile_size)
 
 
 ## Get noise at position of tile
