@@ -4,7 +4,7 @@ var map : Array[Tile]
 var map_as_dict : Dictionary = {}
 var is_map_staggered = false
 
-## Shorthand for different layout/neighbor configurations depending on map-shape
+## Shorthand for different layout/neighbor configurations depending on map-shape and stagger
 const HEXAGONAL_NEIGHBOR_DIRECTIONS: Array[Vector2i] = [
 	Vector2i(1, -1),  # Face 0: Top-Right → NE
 	Vector2i(1, 0),   # Face 1: Right → E
@@ -32,34 +32,18 @@ const NEIGHBOR_DIRECTIONS_ODD: Array[Vector2i] = [
 	Vector2i(-1, 0),  # Northwest
 	Vector2i(0, -1)   # West
 ]
-# Neighbor directions for even/odd rows
-#const NEIGHBOR_DIRECTIONS_EVEN = [
-	#Vector2(1, 0),   # Bottom-right
-	#Vector2(1, -1),  # Top-right
-	#Vector2(0, -1),  # Top
-	#Vector2(-1, -1), # Top-left
-	#Vector2(-1, 0),  # Bottom-left
-	#Vector2(0, 1)    # Bottom
-#]
-#const NEIGHBOR_DIRECTIONS_ODD = [
-	#Vector2(1, 0),   # Bottom-right
-	#Vector2(0, -1),  # Top-right
-	#Vector2(-1, 0),  # Top
-	#Vector2(-1, 1),  # Top-left
-	#Vector2(0, 1),   # Bottom-left
-	#Vector2(1, 1)    # Bottom
-#]
+
 var neighbor_positions = HEXAGONAL_NEIGHBOR_DIRECTIONS
 
 # Distances to neighbors assuming tile_size of 1
-const NEIGHBOR_WORLD_OFFSET = [
-	Vector3(0, 0, -1),        # Top
-	Vector3(0.866, 0, -0.5),  # Top-right
-	Vector3(0.866, 0, 0.5),   # Bottom-right
-	Vector3(0, 0, 1),         # Bottom
-	Vector3(-0.866, 0, 0.5),  # Bottom-left
-	Vector3(-0.866, 0, -0.5)  # Top-left
-]
+#const NEIGHBOR_WORLD_OFFSET = [
+	#Vector3(0, 0, -1),        # Top
+	#Vector3(0.866, 0, -0.5),  # Top-right
+	#Vector3(0.866, 0, 0.5),   # Bottom-right
+	#Vector3(0, 0, 1),         # Bottom
+	#Vector3(-0.866, 0, 0.5),  # Bottom-left
+	#Vector3(-0.866, 0, -0.5)  # Top-left
+#]
 
 
 func set_map(all_tiles):
@@ -82,12 +66,12 @@ func get_tile_neighbors(tile : Tile) -> Array[Tile]:
 		if neighbor_coords in map_as_dict:
 			neighbors.append(map_as_dict[neighbor_coords])
 	return neighbors
-	
+
+
 func get_tile_neighbor_table(row) -> Array[Vector2i]:
 	if is_map_staggered:
 		if row % 2 == 0:
 			return NEIGHBOR_DIRECTIONS_EVEN
 		else:
 			return NEIGHBOR_DIRECTIONS_ODD
-	else:
-		return HEXAGONAL_NEIGHBOR_DIRECTIONS
+	return HEXAGONAL_NEIGHBOR_DIRECTIONS

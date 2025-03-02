@@ -41,7 +41,7 @@ func build_geometry(indices: PackedInt32Array, prism_count: int):
 	for prism in range(prism_count):
 		var first_prism_vert = prism * 13  # Each prism has 13 vertices
 		current_prism = map.positions[prism]
-		#var dirs = WorldMap.HEXAGONAL_NEIGHBOR_DIRECTIONS
+
 		## Construct sides
 		var dirs = WorldMap.get_tile_neighbor_table(current_prism.grid_position.x)
 		for i in range(WorldMap.HEXAGONAL_NEIGHBOR_DIRECTIONS.size()):
@@ -87,7 +87,7 @@ func create_uvs(uvs: PackedVector2Array, prism_count: int) -> void:
 		# Bottom vertices (sides) - Planar projection
 		for i in 6:
 			uvs.append(Vector2(i * tile_size, 0.0))
-			print(i * tile_size)
+			#print(i * tile_size)
 		# Top vertices (radial)
 		for i in 6:
 			var angle = (float(i)/6.0) * 2.0 * PI

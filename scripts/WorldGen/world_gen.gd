@@ -26,12 +26,8 @@ func init_seed():
 	if settings.map_seed == 0 or settings.map_seed == null:
 		print("Randomizing seed")
 		settings.biome_noise.seed = randi() #New map_seed for this generation
-		settings.heightmap_noise.seed = randi()
-		settings.ocean_noise.seed = randi()
 	else:
 		settings.biome_noise.seed = settings.map_seed
-		settings.heightmap_noise.seed = settings.map_seed
-		settings.ocean_noise.seed = settings.map_seed
 
 
 ## placeholder functionality for placing units onto the map
@@ -67,7 +63,7 @@ func generate_world():
 	mesh_instance.material_override = mat
 	mesh_instance.mesh = chunk
 	add_child(mesh_instance)
-	interval["Create Voxel Grid -- "] = Time.get_ticks_msec()
+	interval["Create Voxel Mesh -- "] = Time.get_ticks_msec()
 	#
 	### Create the tiles
 	#var factory = TileFactory.new()

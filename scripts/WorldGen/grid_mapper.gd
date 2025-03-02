@@ -3,14 +3,15 @@ class_name GridMapper
 
 var settings : GenerationSettings
 
+
 ## Main entry point, Get all positions to spawn tiles on
 func calculate_map_positions(in_settings: GenerationSettings) -> MappingData:
 	settings = in_settings
 	var map = MappingData.new()
 	var positions : Array[PositionData]
 
-## Diamond and Circle also use the rectangular bounds. They carve our their shape from that rectangle
-## using their individual shape filters 
+	## Diamond and Circle also use the rectangular bounds. They carve our their shape from that rectangle
+	## using their individual shape filters 
 	var stagger : bool
 	match settings.map_shape:
 		0:
@@ -36,14 +37,14 @@ func generate_map(loop_bounds: Callable, stagger: bool, buffer_filter: Callable,
 	var map_data: Array[PositionData] = []
 	for c in loop_bounds.call():
 		for r in loop_bounds.call(c):
-			for h in range(settings.height):#in loop_bounds.call(c):
+			for h in range(settings.max_height):
 				if shape_filter and not shape_filter.call(c, r):
 					continue
 				if randf() < 0.0:
 					continue
 				var p = Vector3(c, h, r)
 				var pos = generate_position(p, stagger)
-				modify_position(pos, buffer_filter) #Hills, ocean, buffer
+				#modify_position(pos, buffer_filter) #Hills, ocean, buffer
 				map_data.append(pos)
 	return map_data
 
@@ -80,16 +81,6 @@ func tile_to_world(pos, stagger: bool) -> Vector3:
 	else:
 		z = (pos.z * SQRT3 + (int(pos.x) * SQRT3 / 2))
 	return Vector3(x * settings.tile_size, pos.y, z * settings.tile_size)
-## Get the world position for flat-side hexagons
-#func tile_to_world(col: int, row: int, stagger: bool) -> Vector3:
-	#var SQRT3 = sqrt(3)
-	#var x: float = 3.0 / 2.0 * col  # Horizontal spacing
-	#var z: float
-	#if stagger:
-		#z = row * SQRT3 + ((col % 2 + 2) % 2) * (SQRT3 / 2)
-	#else:
-		#z = (row * SQRT3 + (col * SQRT3 / 2))
-	#return Vector3(x * settings.tile_size, 0, z * settings.tile_size)
 
 
 ## Get noise at position of tile
