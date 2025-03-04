@@ -7,8 +7,8 @@
 [resource]
 script = ExtResource("1_30d36")
 map_shape = 3
-radius = 13
-max_height = 5
+radius = 10
+max_height = 1
 noise = SubResource("FastNoiseLite_od57w")
 map_seed = 0
 spawn_villages = true

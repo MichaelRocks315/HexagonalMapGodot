@@ -55,7 +55,7 @@ func generate_voxel(pos, stagger) -> Voxel:
 func modify_voxel(voxel : Voxel, buffer_filter):
 	var c = voxel.grid_position.x
 	var r = voxel.grid_position.y
-	#pos.noise = noise_at_tile(c, r, settings.biome_noise)
+	voxel.noise = noise_at_tile(voxel.grid_position, settings.noise)
 	
 	##We prioritize water since hills cannot be created with surrounding ocean anyway
 	#if settings.create_water and noise_at_tile(c, r, settings.ocean_noise) > settings.ocean_treshold:
@@ -79,8 +79,8 @@ func tile_to_world(pos, stagger: bool) -> Vector3:
 
 
 ## Get noise at position of tile
-func noise_at_tile(c, r, texture : FastNoiseLite) -> float:
-	var value : float = texture.get_noise_2d(c, r)
+func noise_at_tile(grid_position : Vector3, texture : FastNoiseLite) -> float:
+	var value : float = texture.get_noise_3dv(grid_position)
 	return (value + 1) / 2 # normalize [0, 1]
 
 
