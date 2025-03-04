@@ -39,7 +39,7 @@ void vertex() {
 	normal_y = NORMAL.y;
 	vec3 world_normal = normalize((MODEL_MATRIX * vec4(NORMAL, 0.0)).xyz);
 	world_normal_y = world_normal.y;
-	
+
 	vec3 normal = NORMAL;
 	TANGENT = vec3(0.0,0.0,-1.0) * abs(normal.x);
 	TANGENT+= vec3(1.0,0.0,0.0) * abs(normal.y);
@@ -49,17 +49,17 @@ void vertex() {
 	BINORMAL+= vec3(0.0,0.0,-1.0) * abs(normal.y);
 	BINORMAL+= vec3(0.0,1.0,0.0) * abs(normal.z);
 	BINORMAL = normalize(BINORMAL);
-	
+
 	uv_top_power_normal=pow(abs(NORMAL),vec3(uv_top_blend_sharpness));
 	uv_top_triplanar_pos = VERTEX * uv_top_scale + uv_top_offset;
 	uv_top_power_normal/=dot(uv_top_power_normal,vec3(1.0));
 	uv_top_triplanar_pos *= vec3(1.0,-1.0, 1.0);
-	
+
 	uv_center_power_normal=pow(abs(NORMAL),vec3(uv_center_blend_sharpness));
 	uv_center_triplanar_pos = VERTEX * uv_center_scale + uv_center_offset;
 	uv_center_power_normal/=dot(uv_center_power_normal,vec3(1.0));
 	uv_center_triplanar_pos *= vec3(1.0,-1.0, 1.0);
-	
+
 	uv_bottom_power_normal=pow(abs(NORMAL),vec3(uv_bottom_blend_sharpness));
 	uv_bottom_triplanar_pos = VERTEX * uv_bottom_scale + uv_bottom_offset;
 	uv_bottom_power_normal/=dot(uv_bottom_power_normal,vec3(1.0));
@@ -72,18 +72,18 @@ vec2 hash( vec2 p ) {
 
 vec4 stochastic_sample(sampler2D tex, vec2 uv) {
 	vec2 skewV = mat2(vec2(1.0,1.0),vec2(-0.57735027 , 1.15470054))*uv * 3.464;
-	
+
 	vec2 vxID = floor(skewV);
 	vec2 fracV = fract(skewV);
 	vec3 barry = vec3(fracV.x,fracV.y,1.0-fracV.x-fracV.y);
-	
+
 	mat4 bw_vx = barry.z>0.0?
 		mat4(vec4(vxID,0.0,0.0),vec4((vxID+vec2(0.0,1.0)),0.0,0.0),vec4(vxID+vec2(1.0,0.0),0,0),vec4(barry.zyx,0)):
 		mat4(vec4(vxID+vec2(1.0,1.0),0.0,0.0),vec4((vxID+vec2(1.0,0.0)),0.0,0.0),vec4(vxID+vec2(0.0,1.0),0,0),vec4(-barry.z,1.0-barry.y,1.0-barry.x,0));
-		
+
 	vec2 ddx = dFdx(uv);
 	vec2 ddy = dFdy(uv);
-	
+
 	return (textureGrad(tex,uv+hash(bw_vx[0].xy),ddx,ddy)*bw_vx[3].x) +
 	(textureGrad(tex,uv+hash(bw_vx[1].xy),ddx,ddy)*bw_vx[3].y) +
 	(textureGrad(tex,uv+hash(bw_vx[2].xy),ddx,ddy)*bw_vx[3].z);
@@ -112,17 +112,17 @@ void fragment() {
 
 	// Wheights
 	float center_top_weight = world_normal_y;
-	
+
 	if (!use_world_normal) {
 		center_top_weight = normal_y;
 	}
-	
+
 	// Calculate weights
 	center_top_weight = max(center_slope, center_top_weight);
-	
+
 	// Mix
 	vec4 roughness_texture_channel = vec4(1.0,0.0,0.0,0.0);
-	
+
 	ALBEDO = mix(center_albedo, top_albedo, center_top_weight);
 	NORMAL_MAP = mix(center_normal_map, top_normal_map, center_top_weight);
 	ROUGHNESS = dot(mix(center_roughness_map, top_roughness_map, center_top_weight), roughness_texture_channel);

@@ -1,6 +1,5 @@
-[gd_resource type="Resource" script_class="GenerationSettings" load_steps=9 format=3 uid="uid://bulbwto8ivwib"]
+[gd_resource type="Resource" script_class="GenerationSettings" load_steps=6 format=3 uid="uid://bulbwto8ivwib"]
 
-[ext_resource type="Resource" uid="uid://3nrb2x1h7p1f" path="res://Resources/Tiles/Ocean.tres" id="1_3tupl"]
 [ext_resource type="Script" uid="uid://cyt7pxd2qvvdw" path="res://scripts/WorldGen/generation_settings.gd" id="1_30d36"]
 [ext_resource type="Script" uid="uid://wm3k7i453bcf" path="res://scripts/WorldGen/biome.gd" id="3_lvfux"]
 [ext_resource type="Resource" uid="uid://dldfjjhoeqrfu" path="res://Resources/Tiles/Grassland.tres" id="4_isbjt"]
@@ -9,16 +8,6 @@
 seed = 1893793770
 frequency = 0.0175
 fractal_gain = 0.48
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_q8vkx"]
-seed = -1489435915
-frequency = 0.025
-fractal_gain = 0.8
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_3udsx"]
-seed = 513610316
-frequency = 0.0217
-fractal_gain = 0.735
 
 [sub_resource type="Resource" id="Resource_hvdso"]
 script = ExtResource("3_lvfux")
@@ -31,19 +20,10 @@ script = ExtResource("1_30d36")
 tiles = Array[ExtResource("3_lvfux")]([SubResource("Resource_hvdso")])
 debug = false
 map_seed = 0
-map_shape = 2
-radius = 12
-height = 6
+map_shape = 3
+radius = 13
+max_height = 5
 biome_noise = SubResource("FastNoiseLite_fvu5l")
-modify_height = true
-hill_height = 0.5
-heightmap_treshold = 0.65
-heightmap_noise = SubResource("FastNoiseLite_q8vkx")
-create_water = true
-ocean_tile = ExtResource("1_3tupl")
-ocean_noise = SubResource("FastNoiseLite_3udsx")
-ocean_height = -0.4
-ocean_treshold = 0.295
 spawn_villages = true
 map_edge_buffer = 2
 spacing = 6
