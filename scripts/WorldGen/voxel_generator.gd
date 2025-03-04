@@ -1,6 +1,6 @@
 class_name VoxelGenerator
 
-var map : MappingData
+var map : Array[Voxel]
 var map_dict : Dictionary[Vector3i, Vector3]
 const sides = 6
 
@@ -14,7 +14,7 @@ const base_vertices = [
 	Vector3(-0.5, 0.0, -0.866)  # Top-left
 	]
 
-func generate_chunk(_map : MappingData, prism_size : float, height: float) -> Mesh:
+func generate_chunk(_map : Array[Voxel], prism_size : float, height: float) -> Mesh:
 	map = _map
 	var verts = PackedVector3Array()
 	var indices = PackedInt32Array()
@@ -24,12 +24,12 @@ func generate_chunk(_map : MappingData, prism_size : float, height: float) -> Me
 	var surface = SurfaceTool.new()
 	surface.begin(Mesh.PRIMITIVE_TRIANGLES)
 
-	for pos in map.positions:
+	for pos in map:
 		verts.append_array(get_verts(pos.world_position, prism_size, height, surface))
 		map_dict[pos.grid_position] = pos.world_position
 
-	create_uvs(uvs, map.positions.size())
-	build_geometry(indices, map.positions.size())
+	create_uvs(uvs, map.size())
+	build_geometry(indices, map.size())
 	
 	# Create & assign mesh
 	var arrays = []
@@ -48,7 +48,7 @@ func build_geometry(indices: PackedInt32Array, prism_count: int):
 	# Construct edges and faces
 	for prism in range(prism_count):
 		var prism_start = prism * 13  # Each prism has 13 vertices
-		var current_prism = map.positions[prism]
+		var current_prism = map[prism]
 		var neutral_neighbor : Vector3i #Same height neighbor
 		var dirs = WorldMap.get_tile_neighbor_table(current_prism.grid_position.x)
 		

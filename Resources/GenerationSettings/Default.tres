@@ -1,29 +1,16 @@
-[gd_resource type="Resource" script_class="GenerationSettings" load_steps=6 format=3 uid="uid://bulbwto8ivwib"]
+[gd_resource type="Resource" script_class="GenerationSettings" load_steps=3 format=3 uid="uid://bulbwto8ivwib"]
 
 [ext_resource type="Script" uid="uid://cyt7pxd2qvvdw" path="res://scripts/WorldGen/generation_settings.gd" id="1_30d36"]
-[ext_resource type="Script" uid="uid://wm3k7i453bcf" path="res://scripts/WorldGen/biome.gd" id="3_lvfux"]
-[ext_resource type="Resource" uid="uid://dldfjjhoeqrfu" path="res://Resources/Tiles/Grassland.tres" id="4_isbjt"]
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_fvu5l"]
-seed = 1893793770
-frequency = 0.0175
-fractal_gain = 0.48
-
-[sub_resource type="Resource" id="Resource_hvdso"]
-script = ExtResource("3_lvfux")
-tile = ExtResource("4_isbjt")
-weight = 1.0
-metadata/_custom_type_script = "uid://wm3k7i453bcf"
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_od57w"]
 
 [resource]
 script = ExtResource("1_30d36")
-tiles = Array[ExtResource("3_lvfux")]([SubResource("Resource_hvdso")])
-debug = false
-map_seed = 0
 map_shape = 3
 radius = 13
 max_height = 5
-biome_noise = SubResource("FastNoiseLite_fvu5l")
+noise = SubResource("FastNoiseLite_od57w")
+map_seed = 0
 spawn_villages = true
 map_edge_buffer = 2
 spacing = 6

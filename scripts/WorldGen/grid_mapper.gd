@@ -4,10 +4,9 @@ class_name GridMapper
 var settings : GenerationSettings
 
 ## Main entry point, Get all positions to spawn tiles on
-func calculate_map_positions(in_settings: GenerationSettings) -> MappingData:
+func calculate_map_positions(in_settings: GenerationSettings) -> Array[Voxel]:
 	settings = in_settings
-	var map = MappingData.new()
-	var positions : Array[PositionData]
+	var voxels : Array[Voxel]
 
 	## Diamond and Circle also use the rectangular bounds. They carve our their shape from that rectangle
 	## using their individual shape filters 
@@ -15,60 +14,57 @@ func calculate_map_positions(in_settings: GenerationSettings) -> MappingData:
 	match settings.map_shape:
 		0:
 			stagger = false
-			positions = generate_map(hexagonal_bounds(), stagger, hexagonal_buffer_filter)
+			voxels = generate_map(hexagonal_bounds(), stagger, hexagonal_buffer_filter)
 		1:
 			stagger = true
-			positions = generate_map(rectangle_bounds(), stagger, rectangular_buffer_filter)
+			voxels = generate_map(rectangle_bounds(), stagger, rectangular_buffer_filter)
 		2:
 			stagger = true
-			positions = generate_map(rectangle_bounds(), stagger, diamond_buffer_filter, diamond_shape_filter)
+			voxels = generate_map(rectangle_bounds(), stagger, diamond_buffer_filter, diamond_shape_filter)
 		3:
 			stagger = true
-			positions = generate_map(rectangle_bounds(), stagger, circular_buffer_filter, circle_shape_filter)
+			voxels = generate_map(rectangle_bounds(), stagger, circular_buffer_filter, circle_shape_filter)
 
-	map.positions = positions
-	map.noise_data = find_noise_caps(positions)
+	#map.noise_data = find_noise_caps(positions)
 	WorldMap.is_map_staggered = stagger
-	return map
+	return voxels
 
 
-func generate_map(loop_bounds: Callable, stagger: bool, buffer_filter: Callable, shape_filter: Callable = Callable()) -> Array[PositionData]:
-	var map_data: Array[PositionData] = []
-	for c in loop_bounds.call():
-		for r in loop_bounds.call(c):
+func generate_map(bounds: Callable, stagger: bool, buffer_filter: Callable, shape_filter: Callable = Callable()) -> Array[Voxel]:
+	var voxel_array: Array[Voxel] = []
+	for c in bounds.call():
+		for r in bounds.call(c):
 			for h in range(settings.max_height):
 				if shape_filter and not shape_filter.call(c, r):
 					continue
-				if randf() < 0.0:
-					continue
-				var p = Vector3(c, h, r)
-				var pos = generate_position(p, stagger)
-				#modify_position(pos, buffer_filter) #Hills, ocean, buffer
-				map_data.append(pos)
-	return map_data
+				var pos = Vector3(c, h, r) #column, height, row
+				var voxel = generate_voxel(pos, stagger)
+				modify_voxel(voxel, buffer_filter) #Hills, ocean, buffer
+				voxel_array.append(voxel)
+	return voxel_array
 
 
-func generate_position(p, stagger) -> PositionData:
-	var new_pos = PositionData.new()
-	new_pos.world_position = tile_to_world(p, stagger)
-	new_pos.grid_position = Vector3(p.x, p.y, p.z)
+func generate_voxel(pos, stagger) -> Voxel:
+	var new_pos = Voxel.new()
+	new_pos.world_position = tile_to_world(pos, stagger)
+	new_pos.grid_position = Vector3(pos.x, pos.y, pos.z)
 	return new_pos
 
 
 ## Apply ocean noise, hills noise and find buffer tiles
-func modify_position(pos : PositionData, buffer_filter):
-	var c = pos.grid_position.x
-	var r = pos.grid_position.y
-	pos.noise = noise_at_tile(c, r, settings.biome_noise)
+func modify_voxel(voxel : Voxel, buffer_filter):
+	var c = voxel.grid_position.x
+	var r = voxel.grid_position.y
+	#pos.noise = noise_at_tile(c, r, settings.biome_noise)
 	
 	##We prioritize water since hills cannot be created with surrounding ocean anyway
-	if settings.create_water and noise_at_tile(c, r, settings.ocean_noise) > settings.ocean_treshold:
-		pos.water = true
-	elif noise_at_tile(c, r, settings.heightmap_noise) > settings.heightmap_treshold:
-		pos.hill = true
+	#if settings.create_water and noise_at_tile(c, r, settings.ocean_noise) > settings.ocean_treshold:
+		#pos.water = true
+	#elif noise_at_tile(c, r, settings.heightmap_noise) > settings.heightmap_treshold:
+		#pos.hill = true
 
 	if buffer_filter.call(c, r, settings.radius - settings.map_edge_buffer):
-		pos.buffer = true
+		voxel.buffer = true
 
 
 func tile_to_world(pos, stagger: bool) -> Vector3:
@@ -76,7 +72,7 @@ func tile_to_world(pos, stagger: bool) -> Vector3:
 	var x: float = 3.0 / 2.0 * pos.x  # Horizontal spacing
 	var z: float
 	if stagger:
-		z = pos.z * SQRT3 + ((int(pos.x) % 2 + 2) % 2) * (SQRT3 / 2) #fmod(pos.x, 2.0) + 2 % 2 * (SQRT3 / 2.0)
+		z = pos.z * SQRT3 + ((int(pos.x) % 2 + 2) % 2) * (SQRT3 / 2)
 	else:
 		z = (pos.z * SQRT3 + (int(pos.x) * SQRT3 / 2))
 	return Vector3(x * settings.tile_size, pos.y, z * settings.tile_size)

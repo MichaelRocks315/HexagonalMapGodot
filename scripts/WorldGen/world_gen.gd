@@ -3,11 +3,11 @@ extends Node
 # Dependencies
 @export var settings : GenerationSettings
 @export_category("Dependencies")
-@export var object_placer : ObjectPlacer
+#@export var object_placer : ObjectPlacer
 @export var tile_parent : Node3D
 
 # Test-only!
-@export var pfinder : Pathfinder
+#@export var pfinder : Pathfinder
 @export var proto_unit : PackedScene
 @export var box : Node3D
 
@@ -25,25 +25,25 @@ func _ready() -> void:
 func init_seed():
 	if settings.map_seed == 0 or settings.map_seed == null:
 		print("Randomizing seed")
-		settings.biome_noise.seed = randi() #New map_seed for this generation
+		settings.noise.seed = randi() #New map_seed for this generation
 	else:
-		settings.biome_noise.seed = settings.map_seed
+		settings.noise.seed = settings.map_seed
 
 
 ## placeholder functionality for placing units onto the map
-func create_starting_units(count : int):
-	var safety_count = 0 #Add safety counter in case no valid tiles
-	## Test pathfinder
-	while count > 0 and safety_count < 50:
-		var r_tile : Tile = WorldMap.map.pick_random()
-		if r_tile.mesh_data.type == Tile.biome_type.Ocean or r_tile.occupier != null:
-			safety_count += 1
-			continue
-		var unit : Unit = proto_unit.instantiate()
-		add_child(unit)
-		unit.place_unit(r_tile.position, r_tile)
-		unit.occupy_tile(r_tile)
-		count -= 1
+#func create_starting_units(count : int):
+	#var safety_count = 0 #Add safety counter in case no valid tiles
+	### Test pathfinder
+	#while count > 0 and safety_count < 50:
+		#var r_tile : Tile = WorldMap.map.pick_random()
+		#if r_tile.mesh_data.type == Tile.biome_type.Ocean or r_tile.occupier != null:
+			#safety_count += 1
+			#continue
+		#var unit : Unit = proto_unit.instantiate()
+		#add_child(unit)
+		#unit.place_unit(r_tile.position, r_tile)
+		#unit.occupy_tile(r_tile)
+		#count -= 1
 
 
 ## Start of world_generation, time each step
@@ -53,12 +53,12 @@ func generate_world():
 	
 	## Get all positions through the gridmapper
 	var mapper = GridMapper.new()
-	var positions = mapper.calculate_map_positions(settings)
+	var voxels : Array[Voxel] = mapper.calculate_map_positions(settings)
 	interval["Calculate Map Positions -- "] = Time.get_ticks_msec()
 	
 	var mat = load("res://assets/Materials/triplanar_mat.tres")
 	var vg = VoxelGenerator.new()
-	var chunk = vg.generate_chunk(positions, 1, 1)
+	var chunk = vg.generate_chunk(voxels, 1, 1)
 	var mesh_instance = MeshInstance3D.new()
 	mesh_instance.material_override = mat
 	mesh_instance.mesh = chunk
@@ -108,11 +108,11 @@ func print_generation_results(start : float, dict : Dictionary):
 
 
 ## Ignore buffer and ocean to return for object placer
-func get_placeable_tiles() -> Array[Tile]:
-	var placeable_tiles : Array[Tile] = []
-	for tile : Tile in WorldMap.map:
-		if tile.pos_data.buffer or not tile.placeable:
-			continue
-		placeable_tiles.append(tile)
-	print(str(placeable_tiles.size()) + " placeable tiles")
-	return placeable_tiles
+#func get_placeable_tiles() -> Array[Tile]:
+	#var placeable_tiles : Array[Tile] = []
+	#for tile : Tile in WorldMap.map:
+		#if tile.pos_data.buffer or not tile.placeable:
+			#continue
+		#placeable_tiles.append(tile)
+	#print(str(placeable_tiles.size()) + " placeable tiles")
+	#return placeable_tiles

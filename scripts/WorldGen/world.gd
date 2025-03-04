@@ -1,6 +1,6 @@
 extends Node
 
-var map : Array[Tile]
+#var map : Array[Tile]
 var map_as_dict : Dictionary = {}
 var is_map_staggered = false
 
@@ -22,7 +22,6 @@ const NEIGHBOR_DIRECTIONS_EVEN: Array[Vector2i] = [
 	Vector2i(-1, -1), # Northwest
 	Vector2i(0, -1)   # West
 ]
-
 const NEIGHBOR_DIRECTIONS_ODD: Array[Vector2i] = [
 	# For odd rows (x % 2 == 1)
 	Vector2i(1, 0),   # Northeast
@@ -32,7 +31,6 @@ const NEIGHBOR_DIRECTIONS_ODD: Array[Vector2i] = [
 	Vector2i(-1, 0),  # Northwest
 	Vector2i(0, -1)   # West
 ]
-
 var neighbor_positions = HEXAGONAL_NEIGHBOR_DIRECTIONS
 
 # Distances to neighbors assuming tile_size of 1
@@ -47,25 +45,25 @@ var neighbor_positions = HEXAGONAL_NEIGHBOR_DIRECTIONS
 
 
 func set_map(all_tiles):
-	map = all_tiles
+	#map = all_tiles
 	for t in all_tiles:
 		map_as_dict[Vector2(t.pos_data.grid_position.x, t.pos_data.grid_position.y)] = t
 
 
 ## Handy function for finding all neigbors of a tile
-func get_tile_neighbors(tile : Tile) -> Array[Tile]:
-	var neighbors : Array[Tile] = []
-	if is_map_staggered:
-		if tile.pos_data.grid_position.x % 2 == 0:
-			neighbor_positions = NEIGHBOR_DIRECTIONS_EVEN
-		else:
-			neighbor_positions = NEIGHBOR_DIRECTIONS_ODD
-			
-	for direction in neighbor_positions:
-		var neighbor_coords = Vector2(tile.pos_data.grid_position.x + int(direction.x), tile.pos_data.grid_position.y + int(direction.y)) 
-		if neighbor_coords in map_as_dict:
-			neighbors.append(map_as_dict[neighbor_coords])
-	return neighbors
+#func get_tile_neighbors(tile : Tile) -> Array[Tile]:
+	#var neighbors : Array[Tile] = []
+	#if is_map_staggered:
+		#if tile.pos_data.grid_position.x % 2 == 0:
+			#neighbor_positions = NEIGHBOR_DIRECTIONS_EVEN
+		#else:
+			#neighbor_positions = NEIGHBOR_DIRECTIONS_ODD
+			#
+	#for direction in neighbor_positions:
+		#var neighbor_coords = Vector2(tile.pos_data.grid_position.x + int(direction.x), tile.pos_data.grid_position.y + int(direction.y)) 
+		#if neighbor_coords in map_as_dict:
+			#neighbors.append(map_as_dict[neighbor_coords])
+	#return neighbors
 
 
 func get_tile_neighbor_table(row) -> Array[Vector2i]:
