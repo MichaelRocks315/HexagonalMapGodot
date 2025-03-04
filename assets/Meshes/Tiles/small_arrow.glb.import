@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://mvr7upnnqicj"
-path="res://.godot/imported/edge_gapfill.glb-1c2d70b362aed7cd40f7dc811be4549d.scn"
+uid="uid://cp4xbekaoe3nc"
+path="res://.godot/imported/small_arrow.glb-6725f7caeb86bdb8cead0047d27c725a.scn"
 
 [deps]
 
-source_file="res://assets/Meshes/Tiles/edge_gapfill.glb"
-dest_files=["res://.godot/imported/edge_gapfill.glb-1c2d70b362aed7cd40f7dc811be4549d.scn"]
+source_file="res://assets/Meshes/Tiles/small_arrow.glb"
+dest_files=["res://.godot/imported/small_arrow.glb-6725f7caeb86bdb8cead0047d27c725a.scn"]
 
 [params]
 
