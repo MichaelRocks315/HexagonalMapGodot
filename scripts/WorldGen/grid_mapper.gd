@@ -3,7 +3,6 @@ class_name GridMapper
 
 var settings : GenerationSettings
 
-
 ## Main entry point, Get all positions to spawn tiles on
 func calculate_map_positions(in_settings: GenerationSettings) -> MappingData:
 	settings = in_settings
