@@ -1,7 +1,7 @@
 class_name VoxelGenerator
 
 var map : Array[Voxel]
-var map_dict : Dictionary[Vector3i, Vector3]
+var map_dict : Dictionary[Vector3i, Voxel]
 const sides = 6
 
 # Define the base hexagon
@@ -24,11 +24,12 @@ func generate_chunk(_map : Array[Voxel], prism_size : float, height: float) -> M
 	var surface = SurfaceTool.new()
 	surface.begin(Mesh.PRIMITIVE_TRIANGLES)
 
-	for pos in map:
-		verts.append_array(get_verts(pos.world_position, prism_size, height, surface))
-		map_dict[pos.grid_position] = pos.world_position
+	for voxel in map:
+		verts.append_array(get_verts(voxel.world_position, prism_size, height, surface))
+		map_dict[voxel.grid_position] = voxel
 
 	create_uvs(uvs, map.size())
+	correct_geometry()
 	build_geometry(indices, map.size())
 	
 	# Create & assign mesh
@@ -43,21 +44,32 @@ func generate_chunk(_map : Array[Voxel], prism_size : float, height: float) -> M
 	surface.generate_normals()
 	surface.generate_tangents()
 	return surface.commit()
+	
+func correct_geometry():
+	##Proto-code, mark as air if voxel underneath is air
+	for prism in map:
+		var bottom_neighbor = prism.grid_position
+		bottom_neighbor.y -= 1
+		var n : Voxel = map_dict.get(bottom_neighbor)
+		if n:
+			if n.type == Voxel.biome.AIR:
+				prism.type = Voxel.biome.AIR
+
 
 func build_geometry(indices: PackedInt32Array, prism_count: int):
 	# Construct edges and faces
 	for prism in range(prism_count):
 		var prism_start = prism * 13  # Each prism has 13 vertices
-		var current_prism = map[prism]
+		var current_prism : Voxel = map[prism]
 		var neutral_neighbor : Vector3i #Same height neighbor
 		var dirs = WorldMap.get_tile_neighbor_table(current_prism.grid_position.x)
-		
+
 		## Construct sides
 		for i in range(WorldMap.HEXAGONAL_NEIGHBOR_DIRECTIONS.size()):
 			neutral_neighbor = current_prism.grid_position
 			neutral_neighbor.x += dirs[i].x 
 			neutral_neighbor.z += dirs[i].y
-			if not map_dict.has(neutral_neighbor):
+			if draw_face(current_prism, neutral_neighbor):
 				# First triangle of the quad (base to top)
 				indices.append(prism_start + i)        # Bottom vertex
 				indices.append(prism_start + ((i + 1) % sides))   # Next bottom vertex
@@ -71,7 +83,7 @@ func build_geometry(indices: PackedInt32Array, prism_count: int):
 		## Construct top
 		var top_neighbor = current_prism.grid_position
 		top_neighbor.y += 1
-		if not map_dict.has(top_neighbor):
+		if draw_face(current_prism, top_neighbor): #if not map_dict.has(top_neighbor):
 			for i in range(sides):
 				# Add triangles for the top face
 				indices.append(prism_start + sides + i)           # Top vertex
@@ -80,13 +92,14 @@ func build_geometry(indices: PackedInt32Array, prism_count: int):
 
 
 func create_uvs(uvs: PackedVector2Array, prism_count: int) -> void:
-	var tiles_per_row = 4  # Match your texture atlas layout
-	var tile_size = 1.0 / tiles_per_row
+	var atlas_size = 4
+	var tile_size = 1.0 / atlas_size
+	
 	for prism in prism_count:
-		# Bottom vertices (sides) - Planar projection
+		# Bottom vertices
 		for i in sides:
 			uvs.append(Vector2(i * tile_size, 0.0))
-		# Top vertices (radial)
+		# Top vertices
 		for i in sides:
 			var angle = (float(i)/6.0) * 2.0 * PI
 			uvs.append(Vector2(0.5 + 0.5 * cos(angle), 0.5 + 0.5 * sin(angle)))
@@ -115,3 +128,16 @@ func get_verts(position : Vector3, size : float, height: float, surface) -> Pack
 	verts.append(position + top) # Top center vertex
 	
 	return verts
+
+
+func draw_face(current_voxel : Voxel, neighbor_pos : Vector3i) -> bool:
+	if current_voxel.type == Voxel.biome.AIR:
+		return false
+		
+	var neighbor = map_dict.get(neighbor_pos)
+	if neighbor:
+		if neighbor.type == Voxel.biome.AIR:
+			return true
+		else:
+			return false
+	return true

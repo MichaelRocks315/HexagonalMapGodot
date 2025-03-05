@@ -56,7 +56,7 @@ func generate_world():
 	var voxels : Array[Voxel] = mapper.calculate_map_positions(settings)
 	interval["Calculate Map Positions -- "] = Time.get_ticks_msec()
 	
-	var mat = load("res://assets/Materials/triplanar_mat.tres")
+	var mat = load("res://assets/Materials/voxel_mat.tres")
 	var vg = VoxelGenerator.new()
 	var chunk = vg.generate_chunk(voxels, 1, 1)
 	var mesh_instance = MeshInstance3D.new()

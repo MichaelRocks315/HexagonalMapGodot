@@ -57,6 +57,12 @@ func modify_voxel(voxel : Voxel, buffer_filter):
 	var r = voxel.grid_position.y
 	voxel.noise = noise_at_tile(voxel.grid_position, settings.noise)
 	
+	# Bottom layer must always be solid
+	if voxel.grid_position.y != 0:
+		if voxel.noise < 0: ## Transparancy test
+			voxel.type = Voxel.biome.AIR
+
+		
 	##We prioritize water since hills cannot be created with surrounding ocean anyway
 	#if settings.create_water and noise_at_tile(c, r, settings.ocean_noise) > settings.ocean_treshold:
 		#pos.water = true
@@ -81,7 +87,8 @@ func tile_to_world(pos, stagger: bool) -> Vector3:
 ## Get noise at position of tile
 func noise_at_tile(grid_position : Vector3, texture : FastNoiseLite) -> float:
 	var value : float = texture.get_noise_3dv(grid_position)
-	return (value + 1) / 2 # normalize [0, 1]
+	return value
+	#return (value + 1) / 2 # normalize [0, 1]
 
 
 func find_noise_caps(positions) -> Vector2:

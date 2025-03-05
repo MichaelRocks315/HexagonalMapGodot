@@ -3,12 +3,13 @@
 [ext_resource type="Script" uid="uid://cyt7pxd2qvvdw" path="res://scripts/WorldGen/generation_settings.gd" id="1_30d36"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_od57w"]
+frequency = 0.0324
 
 [resource]
 script = ExtResource("1_30d36")
 map_shape = 3
-radius = 10
-max_height = 1
+radius = 30
+max_height = 8
 noise = SubResource("FastNoiseLite_od57w")
 map_seed = 0
 spawn_villages = true
