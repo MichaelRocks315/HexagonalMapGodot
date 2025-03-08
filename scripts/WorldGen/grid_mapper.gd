@@ -53,8 +53,11 @@ func generate_voxel(pos, stagger) -> Voxel:
 ## Apply ocean noise, hills noise and find buffer tiles
 func modify_voxel(voxel : Voxel, buffer_filter):
 	var c = voxel.grid_position.x
-	var r = voxel.grid_position.y
+	var r = voxel.grid_position.z
 	voxel.noise = noise_at_tile(voxel.grid_position, WorldMap.world_settings.noise)
+	
+	if buffer_filter.call(c, r, WorldMap.world_settings.radius - WorldMap.world_settings.map_edge_buffer):
+		voxel.buffer = true
 	
 	# Bottom layer must always be solid
 	if voxel.grid_position.y != 0:
@@ -68,8 +71,6 @@ func modify_voxel(voxel : Voxel, buffer_filter):
 	#elif noise_at_tile(c, r, settings.heightmap_noise) > settings.heightmap_treshold:
 		#pos.hill = true
 
-	if buffer_filter.call(c, r, WorldMap.world_settings.radius - WorldMap.world_settings.map_edge_buffer):
-		voxel.buffer = true
 
 
 func tile_to_world(pos, stagger: bool) -> Vector3:

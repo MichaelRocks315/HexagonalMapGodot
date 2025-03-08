@@ -12,14 +12,14 @@ domain_warp_frequency = -0.01
 
 [resource]
 script = ExtResource("1_30d36")
-map_shape = 0
-radius = 50
-max_height = 20
+map_shape = 1
+radius = 20
+max_height = 5
 noise = SubResource("FastNoiseLite_od57w")
 terrace_steps = 3
 terrace = true
 terrace_edges = false
 map_seed = 0
 spawn_villages = true
-map_edge_buffer = 2
+map_edge_buffer = 4
 spacing = 6

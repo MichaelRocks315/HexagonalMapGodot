@@ -60,9 +60,10 @@ func correct_geometry() -> int:
 	var removed = 0
 
 	for prism in map:
-		if prism.buffer:
-			if prism.grid_position.y > 0:
-				prism.type = Voxel.biome.AIR
+		if not prism.buffer:
+			#if prism.grid_position.y > 0:
+			prism.type = Voxel.biome.AIR
+			continue
 		
 		if prism.type == Voxel.biome.AIR:
 			continue
