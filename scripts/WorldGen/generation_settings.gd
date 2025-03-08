@@ -10,6 +10,7 @@ var tile_size : float = 1 #Size scalar
 @export_range(1, 20, 1) var max_height: int = 3
 @export var noise : FastNoiseLite
 
+@export_range(0, 4) var terrace_steps = 1
 @export var terrace = true
 @export var terrace_edges = false
 

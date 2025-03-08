@@ -3,7 +3,8 @@
 [ext_resource type="Script" uid="uid://cyt7pxd2qvvdw" path="res://scripts/WorldGen/generation_settings.gd" id="1_30d36"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_od57w"]
-frequency = 0.08
+seed = 1000
+frequency = 0.0851
 fractal_lacunarity = 1.91
 domain_warp_type = 2
 domain_warp_amplitude = 29.5
@@ -12,9 +13,10 @@ domain_warp_frequency = -0.01
 [resource]
 script = ExtResource("1_30d36")
 map_shape = 0
-radius = 40
+radius = 50
 max_height = 20
 noise = SubResource("FastNoiseLite_od57w")
+terrace_steps = 3
 terrace = true
 terrace_edges = false
 map_seed = 0

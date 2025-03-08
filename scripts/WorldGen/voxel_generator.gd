@@ -58,12 +58,9 @@ func generate_chunk(_map : Array[Voxel], prism_size : float, height: float, cube
 func correct_geometry() -> int:
 	##Proto-code
 	var removed = 0
-	var missing = 0
-	var buffer = 0
-	
+
 	for prism in map:
 		if prism.buffer:
-			buffer += 1
 			if prism.grid_position.y > 0:
 				prism.type = Voxel.biome.AIR
 		
@@ -89,14 +86,13 @@ func correct_geometry() -> int:
 			neighbor_pos = prism.grid_position
 			neighbor_pos.x += dir.x
 			neighbor_pos.z += dir.y
-			neighbor_pos.y -= 1
+			neighbor_pos.y -= WorldMap.world_settings.terrace_steps
 			var v : Voxel = map_dict.get(neighbor_pos)
 			if not v:
 				if WorldMap.world_settings.terrace_edges:
 					if prism.grid_position.y != 0:
 						prism.type = prism.biome.AIR
-
-				missing += 1
+						removed += 1
 				continue
 			#Check below
 			if v.type == Voxel.biome.AIR:
@@ -105,8 +101,6 @@ func correct_geometry() -> int:
 				break
 				
 	#print("Corrected Voxels: ", removed)
-	#print("Missing Voxels: ", missing)
-	#print("Buffer Voxels: ", buffer)
 	return removed
 
 
