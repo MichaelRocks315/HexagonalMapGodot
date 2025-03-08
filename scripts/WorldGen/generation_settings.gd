@@ -11,8 +11,7 @@ var tile_size : float = 1 #Size scalar
 @export var noise : FastNoiseLite
 
 @export_range(0, 4) var terrace_steps = 1
-@export var terrace = true
-@export var terrace_edges = false
+@export var flat_buffer = true
 
 @export var map_seed : int
 

@@ -56,18 +56,22 @@ func generate_chunk(_map : Array[Voxel], prism_size : float, height: float, cube
 
 
 func correct_geometry() -> int:
-	##Proto-code
+	var settings = WorldMap.world_settings
 	var removed = 0
 
+	#Adjust all solid voxels
 	for prism in map:
-		if not prism.buffer:
-			#if prism.grid_position.y > 0:
-			prism.type = Voxel.biome.AIR
-			continue
-		
 		if prism.type == Voxel.biome.AIR:
 			continue
-		# mark as air if voxel underneath is air
+			
+		# Flatten buffer
+		if prism.buffer and settings.flat_buffer:
+			if prism.grid_position.y > 0:
+				prism.type = Voxel.biome.AIR
+				removed += 1
+				continue
+
+		# Ensure no overhang
 		var neighbor_pos : Vector3i = prism.grid_position
 		neighbor_pos.y -= 1
 		if neighbor_pos.y < 1:
@@ -79,29 +83,21 @@ func correct_geometry() -> int:
 				removed += 1
 				continue
 
-		# mark as air if diagonal voxels underneath are air
-		if not WorldMap.world_settings.terrace:
+		# Ensure terrace
+		if settings.terrace_steps < 1:
 			continue
 		var table = WorldMap.get_tile_neighbor_table(prism.grid_position.x)
 		for dir in table:
 			neighbor_pos = prism.grid_position
 			neighbor_pos.x += dir.x
 			neighbor_pos.z += dir.y
-			neighbor_pos.y -= WorldMap.world_settings.terrace_steps
+			neighbor_pos.y -= settings.terrace_steps
 			var v : Voxel = map_dict.get(neighbor_pos)
-			if not v:
-				if WorldMap.world_settings.terrace_edges:
-					if prism.grid_position.y != 0:
-						prism.type = prism.biome.AIR
-						removed += 1
-				continue
-			#Check below
-			if v.type == Voxel.biome.AIR:
-				prism.type = Voxel.biome.AIR
-				removed += 1
-				break
-				
-	#print("Corrected Voxels: ", removed)
+			if v:
+				if v.type == Voxel.biome.AIR:
+					prism.type = Voxel.biome.AIR
+					removed += 1
+					break
 	return removed
 
 
