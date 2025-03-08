@@ -1,6 +1,7 @@
-[gd_resource type="Resource" script_class="GenerationSettings" load_steps=3 format=3 uid="uid://bulbwto8ivwib"]
+[gd_resource type="Resource" script_class="GenerationSettings" load_steps=4 format=3 uid="uid://bulbwto8ivwib"]
 
 [ext_resource type="Script" uid="uid://cyt7pxd2qvvdw" path="res://scripts/WorldGen/generation_settings.gd" id="1_30d36"]
+[ext_resource type="Material" uid="uid://bqpqgl2qyphv7" path="res://assets/Materials/triplanar_mat.tres" id="1_ojq8q"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_od57w"]
 seed = 1000
@@ -12,12 +13,12 @@ domain_warp_frequency = -0.01
 
 [resource]
 script = ExtResource("1_30d36")
-map_shape = 3
-radius = 20
-max_height = 5
+map_shape = 0
+radius = 30
+max_height = 6
+material = ExtResource("1_ojq8q")
 noise = SubResource("FastNoiseLite_od57w")
 terrace_steps = 1
-terrace = true
 flat_buffer = true
 map_seed = 0
 spawn_villages = false
