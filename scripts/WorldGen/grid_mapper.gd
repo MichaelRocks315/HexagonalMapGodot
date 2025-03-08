@@ -25,6 +25,7 @@ func calculate_map_positions(in_settings: GenerationSettings) -> Array[Voxel]:
 			stagger = true
 			voxels = generate_map(rectangle_bounds(), stagger, circular_buffer_filter, circle_shape_filter)
 
+	print("Created ", voxels.size(), " positions")
 	#map.noise_data = find_noise_caps(positions)
 	WorldMap.is_map_staggered = stagger
 	return voxels

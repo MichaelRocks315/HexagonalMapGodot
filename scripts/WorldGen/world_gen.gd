@@ -4,7 +4,6 @@ extends Node
 @export var settings : GenerationSettings
 @export_category("Dependencies")
 #@export var object_placer : ObjectPlacer
-@export var tile_parent : Node3D
 
 # Test-only!
 #@export var pfinder : Pathfinder
@@ -58,12 +57,13 @@ func generate_world():
 	
 	var mat = load("res://assets/Materials/voxel_mat.tres")
 	var vg = VoxelGenerator.new()
-	var chunk = vg.generate_chunk(voxels, 1, 1)
-	var mesh_instance = MeshInstance3D.new()
-	mesh_instance.material_override = mat
-	mesh_instance.mesh = chunk
-	add_child(mesh_instance)
+	var chunk = vg.generate_chunk(voxels, 1, 1, box)
+	var mesh = MeshInstance3D.new()
+	mesh.material_override = mat
+	mesh.mesh = chunk
+	add_child(mesh)
 	interval["Create Voxel Mesh -- "] = Time.get_ticks_msec()
+	
 	#
 	### Create the tiles
 	#var factory = TileFactory.new()

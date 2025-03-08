@@ -42,7 +42,7 @@ script = ExtResource("1_1xefc")
 movespeed = 9
 zoom = Vector2(40, 90)
 height = Vector2(-10, 40)
-rot = Vector2(-40, -90)
+rot = Vector2(-20, -90)
 sun = NodePath("../../Scene/DirectionalLight3D")
 
 [node name="Scene" type="Node3D" parent="."]
@@ -53,10 +53,9 @@ camera_attributes = SubResource("CameraAttributesPractical_1lvu4")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Scene"]
 transform = Transform3D(0.151402, -0.877164, 0.455698, 0.0622852, 0.468562, 0.881232, -0.986508, -0.105037, 0.125576, 0, 4.09007, 0)
+shadow_enabled = true
 directional_shadow_mode = 0
 sky_mode = 1
-
-[node name="TileParent" type="Node3D" parent="Scene"]
 
 [node name="BGCanvasLayer" type="CanvasLayer" parent="."]
 layer = -100
@@ -76,10 +75,9 @@ stretch_mode = 4
 
 [node name="Builder" type="Node" parent="."]
 
-[node name="WorldGenerator" type="Node" parent="Builder" node_paths=PackedStringArray("tile_parent", "box")]
+[node name="WorldGenerator" type="Node" parent="Builder" node_paths=PackedStringArray("box")]
 script = ExtResource("3_davhy")
 settings = ExtResource("4_58wc8")
-tile_parent = NodePath("../../Scene/TileParent")
 proto_unit = ExtResource("8_r58of")
 box = NodePath("../../CSGBox3D")
 

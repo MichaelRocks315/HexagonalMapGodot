@@ -3,6 +3,7 @@ class_name VoxelGenerator
 var map : Array[Voxel]
 var map_dict : Dictionary[Vector3i, Voxel]
 const sides = 6
+var debug_cube : Node3D
 
 # Define the base hexagon
 const base_vertices = [
@@ -14,8 +15,9 @@ const base_vertices = [
 	Vector3(-0.5, 0.0, -0.866)  # Top-left
 	]
 
-func generate_chunk(_map : Array[Voxel], prism_size : float, height: float) -> Mesh:
+func generate_chunk(_map : Array[Voxel], prism_size : float, height: float, cube) -> Mesh:
 	map = _map
+	debug_cube = cube
 	var verts = PackedVector3Array()
 	var indices = PackedInt32Array()
 	var uvs = PackedVector2Array()
@@ -29,7 +31,9 @@ func generate_chunk(_map : Array[Voxel], prism_size : float, height: float) -> M
 		map_dict[voxel.grid_position] = voxel
 
 	create_uvs(uvs, map.size())
-	correct_geometry()
+	var c = correct_geometry()
+	while c > 0:
+		c = correct_geometry()
 	build_geometry(indices, map.size())
 	
 	# Create & assign mesh
@@ -44,16 +48,58 @@ func generate_chunk(_map : Array[Voxel], prism_size : float, height: float) -> M
 	surface.generate_normals()
 	surface.generate_tangents()
 	return surface.commit()
+
+
+func correct_geometry() -> int:
+	##Proto-code
+	var removed = 0
+	var missing = 0
+	var buffer = 0
 	
-func correct_geometry():
-	##Proto-code, mark as air if voxel underneath is air
 	for prism in map:
-		var bottom_neighbor = prism.grid_position
-		bottom_neighbor.y -= 1
-		var n : Voxel = map_dict.get(bottom_neighbor)
-		if n:
-			if n.type == Voxel.biome.AIR:
+		if prism.buffer:
+			buffer += 1
+			if prism.grid_position.y > 0:
 				prism.type = Voxel.biome.AIR
+		
+		if prism.type == Voxel.biome.AIR:
+			continue
+		# mark as air if voxel underneath is air
+		var neighbor_pos : Vector3i = prism.grid_position
+		neighbor_pos.y -= 1
+		if neighbor_pos.y < 1:
+			continue
+		var bottom_neighbor : Voxel = map_dict.get(neighbor_pos)
+		if bottom_neighbor:
+			if bottom_neighbor.type == Voxel.biome.AIR:
+				prism.type = Voxel.biome.AIR
+				removed += 1
+				continue
+
+		# mark as air if diagonal voxels underneath are air
+		var table = WorldMap.get_tile_neighbor_table(prism.grid_position.x)
+		for dir in table:
+			neighbor_pos = prism.grid_position
+			neighbor_pos.x += dir.x
+			neighbor_pos.z += dir.y
+			neighbor_pos.y -= 1
+			var v : Voxel = map_dict.get(neighbor_pos)
+			if not v:
+				#if prism.grid_position.y != 0:
+				#	prism.type = Voxel.biome.AIR
+				#	removed += 1
+				missing += 1
+				continue
+			#Check below
+			if v.type == Voxel.biome.AIR:
+				prism.type = Voxel.biome.AIR
+				removed += 1
+				break
+				
+	print("Corrected Voxels: ", removed)
+	print("Missing Voxels: ", missing)
+	print("Buffer Voxels: ", buffer)
+	return removed
 
 
 func build_geometry(indices: PackedInt32Array, prism_count: int):
@@ -63,13 +109,16 @@ func build_geometry(indices: PackedInt32Array, prism_count: int):
 		var current_prism : Voxel = map[prism]
 		var neutral_neighbor : Vector3i #Same height neighbor
 		var dirs = WorldMap.get_tile_neighbor_table(current_prism.grid_position.x)
+		
+		if current_prism.type == Voxel.biome.AIR:
+			continue
 
 		## Construct sides
 		for i in range(WorldMap.HEXAGONAL_NEIGHBOR_DIRECTIONS.size()):
 			neutral_neighbor = current_prism.grid_position
 			neutral_neighbor.x += dirs[i].x 
 			neutral_neighbor.z += dirs[i].y
-			if draw_face(current_prism, neutral_neighbor):
+			if draw_face(neutral_neighbor):
 				# First triangle of the quad (base to top)
 				indices.append(prism_start + i)        # Bottom vertex
 				indices.append(prism_start + ((i + 1) % sides))   # Next bottom vertex
@@ -83,7 +132,7 @@ func build_geometry(indices: PackedInt32Array, prism_count: int):
 		## Construct top
 		var top_neighbor = current_prism.grid_position
 		top_neighbor.y += 1
-		if draw_face(current_prism, top_neighbor): #if not map_dict.has(top_neighbor):
+		if draw_face(top_neighbor): #if not map_dict.has(top_neighbor):
 			for i in range(sides):
 				# Add triangles for the top face
 				indices.append(prism_start + sides + i)           # Top vertex
@@ -130,10 +179,7 @@ func get_verts(position : Vector3, size : float, height: float, surface) -> Pack
 	return verts
 
 
-func draw_face(current_voxel : Voxel, neighbor_pos : Vector3i) -> bool:
-	if current_voxel.type == Voxel.biome.AIR:
-		return false
-		
+func draw_face(neighbor_pos : Vector3i) -> bool:
 	var neighbor = map_dict.get(neighbor_pos)
 	if neighbor:
 		if neighbor.type == Voxel.biome.AIR:

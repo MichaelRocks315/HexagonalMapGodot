@@ -1,5 +1,5 @@
 class_name Voxel
-enum biome {GRASS, SAND, WATER, ICE, STONE, AIR}
+enum biome {GRASS, SAND, WATER, ICE, STONE, AIR, DEBUG}
 
 var grid_position : Vector3i
 var world_position : Vector3
