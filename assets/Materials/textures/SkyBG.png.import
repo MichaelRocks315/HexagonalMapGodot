@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dvbkqw12i4obk"
-path="res://.godot/imported/SkyBG.png-265476478324f82b39f1231741ef71f4.ctex"
+path="res://.godot/imported/SkyBG.png-17d6e769bedabda4e8e1d9d3acf73e5b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Materials/SkyBG.png"
-dest_files=["res://.godot/imported/SkyBG.png-265476478324f82b39f1231741ef71f4.ctex"]
+source_file="res://assets/Materials/textures/SkyBG.png"
+dest_files=["res://.godot/imported/SkyBG.png-17d6e769bedabda4e8e1d9d3acf73e5b.ctex"]
 
 [params]
 

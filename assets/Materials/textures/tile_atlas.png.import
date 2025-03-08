@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ikkvaxuxtshh"
-path.s3tc="res://.godot/imported/seamless-textured-grass-natural-grass-pattern_172107-1308.jpg-6275a3c9c3b2734cf6bfe0f3337a292e.s3tc.ctex"
+uid="uid://dftavov4guobx"
+path.s3tc="res://.godot/imported/tile_atlas.png-6e5410b3b697fdddfbb010c21cf03c34.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/seamless-textured-grass-natural-grass-pattern_172107-1308.jpg"
-dest_files=["res://.godot/imported/seamless-textured-grass-natural-grass-pattern_172107-1308.jpg-6275a3c9c3b2734cf6bfe0f3337a292e.s3tc.ctex"]
+source_file="res://assets/Materials/textures/tile_atlas.png"
+dest_files=["res://.godot/imported/tile_atlas.png-6e5410b3b697fdddfbb010c21cf03c34.s3tc.ctex"]
 
 [params]
 

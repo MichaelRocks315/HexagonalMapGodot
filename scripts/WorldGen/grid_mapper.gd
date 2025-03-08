@@ -1,15 +1,17 @@
 extends Object
 class_name GridMapper
 
+var settings : GenerationSettings
 
 ## Main entry point, Get all positions to spawn tiles on
 func calculate_map_positions() -> Array[Voxel]:
 	var voxels : Array[Voxel]
+	settings = WorldMap.world_settings
 
 	## Diamond and Circle also use the rectangular bounds. They carve our their shape from that rectangle
 	## using their individual shape filters 
 	var stagger : bool
-	match WorldMap.world_settings.map_shape:
+	match settings.map_shape:
 		0:
 			stagger = false
 			voxels = generate_map(hexagonal_bounds(), stagger, hexagonal_buffer_filter)
@@ -33,7 +35,7 @@ func generate_map(bounds: Callable, stagger: bool, buffer_filter: Callable, shap
 	var voxel_array: Array[Voxel] = []
 	for c in bounds.call():
 		for r in bounds.call(c):
-			for h in range(WorldMap.world_settings.max_height):
+			for h in range(settings.max_height):
 				if shape_filter and not shape_filter.call(c, r):
 					continue
 				var pos = Vector3(c, h, r) #column, height, row
@@ -54,9 +56,9 @@ func generate_voxel(pos, stagger) -> Voxel:
 func modify_voxel(voxel : Voxel, buffer_filter):
 	var c = voxel.grid_position.x
 	var r = voxel.grid_position.z
-	voxel.noise = noise_at_tile(voxel.grid_position, WorldMap.world_settings.noise)
+	voxel.noise = noise_at_tile(voxel.grid_position, settings.noise)
 	
-	if buffer_filter.call(c, r, WorldMap.world_settings.radius - WorldMap.world_settings.map_edge_buffer):
+	if buffer_filter.call(c, r, settings.radius - settings.map_edge_buffer):
 		voxel.buffer = true
 	
 	# Bottom layer must always be solid
@@ -81,7 +83,7 @@ func tile_to_world(pos, stagger: bool) -> Vector3:
 		z = pos.z * SQRT3 + ((int(pos.x) % 2 + 2) % 2) * (SQRT3 / 2)
 	else:
 		z = (pos.z * SQRT3 + (int(pos.x) * SQRT3 / 2))
-	return Vector3(x * WorldMap.world_settings.tile_size, pos.y, z * WorldMap.world_settings.tile_size)
+	return Vector3(x * settings.tile_size, pos.y, z * settings.tile_size)
 
 
 ## Get noise at position of tile
@@ -107,14 +109,14 @@ func find_noise_caps(positions) -> Vector2:
 func hexagonal_bounds() -> Callable:
 	return func(col = null):
 		if col == null:
-			return range(-WorldMap.world_settings.radius, WorldMap.world_settings.radius + 1)
+			return range(-settings.radius, settings.radius + 1)
 		else:
-			return range(max(-WorldMap.world_settings.radius, -col - WorldMap.world_settings.radius), min(WorldMap.world_settings.radius, -col + WorldMap.world_settings.radius) + 1)
+			return range(max(-settings.radius, -col - settings.radius), min(settings.radius, -col + settings.radius) + 1)
 
 
 func rectangle_bounds() -> Callable:
 	return func(_col = null):
-		return range(-WorldMap.world_settings.radius, WorldMap.world_settings.radius + 1)
+		return range(-settings.radius, settings.radius + 1)
 
 
 ### Filters
@@ -122,14 +124,14 @@ func rectangle_bounds() -> Callable:
 
 func circle_shape_filter(col: int, row: int) -> bool:
 	var dist = sqrt(col * col + row * row)
-	return dist < WorldMap.world_settings.radius
+	return dist < settings.radius
 
 
 func diamond_shape_filter(col: int, row: int) -> bool:
 	var adjusted_row = row
 	if col % 2 != 0:
 		adjusted_row += 0.5 
-	return abs(adjusted_row) + abs(col) < WorldMap.world_settings.radius
+	return abs(adjusted_row) + abs(col) < settings.radius
 
 
 ### Buffer-filters!

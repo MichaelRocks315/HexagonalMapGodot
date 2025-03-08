@@ -2,20 +2,17 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dsae282kkr1n5"
-path.s3tc="res://.godot/imported/hut_texture.png-a81ca9ddefad3d3ef049805c498f9d79.s3tc.ctex"
+uid="uid://dbpjcjq1seha7"
+path.s3tc="res://.godot/imported/checkerpattern.png-49b0d9e76aa7ee8283215a3bf50592f6.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
-generator_parameters={
-"md5": "f31a3165d9c793cd81db252576a2f6a4"
-}
 
 [deps]
 
-source_file="res://assets/Materials/hut_texture.png"
-dest_files=["res://.godot/imported/hut_texture.png-a81ca9ddefad3d3ef049805c498f9d79.s3tc.ctex"]
+source_file="res://assets/Materials/textures/checkerpattern.png"
+dest_files=["res://.godot/imported/checkerpattern.png-49b0d9e76aa7ee8283215a3bf50592f6.s3tc.ctex"]
 
 [params]
 

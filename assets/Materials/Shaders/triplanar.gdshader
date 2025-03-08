@@ -9,61 +9,63 @@ uniform sampler2D center_normal: hint_normal;
 uniform sampler2D center_roughness: hint_roughness_r;
 
 group_uniforms slopes;
-uniform float center_slope: hint_range(0.0, 1.0, 0.01) = 0.05;
+uniform float center_slope: hint_range(0.0, 1.0, 0.01) = 0.5;
 uniform bool use_world_normal = true;
+uniform float width = 0.1;
+
+group_uniforms uv;
+uniform float uv_top_blend_sharpness = 1.0;
+uniform vec3 uv_top_scale = vec3(1.0);
+uniform vec3 uv_top_offset = vec3(0.0);
+uniform float uv_center_blend_sharpness = 1.0;
+uniform vec3 uv_center_scale = vec3(1.0);
+uniform vec3 uv_center_offset = vec3(0.0);
 
 varying float world_normal_y;
 varying float normal_y;
-
-group_uniforms uv;
 varying vec3 uv_top_triplanar_pos;
-uniform float uv_top_blend_sharpness = 1.0;
-varying vec3 uv_top_power_normal;
-uniform vec3 uv_top_scale = vec3(1.0, 1.0, 1.0);
-uniform vec3 uv_top_offset = vec3(0.0, 0.0, 0.0);
-
 varying vec3 uv_center_triplanar_pos;
-uniform float uv_center_blend_sharpness = 1.0;
+varying vec3 uv_top_power_normal;
 varying vec3 uv_center_power_normal;
-uniform vec3 uv_center_scale = vec3(1.0, 1.0, 1.0);
-uniform vec3 uv_center_offset = vec3(0.0, 0.0, 0.0);
-
-varying vec3 uv_bottom_triplanar_pos;
-uniform float uv_bottom_blend_sharpness = 1.0;
-varying vec3 uv_bottom_power_normal;
-uniform vec3 uv_bottom_scale = vec3(1.0, 1.0, 1.0);
-uniform vec3 uv_bottom_offset = vec3(0.0, 0.0, 0.0);
-
 
 void vertex() {
-	normal_y = NORMAL.y;
-	vec3 world_normal = normalize((MODEL_MATRIX * vec4(NORMAL, 0.0)).xyz);
-	world_normal_y = world_normal.y;
+    vec3 world_normal = normalize(MODEL_NORMAL_MATRIX * NORMAL);
+    world_normal_y = world_normal.y;
+    normal_y = NORMAL.y;
 
-	vec3 normal = NORMAL;
-	TANGENT = vec3(0.0,0.0,-1.0) * abs(normal.x);
-	TANGENT+= vec3(1.0,0.0,0.0) * abs(normal.y);
-	TANGENT+= vec3(1.0,0.0,0.0) * abs(normal.z);
-	TANGENT = normalize(TANGENT);
-	BINORMAL = vec3(0.0,1.0,0.0) * abs(normal.x);
-	BINORMAL+= vec3(0.0,0.0,-1.0) * abs(normal.y);
-	BINORMAL+= vec3(0.0,1.0,0.0) * abs(normal.z);
-	BINORMAL = normalize(BINORMAL);
+    vec3 normal = normalize(NORMAL);
+    vec3 tangent = vec3(0.0);
+    vec3 binormal = vec3(0.0);
 
-	uv_top_power_normal=pow(abs(NORMAL),vec3(uv_top_blend_sharpness));
-	uv_top_triplanar_pos = VERTEX * uv_top_scale + uv_top_offset;
-	uv_top_power_normal/=dot(uv_top_power_normal,vec3(1.0));
-	uv_top_triplanar_pos *= vec3(1.0,-1.0, 1.0);
+    float absX = abs(normal.x);
+    float absY = abs(normal.y);
+    float absZ = abs(normal.z);
+    
+    if (absX > absY && absX > absZ) {
+        tangent = vec3(0.0, 0.0, -sign(normal.x));
+        binormal = vec3(0.0, sign(normal.x), 0.0);
+    } else if (absY > absZ) {
+        tangent = vec3(sign(normal.y), 0.0, 0.0);
+        binormal = vec3(0.0, 0.0, -sign(normal.y));
+    } else {
+        tangent = vec3(sign(normal.z), 0.0, 0.0);
+        binormal = vec3(0.0, sign(normal.z), 0.0);
+    }
+    
+    TANGENT = normalize(tangent);
+    BINORMAL = normalize(binormal);
 
-	uv_center_power_normal=pow(abs(NORMAL),vec3(uv_center_blend_sharpness));
-	uv_center_triplanar_pos = VERTEX * uv_center_scale + uv_center_offset;
-	uv_center_power_normal/=dot(uv_center_power_normal,vec3(1.0));
-	uv_center_triplanar_pos *= vec3(1.0,-1.0, 1.0);
+    vec3 world_vertex = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
+    
+    // Top calculations
+    uv_top_power_normal = pow(abs(normal), vec3(uv_top_blend_sharpness));
+    uv_top_triplanar_pos = world_vertex * uv_top_scale + uv_top_offset;
+    uv_top_power_normal /= dot(uv_top_power_normal, vec3(1.0));
 
-	uv_bottom_power_normal=pow(abs(NORMAL),vec3(uv_bottom_blend_sharpness));
-	uv_bottom_triplanar_pos = VERTEX * uv_bottom_scale + uv_bottom_offset;
-	uv_bottom_power_normal/=dot(uv_bottom_power_normal,vec3(1.0));
-	uv_bottom_triplanar_pos *= vec3(1.0,-1.0, 1.0);
+    // Center calculations
+    uv_center_power_normal = pow(abs(normal), vec3(uv_center_blend_sharpness));
+    uv_center_triplanar_pos = world_vertex * uv_center_scale + uv_center_offset;
+    uv_center_power_normal /= dot(uv_center_power_normal, vec3(1.0));
 }
 
 vec2 hash( vec2 p ) {
@@ -98,32 +100,30 @@ vec4 triplanar_stochastic_texture(sampler2D p_sampler,vec3 p_weights,vec3 p_trip
 }
 
 void fragment() {
-	// Albedo values
-	vec3 top_albedo = triplanar_stochastic_texture(top_texture,uv_top_power_normal,uv_top_triplanar_pos).xyz;
-	vec3 center_albedo = triplanar_stochastic_texture(center_texture,uv_center_power_normal,uv_center_triplanar_pos).xyz;
+    // textures
+    vec3 top_albedo = triplanar_stochastic_texture(top_texture, uv_top_power_normal, uv_top_triplanar_pos).rgb;
+    vec3 center_albedo = triplanar_stochastic_texture(center_texture, uv_center_power_normal, uv_center_triplanar_pos).rgb;
 
-	// Normal values
-	vec3 top_normal_map = triplanar_stochastic_texture(top_normal,uv_top_power_normal,uv_top_triplanar_pos).xyz;
-	vec3 center_normal_map = triplanar_stochastic_texture(center_normal,uv_center_power_normal,uv_center_triplanar_pos).xyz;
+    // normals
+    vec3 top_normal_map = triplanar_stochastic_texture(top_normal, uv_top_power_normal, uv_top_triplanar_pos).rgb;
+    vec3 center_normal_map = triplanar_stochastic_texture(center_normal, uv_center_power_normal, uv_center_triplanar_pos).rgb;
 
-	// Rougness values
-	vec4 top_roughness_map = triplanar_stochastic_texture(top_roughness,uv_top_power_normal,uv_top_triplanar_pos);
-	vec4 center_roughness_map = triplanar_stochastic_texture(center_roughness,uv_center_power_normal,uv_center_triplanar_pos);
+    // roughness
+    float _top_roughness = triplanar_stochastic_texture(top_roughness, uv_top_power_normal, uv_top_triplanar_pos).r;
+    float _center_roughness = triplanar_stochastic_texture(center_roughness, uv_center_power_normal, uv_center_triplanar_pos).r;
 
-	// Wheights
-	float center_top_weight = world_normal_y;
+    // Blend weight
+    float center_top_weight = use_world_normal ? world_normal_y : normal_y;
+    
+    // smooth transition
+    center_top_weight = smoothstep(
+        center_slope - width,
+        center_slope + width,
+        center_top_weight
+    );
 
-	if (!use_world_normal) {
-		center_top_weight = normal_y;
-	}
-
-	// Calculate weights
-	center_top_weight = max(center_slope, center_top_weight);
-
-	// Mix
-	vec4 roughness_texture_channel = vec4(1.0,0.0,0.0,0.0);
-
-	ALBEDO = mix(center_albedo, top_albedo, center_top_weight);
-	NORMAL_MAP = mix(center_normal_map, top_normal_map, center_top_weight);
-	ROUGHNESS = dot(mix(center_roughness_map, top_roughness_map, center_top_weight), roughness_texture_channel);
+    // Mix layers
+    ALBEDO = mix(center_albedo, top_albedo, center_top_weight);
+    NORMAL_MAP = mix(center_normal_map, top_normal_map, center_top_weight);
+    ROUGHNESS = mix(_center_roughness, _top_roughness, center_top_weight);
 }

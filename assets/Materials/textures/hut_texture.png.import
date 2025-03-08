@@ -2,17 +2,20 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bxsqg6bxogaj6"
-path.s3tc="res://.godot/imported/15680-pbr-textures-rough.jpg-bdd2c04dd00330acf7c63ab748d13086.s3tc.ctex"
+uid="uid://dsae282kkr1n5"
+path.s3tc="res://.godot/imported/hut_texture.png-d12036921b98c305474fd398978ef064.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
+generator_parameters={
+"md5": "f31a3165d9c793cd81db252576a2f6a4"
+}
 
 [deps]
 
-source_file="res://assets/Materials/15680-pbr-textures-rough.jpg"
-dest_files=["res://.godot/imported/15680-pbr-textures-rough.jpg-bdd2c04dd00330acf7c63ab748d13086.s3tc.ctex"]
+source_file="res://assets/Materials/textures/hut_texture.png"
+dest_files=["res://.godot/imported/hut_texture.png-d12036921b98c305474fd398978ef064.s3tc.ctex"]
 
 [params]
 
