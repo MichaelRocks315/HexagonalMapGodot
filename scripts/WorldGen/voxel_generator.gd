@@ -31,9 +31,14 @@ func generate_chunk(_map : Array[Voxel], prism_size : float, height: float, cube
 		map_dict[voxel.grid_position] = voxel
 
 	create_uvs(uvs, map.size())
-	var c = correct_geometry()
-	while c > 0:
-		c = correct_geometry()
+	
+	var correction_passes = 0
+	var faults = correct_geometry()
+	while faults > 0:
+		faults = correct_geometry()
+		correction_passes += 1
+	print(correction_passes, " passes to terrace terrain")
+	
 	build_geometry(indices, map.size())
 	
 	# Create & assign mesh
@@ -77,6 +82,8 @@ func correct_geometry() -> int:
 				continue
 
 		# mark as air if diagonal voxels underneath are air
+		if not WorldMap.world_settings.terrace:
+			continue
 		var table = WorldMap.get_tile_neighbor_table(prism.grid_position.x)
 		for dir in table:
 			neighbor_pos = prism.grid_position
@@ -85,9 +92,10 @@ func correct_geometry() -> int:
 			neighbor_pos.y -= 1
 			var v : Voxel = map_dict.get(neighbor_pos)
 			if not v:
-				#if prism.grid_position.y != 0:
-				#	prism.type = Voxel.biome.AIR
-				#	removed += 1
+				if WorldMap.world_settings.terrace_edges:
+					if prism.grid_position.y != 0:
+						prism.type = prism.biome.AIR
+
 				missing += 1
 				continue
 			#Check below
@@ -96,9 +104,9 @@ func correct_geometry() -> int:
 				removed += 1
 				break
 				
-	print("Corrected Voxels: ", removed)
-	print("Missing Voxels: ", missing)
-	print("Buffer Voxels: ", buffer)
+	#print("Corrected Voxels: ", removed)
+	#print("Missing Voxels: ", missing)
+	#print("Buffer Voxels: ", buffer)
 	return removed
 
 

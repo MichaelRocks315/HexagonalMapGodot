@@ -22,6 +22,7 @@ func _ready() -> void:
 
 # Randomize if no seed has been set
 func init_seed():
+	WorldMap.world_settings = settings
 	if settings.map_seed == 0 or settings.map_seed == null:
 		print("Randomizing seed")
 		settings.noise.seed = randi() #New map_seed for this generation
@@ -52,7 +53,7 @@ func generate_world():
 	
 	## Get all positions through the gridmapper
 	var mapper = GridMapper.new()
-	var voxels : Array[Voxel] = mapper.calculate_map_positions(settings)
+	var voxels : Array[Voxel] = mapper.calculate_map_positions()
 	interval["Calculate Map Positions -- "] = Time.get_ticks_msec()
 	
 	var mat = load("res://assets/Materials/voxel_mat.tres")

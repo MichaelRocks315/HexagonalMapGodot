@@ -3,6 +3,7 @@ extends Node
 #var map : Array[Tile]
 var map_as_dict : Dictionary = {}
 var is_map_staggered = false
+var world_settings : GenerationSettings
 
 ## Shorthand for different layout/neighbor configurations depending on map-shape and stagger
 const HEXAGONAL_NEIGHBOR_DIRECTIONS: Array[Vector2i] = [

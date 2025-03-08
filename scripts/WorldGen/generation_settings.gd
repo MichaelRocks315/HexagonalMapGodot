@@ -10,6 +10,9 @@ var tile_size : float = 1 #Size scalar
 @export_range(1, 20, 1) var max_height: int = 3
 @export var noise : FastNoiseLite
 
+@export var terrace = true
+@export var terrace_edges = false
+
 @export var map_seed : int
 
 @export_category("Villages")
