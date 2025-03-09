@@ -48,6 +48,7 @@ func generate_chunk(_map : Array[Voxel], interval) -> Mesh:
 	surface.optimize_indices_for_cache()
 	surface.generate_normals()
 	surface.generate_tangents()
+	WorldMap.top_layer_voxels.append_array(top_voxels)
 	return surface.commit()
 
 

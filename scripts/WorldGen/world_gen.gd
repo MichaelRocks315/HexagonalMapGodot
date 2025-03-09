@@ -3,7 +3,7 @@ extends Node
 # Dependencies
 @export var settings : GenerationSettings
 @export_category("Dependencies")
-#@export var object_placer : ObjectPlacer
+@export var object_placer : ObjectPlacer
 
 # Test-only!
 #@export var pfinder : Pathfinder
@@ -15,8 +15,7 @@ extends Node
 func _ready() -> void:
 	init_seed()
 	generate_world()
-	
-	#test_generate_voxel()
+
 	#create_starting_units(floor(settings.radius/2))  ## prototyping pathfinding and units
 
 
@@ -74,10 +73,10 @@ func generate_world():
 		interval["Debug time -- "] = Time.get_ticks_msec()
 
 	### Spawn villages
-	#if settings.spawn_villages:
-		#var placeable = get_placeable_tiles()
-		#object_placer.place_villages(placeable, settings.spacing)
-		#interval["Spawn Villages -- "] = Time.get_ticks_msec()
+	if settings.spawn_villages:
+		var placeable = get_placeable_voxels()
+		object_placer.place_villages(placeable, settings.spacing)
+		interval["Spawn Villages -- "] = Time.get_ticks_msec()
 	
 	print_generation_results(starttime, interval)
 
@@ -104,11 +103,11 @@ func print_generation_results(start : float, dict : Dictionary):
 
 
 ## Ignore buffer and ocean to return for object placer
-#func get_placeable_tiles() -> Array[Tile]:
-	#var placeable_tiles : Array[Tile] = []
-	#for tile : Tile in WorldMap.map:
-		#if tile.pos_data.buffer or not tile.placeable:
-			#continue
-		#placeable_tiles.append(tile)
-	#print(str(placeable_tiles.size()) + " placeable tiles")
-	#return placeable_tiles
+func get_placeable_voxels() -> Array[Voxel]:
+	var placeable_tiles : Array[Voxel] = []
+	for voxel : Voxel in WorldMap.top_layer_voxels:
+		if voxel.buffer or not voxel.placeable:
+			continue
+		placeable_tiles.append(voxel)
+	print(str(placeable_tiles.size()) + " placeable tiles")
+	return placeable_tiles

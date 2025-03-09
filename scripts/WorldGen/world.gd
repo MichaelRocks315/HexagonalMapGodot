@@ -2,6 +2,7 @@ extends Node
 
 #var map : Array[Tile]
 var map_as_dict : Dictionary = {}
+var top_layer_voxels : Array[Voxel]
 var is_map_staggered = false
 var world_settings : GenerationSettings
 
