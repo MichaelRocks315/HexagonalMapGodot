@@ -8,6 +8,7 @@ uniform sampler2D center_texture: source_color;
 uniform sampler2D center_normal: hint_normal;
 uniform sampler2D center_roughness: hint_roughness_r;
 
+
 group_uniforms slopes;
 uniform float center_slope: hint_range(0.0, 1.0, 0.01) = 0.5;
 uniform bool use_world_normal = true;

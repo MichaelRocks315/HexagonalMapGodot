@@ -1,4 +1,4 @@
-#extends Node3D
+extends Node3D
 #class_name Unit
 #
 #@export var unit_name : String = "Unit"

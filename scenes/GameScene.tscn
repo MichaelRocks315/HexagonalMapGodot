@@ -1,9 +1,10 @@
-[gd_scene load_steps=12 format=3 uid="uid://bbqxpsy3vniy8"]
+[gd_scene load_steps=13 format=3 uid="uid://bbqxpsy3vniy8"]
 
 [ext_resource type="Script" uid="uid://b28iyxlwylpa5" path="res://scripts/camera_script.gd" id="1_1xefc"]
 [ext_resource type="Texture2D" uid="uid://dvbkqw12i4obk" path="res://assets/Materials/textures/SkyBG.png" id="2_l7mlp"]
 [ext_resource type="Script" uid="uid://cp30k8d5w2ytu" path="res://scripts/WorldGen/world_gen.gd" id="3_davhy"]
 [ext_resource type="Resource" uid="uid://bulbwto8ivwib" path="res://Resources/GenerationSettings/Default.tres" id="4_58wc8"]
+[ext_resource type="PackedScene" uid="uid://5hq7deseilvo" path="res://scenes/POI/VillageScene.tscn" id="7_yrli1"]
 [ext_resource type="PackedScene" uid="uid://grijaagmqw4" path="res://scenes/Units/prototype_unit.tscn" id="8_r58of"]
 [ext_resource type="Script" uid="uid://bjsxytbel52oi" path="res://scripts/WorldGen/object_placer.gd" id="9_p13dw"]
 [ext_resource type="Script" uid="uid://dwpdw57g80u0i" path="res://scripts/pathfinder.gd" id="10_0b4my"]
@@ -75,14 +76,16 @@ stretch_mode = 4
 
 [node name="Builder" type="Node" parent="."]
 
-[node name="WorldGenerator" type="Node" parent="Builder" node_paths=PackedStringArray("box")]
+[node name="WorldGenerator" type="Node" parent="Builder" node_paths=PackedStringArray("object_placer", "box")]
 script = ExtResource("3_davhy")
 settings = ExtResource("4_58wc8")
+object_placer = NodePath("../ObjectPlacer")
 proto_unit = ExtResource("8_r58of")
 box = NodePath("../../CSGBox3D")
 
 [node name="ObjectPlacer" type="Node" parent="Builder"]
 script = ExtResource("9_p13dw")
+village = ExtResource("7_yrli1")
 
 [node name="Pathfinder" type="Node" parent="Builder"]
 script = ExtResource("10_0b4my")
