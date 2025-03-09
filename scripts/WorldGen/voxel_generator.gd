@@ -3,7 +3,7 @@ class_name VoxelGenerator
 var map : Array[Voxel]
 var map_dict : Dictionary[Vector3i, Voxel]
 const sides = 6
-var debug_cube : Node3D
+var settings : GenerationSettings
 
 # Define the base hexagon
 const base_vertices = [
@@ -15,9 +15,9 @@ const base_vertices = [
 	Vector3(-0.5, 0.0, -0.866)  # Top-left
 	]
 
-func generate_chunk(_map : Array[Voxel], prism_size : float, height: float, cube) -> Mesh:
+func generate_chunk(_map : Array[Voxel]) -> Mesh:
 	map = _map
-	debug_cube = cube
+	settings = WorldMap.world_settings
 	var verts = PackedVector3Array()
 	var indices = PackedInt32Array()
 	var uvs = PackedVector2Array()
@@ -27,17 +27,17 @@ func generate_chunk(_map : Array[Voxel], prism_size : float, height: float, cube
 	surface.begin(Mesh.PRIMITIVE_TRIANGLES)
 
 	for voxel in map:
-		verts.append_array(get_verts(voxel.world_position, prism_size, height, surface))
+		verts.append_array(get_verts(voxel.world_position, surface))
 		map_dict[voxel.grid_position] = voxel
 
 	create_uvs(uvs, map.size())
 	
-	var correction_passes = 0
+	var correction_passes = 1
 	var faults = correct_geometry()
 	while faults > 0:
 		faults = correct_geometry()
 		correction_passes += 1
-	print(correction_passes, " passes to terrace terrain")
+	print(correction_passes, " passes to correct terrain")
 	
 	build_geometry(indices, map.size())
 	
@@ -157,9 +157,10 @@ func create_uvs(uvs: PackedVector2Array, prism_count: int) -> void:
 
 
 # Function to get the vertices for the base and top hexagon
-func get_verts(position : Vector3, size : float, height: float, surface) -> PackedVector3Array:
+func get_verts(position : Vector3, surface : SurfaceTool) -> PackedVector3Array:
 	var verts = PackedVector3Array()
-	var top = Vector3(0.0, height, 0.0)
+	var size = settings.voxel_size
+	var top = Vector3(0.0, settings.voxel_height, 0.0)
 	
 	# Append base vertices
 	for v in base_vertices:

@@ -57,7 +57,7 @@ func generate_world():
 	interval["Calculate Map Positions -- "] = Time.get_ticks_msec()
 	
 	var vg = VoxelGenerator.new()
-	var chunk = vg.generate_chunk(voxels, 1, 1, box)
+	var chunk = vg.generate_chunk(voxels)
 	var mesh = MeshInstance3D.new()
 	mesh.material_override = settings.material
 	mesh.mesh = chunk

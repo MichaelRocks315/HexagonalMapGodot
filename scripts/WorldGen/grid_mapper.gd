@@ -74,7 +74,6 @@ func modify_voxel(voxel : Voxel, buffer_filter):
 		#pos.hill = true
 
 
-
 func tile_to_world(pos, stagger: bool) -> Vector3:
 	var SQRT3 = sqrt(3)
 	var x: float = 3.0 / 2.0 * pos.x  # Horizontal spacing
@@ -83,7 +82,7 @@ func tile_to_world(pos, stagger: bool) -> Vector3:
 		z = pos.z * SQRT3 + ((int(pos.x) % 2 + 2) % 2) * (SQRT3 / 2)
 	else:
 		z = (pos.z * SQRT3 + (int(pos.x) * SQRT3 / 2))
-	return Vector3(x * settings.tile_size, pos.y, z * settings.tile_size)
+	return Vector3(x * settings.voxel_size, pos.y * settings.voxel_height, z * settings.voxel_size)
 
 
 ## Get noise at position of tile

@@ -4,10 +4,10 @@ class_name GenerationSettings
 enum shape {HEXAGONAL, RECTANGULAR, DIAMOND, CIRCLE}
 
 @export_category("Voxel")
-var tile_size : float = 1 #Size scalar
+
 @export var map_shape : shape = shape.HEXAGONAL
 @export_range(0, 99, 1) var radius: int = 5
-@export_range(1, 20, 1) var max_height: int = 3
+@export_range(1, 30, 1) var max_height: int = 3
 @export var material : Material
 @export var noise : FastNoiseLite
 
@@ -15,6 +15,9 @@ var tile_size : float = 1 #Size scalar
 @export var flat_buffer = true
 
 @export var map_seed : int
+
+@export_range(0.1, 5) var voxel_size : float = 1 # Size scalar
+@export_range(0.1, 5) var voxel_height : float = 1 #height of voxels
 
 @export_category("Villages")
 @export var spawn_villages = true
