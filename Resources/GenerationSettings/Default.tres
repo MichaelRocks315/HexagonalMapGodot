@@ -3,28 +3,24 @@
 [ext_resource type="Script" uid="uid://cyt7pxd2qvvdw" path="res://scripts/WorldGen/generation_settings.gd" id="1_30d36"]
 [ext_resource type="Material" uid="uid://bqpqgl2qyphv7" path="res://assets/Materials/triplanar_mat.tres" id="1_ojq8q"]
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_od57w"]
-seed = 1000
-frequency = 0.0851
-fractal_lacunarity = 1.91
-domain_warp_type = 2
-domain_warp_amplitude = 29.5
-domain_warp_frequency = -0.01
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_ojq8q"]
+frequency = 0.1027
 
 [resource]
 script = ExtResource("1_30d36")
 map_shape = 0
-radius = 15
-max_height = 5
-material = ExtResource("1_ojq8q")
-noise = SubResource("FastNoiseLite_od57w")
-terrace_steps = 1
-flat_buffer = true
 map_seed = 0
+radius = 20
+max_height = 30
+terrace_steps = 1
+noise_strength = 0.4
+flat_buffer = false
+debug = false
+material = ExtResource("1_ojq8q")
+noise = SubResource("FastNoiseLite_ojq8q")
 voxel_size = 1.0
-voxel_height = 0.5
+voxel_height = 0.2
 shading = -1
-debug = true
 spawn_villages = false
 map_edge_buffer = 2
 spacing = 6

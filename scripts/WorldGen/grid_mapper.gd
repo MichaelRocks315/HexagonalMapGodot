@@ -27,6 +27,7 @@ func calculate_map_positions() -> Array[Voxel]:
 
 	print("Created ", voxels.size(), " positions")
 	#map.noise_data = find_noise_caps(positions)
+	print(find_noise_caps(voxels))
 	WorldMap.is_map_staggered = stagger
 	return voxels
 
@@ -63,7 +64,7 @@ func modify_voxel(voxel : Voxel, buffer_filter):
 	
 	# Bottom layer must always be solid
 	if voxel.grid_position.y != 0:
-		if voxel.noise < 0: ## Transparancy test
+		if voxel.noise < settings.noise_strength: ## Transparancy test
 			voxel.type = Voxel.biome.AIR
 
 		
@@ -88,8 +89,8 @@ func tile_to_world(pos, stagger: bool) -> Vector3:
 ## Get noise at position of tile
 func noise_at_tile(grid_position : Vector3, texture : FastNoiseLite) -> float:
 	var value : float = texture.get_noise_3dv(grid_position)
-	return value
-	#return (value + 1) / 2 # normalize [0, 1]
+	#return value
+	return (value + 1) / 2 # normalize [0, 1]
 
 
 func find_noise_caps(positions) -> Vector2:
