@@ -62,7 +62,7 @@ func generate_world():
 	mesh.material_override = settings.material
 	mesh.mesh = chunk
 	#mesh.create_debug_tangents()
-	mesh.create_trimesh_collision()
+	#mesh.create_trimesh_collision()
 	add_child(mesh)
 	interval["Create Voxel Mesh -- "] = Time.get_ticks_msec()
 	

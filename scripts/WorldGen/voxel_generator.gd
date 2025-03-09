@@ -22,13 +22,9 @@ func generate_chunk(_map : Array[Voxel]) -> Mesh:
 	var verts = PackedVector3Array()
 	var indices = PackedInt32Array()
 	var uvs = PackedVector2Array()
-	#var normals = PackedVector3Array() 
 	
-	var surface = SurfaceTool.new()
-	surface.begin(Mesh.PRIMITIVE_TRIANGLES)
-
 	for voxel in map:
-		verts.append_array(get_verts(voxel.world_position, surface))
+		verts.append_array(get_verts(voxel.world_position))
 		map_dict[voxel.grid_position] = voxel
 
 	create_uvs(uvs, map.size())
@@ -42,14 +38,17 @@ func generate_chunk(_map : Array[Voxel]) -> Mesh:
 	
 	build_geometry(indices, map.size())
 	
-	# Create & assign mesh
-	var arrays = []
-	arrays.resize(Mesh.ARRAY_MAX)
-	arrays[Mesh.ARRAY_VERTEX] = verts
-	arrays[Mesh.ARRAY_INDEX] = indices
-	arrays[Mesh.ARRAY_TEX_UV] = uvs
-	#arrays[Mesh.ARRAY_NORMAL] = normals
-	surface.create_from_arrays(arrays, Mesh.PRIMITIVE_TRIANGLES)
+	## Create surface
+	var surface = SurfaceTool.new()
+	surface.begin(Mesh.PRIMITIVE_TRIANGLES)
+	
+	for v_index in verts.size():
+		surface.set_uv(uvs[v_index])
+		surface.set_smooth_group(settings.shading)
+		surface.add_vertex(verts[v_index])		
+	for i in indices:
+		surface.add_index(i)
+
 	surface.optimize_indices_for_cache()
 	surface.generate_normals()
 	surface.generate_tangents()
@@ -159,23 +158,20 @@ func create_uvs(uvs: PackedVector2Array, prism_count: int) -> void:
 
 
 # Function to get the vertices for the base and top hexagon
-func get_verts(position : Vector3, surface : SurfaceTool) -> PackedVector3Array:
+func get_verts(position : Vector3) -> PackedVector3Array:
 	var verts = PackedVector3Array()
 	var size = settings.voxel_size
 	var top = Vector3(0.0, settings.voxel_height, 0.0)
 	
 	# Append base vertices
 	for v in base_vertices:
-		surface.set_smooth_group(-1)
 		verts.append(v * size + position)  # Base vertices
 
 	# Append top vertices
 	for v in base_vertices:
-		surface.set_smooth_group(-1)
 		verts.append(v * size + top + position)  # Top vertices
 	
 	# append top center vert
-	surface.set_smooth_group(-1)
 	verts.append(position + top) # Top center vertex
 	
 	return verts
