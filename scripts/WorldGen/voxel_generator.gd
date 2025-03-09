@@ -4,6 +4,7 @@ var map : Array[Voxel]
 var map_dict : Dictionary[Vector3i, Voxel]
 const sides = 6
 var settings : GenerationSettings
+var top_voxels : Array[Voxel]
 
 # Define the base hexagon
 const base_vertices = [
@@ -131,7 +132,8 @@ func build_geometry(indices: PackedInt32Array, prism_count: int):
 		## Construct top
 		var top_neighbor = current_prism.grid_position
 		top_neighbor.y += 1
-		if draw_face(top_neighbor): #if not map_dict.has(top_neighbor):
+		if draw_face(top_neighbor):
+			top_voxels.append(current_prism)
 			for i in range(sides):
 				# Add triangles for the top face
 				indices.append(prism_start + sides + i)           # Top vertex

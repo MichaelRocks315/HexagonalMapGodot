@@ -61,9 +61,16 @@ func generate_world():
 	var mesh = MeshInstance3D.new()
 	mesh.material_override = settings.material
 	mesh.mesh = chunk
+	#mesh.create_debug_tangents()
+	mesh.create_trimesh_collision()
 	add_child(mesh)
 	interval["Create Voxel Mesh -- "] = Time.get_ticks_msec()
 	
+	for voxel : Voxel in vg.top_voxels:
+		var b = box.duplicate()
+		b.position = voxel.world_position
+		b.position.y += settings.voxel_height
+		add_child(b)
 	#
 	### Create the tiles
 	#var factory = TileFactory.new()
