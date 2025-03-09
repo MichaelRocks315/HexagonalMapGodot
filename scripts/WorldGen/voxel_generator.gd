@@ -16,7 +16,7 @@ const base_vertices = [
 	Vector3(-0.5, 0.0, -0.866)  # Top-left
 	]
 
-func generate_chunk(_map : Array[Voxel]) -> Mesh:
+func generate_chunk(_map : Array[Voxel], interval) -> Mesh:
 	map = _map
 	settings = WorldMap.world_settings
 	var verts = PackedVector3Array()
@@ -26,17 +26,13 @@ func generate_chunk(_map : Array[Voxel]) -> Mesh:
 	for voxel in map:
 		verts.append_array(get_verts(voxel.world_position))
 		map_dict[voxel.grid_position] = voxel
-
+	interval["Setup vertex positions -- "] = Time.get_ticks_msec()
 	create_uvs(uvs, map.size())
 	
-	var correction_passes = 1
-	var faults = correct_geometry()
-	while faults > 0:
-		faults = correct_geometry()
-		correction_passes += 1
-	print(correction_passes, " passes to correct terrain")
-	
+	var corrections = correct_geometry()
+	print("Correction passes: ", corrections.x, ". Total voxels removed: ", corrections.y)
 	build_geometry(indices, map.size())
+	interval["Voxel corrections -- "] = Time.get_ticks_msec()
 	
 	## Create surface
 	var surface = SurfaceTool.new()
@@ -45,7 +41,7 @@ func generate_chunk(_map : Array[Voxel]) -> Mesh:
 	for v_index in verts.size():
 		surface.set_uv(uvs[v_index])
 		surface.set_smooth_group(settings.shading)
-		surface.add_vertex(verts[v_index])		
+		surface.add_vertex(verts[v_index])
 	for i in indices:
 		surface.add_index(i)
 
@@ -55,50 +51,53 @@ func generate_chunk(_map : Array[Voxel]) -> Mesh:
 	return surface.commit()
 
 
-func correct_geometry() -> int:
+func correct_geometry() -> Vector2i:
 	var settings = WorldMap.world_settings
-	var removed = 0
+	var passes = 0
+	var remove = 1
+	var total = 0
 
-	#Adjust all solid voxels
-	for prism in map:
-		if prism.type == Voxel.biome.AIR:
-			continue
-			
-		# Flatten buffer
-		if prism.buffer and settings.flat_buffer:
-			if prism.grid_position.y > 0:
-				prism.type = Voxel.biome.AIR
-				removed += 1
+	while remove > 0:
+		remove = 0
+
+		#Adjust all solid voxels
+		for prism in map:
+			if prism.type == Voxel.biome.AIR:
 				continue
-
-		# Ensure no overhang
-		var neighbor_pos : Vector3i = prism.grid_position
-		neighbor_pos.y -= 1
-		if neighbor_pos.y < 1:
-			continue
-		var bottom_neighbor : Voxel = map_dict.get(neighbor_pos)
-		if bottom_neighbor:
-			if bottom_neighbor.type == Voxel.biome.AIR:
-				prism.type = Voxel.biome.AIR
-				removed += 1
-				continue
-
-		# Ensure terrace
-		if settings.terrace_steps < 1:
-			continue
-		var table = WorldMap.get_tile_neighbor_table(prism.grid_position.x)
-		for dir in table:
-			neighbor_pos = prism.grid_position
-			neighbor_pos.x += dir.x
-			neighbor_pos.z += dir.y
-			neighbor_pos.y -= settings.terrace_steps
-			var v : Voxel = map_dict.get(neighbor_pos)
-			if v:
-				if v.type == Voxel.biome.AIR:
+				
+			# Flatten buffer
+			if prism.buffer and settings.flat_buffer:
+				if prism.grid_position.y > 0:
 					prism.type = Voxel.biome.AIR
-					removed += 1
+					remove += 1
+					continue
+	
+			# Ensure no overhang
+			var neighbor_pos : Vector3i = prism.grid_position
+			neighbor_pos.y -= 1
+			if neighbor_pos.y < 1:
+				continue
+			if air_at_pos(neighbor_pos):
+				prism.type = Voxel.biome.AIR
+				remove += 1
+				continue
+	
+			# Ensure terrace
+			if settings.terrace_steps < 1:
+				continue
+			var table = WorldMap.get_tile_neighbor_table(prism.grid_position.x)
+			for dir in table:
+				neighbor_pos = prism.grid_position
+				neighbor_pos.x += dir.x
+				neighbor_pos.z += dir.y
+				neighbor_pos.y -= settings.terrace_steps
+				if air_at_pos(neighbor_pos):
+					prism.type = Voxel.biome.AIR
+					remove += 1
 					break
-	return removed
+		passes += 1
+		total += remove
+	return Vector2i(passes, total)
 
 
 func build_geometry(indices: PackedInt32Array, prism_count: int):
@@ -185,3 +184,9 @@ func draw_face(neighbor_pos : Vector3i) -> bool:
 		else:
 			return false
 	return true
+
+func air_at_pos(pos) -> bool:
+	var neighbor : Voxel = map_dict.get(pos)
+	if neighbor and neighbor.type == Voxel.biome.AIR:
+		return true
+	return false
