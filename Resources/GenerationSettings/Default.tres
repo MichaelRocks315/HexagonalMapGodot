@@ -24,6 +24,7 @@ map_seed = 0
 voxel_size = 1.0
 voxel_height = 0.5
 shading = -1
+debug = true
 spawn_villages = false
 map_edge_buffer = 2
 spacing = 6

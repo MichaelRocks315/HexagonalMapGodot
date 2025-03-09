@@ -61,29 +61,18 @@ func generate_world():
 	var mesh = MeshInstance3D.new()
 	mesh.material_override = settings.material
 	mesh.mesh = chunk
-	#mesh.create_debug_tangents()
-	#mesh.create_trimesh_collision()
 	add_child(mesh)
 	interval["Create Voxel Mesh -- "] = Time.get_ticks_msec()
 	
-	for voxel : Voxel in vg.top_voxels:
-		var b = box.duplicate()
-		b.position = voxel.world_position
-		b.position.y += settings.voxel_height
-		add_child(b)
-	#
-	### Create the tiles
-	#var factory = TileFactory.new()
-	#factory.init_factory(settings, tile_parent)
-	#var map = factory.create_map(positions)
-	#WorldMap.set_map(map)
-	#interval["Create Map -- "] = Time.get_ticks_msec()
-#
-	### Fill all gaps
-	#if settings.modify_height:
-		#factory.modify_terrain()
-		#interval["Modify terrain and fill Gaps -- "] = Time.get_ticks_msec()
-	#
+	if settings.debug:
+		mesh.create_debug_tangents()
+		for voxel : Voxel in vg.top_voxels:
+			var b = box.duplicate()
+			b.position = voxel.world_position
+			b.position.y += settings.voxel_height
+			add_child(b)
+		interval["Debug time -- "] = Time.get_ticks_msec()
+
 	### Spawn villages
 	#if settings.spawn_villages:
 		#var placeable = get_placeable_tiles()

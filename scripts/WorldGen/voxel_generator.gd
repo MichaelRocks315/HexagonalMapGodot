@@ -26,8 +26,8 @@ func generate_chunk(_map : Array[Voxel], interval) -> Mesh:
 	for voxel in map:
 		verts.append_array(get_verts(voxel.world_position))
 		map_dict[voxel.grid_position] = voxel
-	interval["Setup vertex positions -- "] = Time.get_ticks_msec()
 	create_uvs(uvs, map.size())
+	interval["Setup vertex positions -- "] = Time.get_ticks_msec()	
 	
 	var corrections = correct_geometry()
 	print("Correction passes: ", corrections.x, ". Total voxels removed: ", corrections.y)
