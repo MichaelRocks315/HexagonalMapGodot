@@ -58,7 +58,7 @@ func correct_geometry() -> Vector2i:
 	var remove = 1
 	var total = 0
 
-	while remove > 0:
+	while remove > 0 or passes > 50:
 		remove = 0
 
 		#Adjust all solid voxels
