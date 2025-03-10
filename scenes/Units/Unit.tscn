@@ -6,6 +6,7 @@
 
 [node name="Unit" type="Node3D"]
 script = ExtResource("1_su7yn")
+ground_offset = 1.0
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 
