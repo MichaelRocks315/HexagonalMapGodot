@@ -4,7 +4,7 @@
 [ext_resource type="Material" uid="uid://bqpqgl2qyphv7" path="res://assets/Materials/triplanar_mat.tres" id="1_ojq8q"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_ojq8q"]
-frequency = 0.04
+frequency = 0.0716
 fractal_lacunarity = 0.5
 fractal_gain = 0.765
 

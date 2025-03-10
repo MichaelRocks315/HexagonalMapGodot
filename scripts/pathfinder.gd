@@ -25,21 +25,13 @@ func find_reachable_voxels(start : Voxel, movement_range: int) -> Array[Voxel]:
 		
 		# Add the current Voxel to the reachable list
 		reachable_voxels.append(current_Voxel)
-
 		var current_pos = current_Voxel.grid_position
 		
 		var neighbor_positions = WorldMap.get_tile_neighbor_table(current_pos.x)
-		#if WorldMap.is_map_staggered:
-			#if current_pos.x % 2 == 0:
-				#neighbor_positions = WorldMap.NEIGHBOR_DIRECTIONS_EVEN
-			#else:
-				#neighbor_positions = WorldMap.NEIGHBOR_DIRECTIONS_ODD
-		print(current_pos)
 		# Explore neighbors
 		for direction : Vector2i in neighbor_positions:
 			var neighbor_coords = Vector2i(current_pos.x + int(direction.x), current_pos.z + int(direction.y))
 			if not is_voxel_valid(neighbor_coords) or visited.has(neighbor_coords):
-				print("invalid voxel for navigation", neighbor_coords)
 				continue
 			var neighbor_voxel = WorldMap.map_as_dict[neighbor_coords]
 			queue.append({"Voxel": neighbor_voxel, "distance": current_distance + 1})
@@ -48,7 +40,7 @@ func find_reachable_voxels(start : Voxel, movement_range: int) -> Array[Voxel]:
 	return reachable_voxels
 
 
-func is_voxel_valid(coords : Vector2) -> bool:
+func is_voxel_valid(coords : Vector2i) -> bool:
 	var valid = false
 	if not WorldMap.map_as_dict.has(coords):
 		print("Voxel not in map!")
@@ -79,4 +71,5 @@ func highlight_voxel(selected_nodes : Array[Voxel]):#: Array[Node3D]):
 		var marker = markers[i]
 		var voxel : Voxel = selected_nodes[i]
 		marker.position = voxel.world_position
+		marker.position.y += 0.4
 		marker.visible = true

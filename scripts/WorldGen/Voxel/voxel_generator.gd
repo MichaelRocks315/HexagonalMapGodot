@@ -113,7 +113,7 @@ func build_geometry(indices: PackedInt32Array, prism_count: int):
 			continue
 
 		## Construct sides
-		for i in range(WorldMap.HEXAGONAL_NEIGHBOR_DIRECTIONS.size()):
+		for i in range(6):
 			neutral_neighbor = current_prism.grid_position
 			neutral_neighbor.x += dirs[i].x 
 			neutral_neighbor.z += dirs[i].y
