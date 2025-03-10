@@ -1,6 +1,6 @@
 extends Node
 
-#var map : Array[Tile]
+#var map : Array[Voxel]
 var map_as_dict : Dictionary = {}
 var top_layer_voxels : Array[Voxel]
 var is_map_staggered = false
@@ -46,10 +46,10 @@ var neighbor_positions = HEXAGONAL_NEIGHBOR_DIRECTIONS
 #]
 
 
-func set_map(all_tiles):
-	#map = all_tiles
-	for t in all_tiles:
-		map_as_dict[Vector2(t.pos_data.grid_position.x, t.pos_data.grid_position.y)] = t
+## Construct a dictionary for our 2d top layer of voxels
+func set_map(voxels):
+	for voxel : Voxel in voxels:
+		map_as_dict[Vector2i(voxel.grid_position.x, voxel.grid_position.z)] = voxel
 
 
 ## Handy function for finding all neigbors of a tile

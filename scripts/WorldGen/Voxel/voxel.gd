@@ -11,3 +11,4 @@ var water : bool = false
 var neighbors = []
 var placeable = true
 var occupier : Unit
+var collider

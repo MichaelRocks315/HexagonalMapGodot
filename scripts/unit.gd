@@ -6,8 +6,9 @@ class_name Unit
 var current_health: int = 10
 @export var movement_range: int = 3
 @export var model: PackedScene
+@export var ground_offset : float
 
-var occupied_tile : Voxel
+var occupied_voxel : Voxel
 var team # which "team" does this unit belong to
 
 
@@ -18,15 +19,16 @@ func _ready() -> void:
 ## Put this unit on a tile at position
 func place_unit(new_position : Vector3, tile):
 	position = new_position
+	position.y += ground_offset
 	leave_tile()
 	occupy_tile(tile)
 
 
 func occupy_tile(tile : Voxel):
-	occupied_tile = tile
+	occupied_voxel = tile
 	tile.occupier = self
 
 
 func leave_tile():
-	if occupied_tile:
-		occupied_tile.occupier = null
+	if occupied_voxel:
+		occupied_voxel.occupier = null

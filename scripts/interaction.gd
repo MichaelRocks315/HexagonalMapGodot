@@ -6,7 +6,7 @@ extends Node3D
 @export var p_finder : Pathfinder
 var selected_voxel : Node3D
 var selected_unit : Unit
-var unit_moves : Array[Node3D]
+var unit_moves : Array[Voxel]
 # Cursors
 var voxel_cursor : Node3D
 var unit_cursor : Node3D
@@ -22,7 +22,7 @@ func _ready() -> void:
 		
 	var scalar = WorldMap.world_settings.voxel_size
 	voxel_cursor.scale_object_local(Vector3(scalar, 1.0, scalar))
-	unit_cursor.scale_object_local(Vector3(scalar, 1.0, scalar))
+	#unit_cursor.scale_object_local(Vector3(scalar, 1.0, scalar))
 	deselect()
 
 
@@ -32,7 +32,7 @@ func _input(event: InputEvent) -> void:
 		var origin = main_camera.project_ray_origin(mouse_pos)
 		var dir = main_camera.project_ray_normal(mouse_pos)
 		var end = origin + dir * 1000
-		var hit_object = raycast_at_mouse(origin, end)
+		var hit_object = raycast_at_mouse(origin, end) #returns the collider
 		if not hit_object:
 			return
 		if Input.is_action_just_pressed("Click") and event.pressed:
@@ -41,11 +41,11 @@ func _input(event: InputEvent) -> void:
 			attempt_move_unit(hit_object)
 
 
-func raycast_at_mouse(origin, end) -> VoxelCollider:
+func raycast_at_mouse(origin, end) -> Node3D:
 		var query = PhysicsRayQueryParameters3D.create(origin, end)
 		var collision = get_world_3d().direct_space_state.intersect_ray(query)
 		if collision and collision.has("collider"):
-			var hit = collision.collider#.get_parent()
+			var hit = collision.collider
 			return hit
 		else:
 			deselect()
@@ -60,12 +60,15 @@ func deselect():
 	p_finder.clear_highlight()
 
 
-func attempt_select(hit):
+func attempt_select(hit : Node3D):
 	deselect()
 	if hit.is_in_group("voxels"):
 		highlight_voxel(hit)
-	elif hit.is_in_group("units"):
+		return
+	if hit.is_in_group("units"):
 		select_unit(hit)
+	elif hit.get_parent().is_in_group("units"):
+		select_unit(hit.get_parent())
 
 
 func attempt_move_unit(hit):
@@ -76,7 +79,7 @@ func attempt_move_unit(hit):
 	deselect()
 
 
-func select_unit(unit):
+func select_unit(unit : Unit):
 	selected_voxel = null
 	selected_unit = unit
 	hide_cursor(voxel_cursor)
@@ -86,7 +89,7 @@ func select_unit(unit):
 		p_finder.highlight_voxel(unit_moves)
 
 
-func highlight_voxel(voxel):
+func highlight_voxel(voxel : VoxelCollider):
 	selected_unit = null
 	selected_voxel = voxel
 	hide_cursor(unit_cursor)

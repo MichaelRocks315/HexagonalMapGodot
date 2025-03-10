@@ -6,14 +6,14 @@ var neighbor_positions = WorldMap.HEXAGONAL_NEIGHBOR_DIRECTIONS
 var markers = []
 
 
-func find_reachable_Voxels(start : Voxel, movement_range: int) -> Array[Node3D]:
+func find_reachable_voxels(start : Voxel, movement_range: int) -> Array[Voxel]:
 	var queue = []
 	var visited = []
-	var reachable_Voxels : Array[Node3D]
+	var reachable_voxels : Array[Voxel]
 
 	# Start from the initial Voxel
 	queue.append({"Voxel": start, "distance": 0})
-	visited.append(Vector2(start.pos_data.grid_position.x, start.pos_data.grid_position.y))
+	visited.append(Vector2(start.grid_position.x, start.grid_position.y))
 
 	while queue.size() > 0:
 		var current = queue.pop_front()
@@ -24,36 +24,38 @@ func find_reachable_Voxels(start : Voxel, movement_range: int) -> Array[Node3D]:
 			continue
 		
 		# Add the current Voxel to the reachable list
-		reachable_Voxels.append(current_Voxel)
+		reachable_voxels.append(current_Voxel)
 
-		var current_pos = current_Voxel.pos_data.grid_position
+		var current_pos = current_Voxel.grid_position
 		
-		if WorldMap.is_map_staggered:
-			if current_pos.x % 2 == 0:
-				neighbor_positions = WorldMap.NEIGHBOR_DIRECTIONS_EVEN
-			else:
-				neighbor_positions = WorldMap.NEIGHBOR_DIRECTIONS_ODD
-		
+		var neighbor_positions = WorldMap.get_tile_neighbor_table(current_pos.x)
+		#if WorldMap.is_map_staggered:
+			#if current_pos.x % 2 == 0:
+				#neighbor_positions = WorldMap.NEIGHBOR_DIRECTIONS_EVEN
+			#else:
+				#neighbor_positions = WorldMap.NEIGHBOR_DIRECTIONS_ODD
+		print(current_pos)
 		# Explore neighbors
-		for direction in neighbor_positions:
-			var neighbor_coords = Vector2(current_pos.x + int(direction.x), current_pos.y + int(direction.y))
-			if not is_Voxel_valid(neighbor_coords) or visited.has(neighbor_coords):
+		for direction : Vector2i in neighbor_positions:
+			var neighbor_coords = Vector2i(current_pos.x + int(direction.x), current_pos.z + int(direction.y))
+			if not is_voxel_valid(neighbor_coords) or visited.has(neighbor_coords):
+				print("invalid voxel for navigation", neighbor_coords)
 				continue
-			var neighbor_Voxel = WorldMap.map_as_dict[neighbor_coords]
-			queue.append({"Voxel": neighbor_Voxel, "distance": current_distance + 1})
+			var neighbor_voxel = WorldMap.map_as_dict[neighbor_coords]
+			queue.append({"Voxel": neighbor_voxel, "distance": current_distance + 1})
 			visited.append(neighbor_coords)
 
-	return reachable_Voxels
+	return reachable_voxels
 
 
-func is_Voxel_valid(coords : Vector2) -> bool:
+func is_voxel_valid(coords : Vector2) -> bool:
 	var valid = false
 	if not WorldMap.map_as_dict.has(coords):
-		push_warning("Voxel not in map!")
+		print("Voxel not in map!")
 		return false
-	var Voxel = WorldMap.map_as_dict[coords]
-	if Voxel:
-		if Voxel.occupier == null and Voxel.mesh_data.type != Voxel.biome_type.Ocean:
+	var voxel = WorldMap.map_as_dict[coords]
+	if voxel:
+		if voxel.occupier == null and voxel.type != Voxel.biome.WATER:
 			valid = true
 	return valid
 
@@ -64,17 +66,17 @@ func clear_highlight():
 			m.visible = false
 
 
-#func highlight_Voxel(selected_nodes: Array[Node3D]):
-	##Ensure correct marker count
-	#var marker_diff = selected_nodes.size() - markers.size()
-	#for m in range(marker_diff):
-		#var new_marker = highlight_marker.instantiate()
-		#add_child(new_marker)
-		#markers.append(new_marker)
-	#clear_highlight() # turn all markers invisible
-	## Iterate over selected Voxels
-	#for i in range(selected_nodes.size()):
-		#var marker = markers[i]
-		#var voxel : Voxel = selected_nodes[i]
-		#marker.position = voxel.position
-		#marker.visible = true
+func highlight_voxel(selected_nodes : Array[Voxel]):#: Array[Node3D]):
+	#Ensure correct marker count
+	var marker_diff = selected_nodes.size() - markers.size()
+	for m in range(marker_diff):
+		var new_marker = highlight_marker.instantiate()
+		add_child(new_marker)
+		markers.append(new_marker)
+	clear_highlight() # turn all markers invisible
+	# Iterate over selected Voxels
+	for i in range(selected_nodes.size()):
+		var marker = markers[i]
+		var voxel : Voxel = selected_nodes[i]
+		marker.position = voxel.world_position
+		marker.visible = true
