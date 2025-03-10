@@ -17,11 +17,11 @@ func _ready() -> void:
 
 
 ## Put this unit on a tile at position
-func place_unit(new_position : Vector3, tile):
+func place_unit(new_position : Vector3, tile : VoxelCollider):
 	position = new_position
 	position.y += ground_offset
 	leave_tile()
-	occupy_tile(tile)
+	occupy_tile(tile.voxel)
 
 
 func occupy_tile(tile : Voxel):

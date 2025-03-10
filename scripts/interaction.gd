@@ -22,7 +22,6 @@ func _ready() -> void:
 		
 	var scalar = WorldMap.world_settings.voxel_size
 	voxel_cursor.scale_object_local(Vector3(scalar, 1.0, scalar))
-	#unit_cursor.scale_object_local(Vector3(scalar, 1.0, scalar))
 	deselect()
 
 
@@ -71,10 +70,14 @@ func attempt_select(hit : Node3D):
 		select_unit(hit.get_parent())
 
 
-func attempt_move_unit(hit):
-	if not selected_unit or not hit.is_in_group("voxels") or hit is not Voxel or not unit_moves.has(hit):
-		print("Attempted to move to invalid voxel")
+func attempt_move_unit(hit : VoxelCollider):
+	if hit is not VoxelCollider:
+		print("not a voxelcollider")
 		return
+	if not selected_unit or not unit_moves.has(hit.voxel):
+		print("Invalid Move Attempt")
+		return
+
 	selected_unit.place_unit(hit.position, hit)
 	deselect()
 

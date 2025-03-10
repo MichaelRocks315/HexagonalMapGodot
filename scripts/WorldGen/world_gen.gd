@@ -41,7 +41,7 @@ func create_starting_units(count : int):
 			continue
 		var unit : Unit = proto_unit.instantiate()
 		add_child(unit)
-		unit.place_unit(voxel.world_position, voxel)
+		unit.place_unit(voxel.world_position, voxel.collider)
 		count -= 1
 
 
