@@ -26,7 +26,7 @@ func _ready() -> void:
 
 
 func _input(event: InputEvent) -> void:
-	if event is InputEventMouseButton:
+	if event is InputEventMouseButton and event.is_pressed():
 		var mouse_pos = get_viewport().get_mouse_position()
 		var origin = main_camera.project_ray_origin(mouse_pos)
 		var dir = main_camera.project_ray_normal(mouse_pos)
@@ -34,7 +34,7 @@ func _input(event: InputEvent) -> void:
 		var hit_object = raycast_at_mouse(origin, end) #returns the collider
 		if not hit_object:
 			return
-		if Input.is_action_just_pressed("Click") and event.pressed:
+		if Input.is_action_just_pressed("Click"):
 			attempt_select(hit_object)
 		elif Input.is_action_just_pressed("RightClick"):
 			attempt_move_unit(hit_object)
@@ -92,11 +92,11 @@ func select_unit(unit : Unit):
 		p_finder.highlight_voxel(unit_moves)
 
 
-func highlight_voxel(voxel : VoxelCollider):
+func highlight_voxel(voxel_col : VoxelCollider):
 	selected_unit = null
-	selected_voxel = voxel
+	selected_voxel = voxel_col
 	hide_cursor(unit_cursor)
-	move_cursor(voxel_cursor, voxel.global_position)
+	move_cursor(voxel_cursor, voxel_col.global_position)
 	voxel_cursor.visible = true
 	animate_cursor(voxel_cursor)
 	#print(voxel.voxel.type) # voxel of the collider
