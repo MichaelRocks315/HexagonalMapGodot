@@ -4,18 +4,19 @@ extends Node
 @export var settings : GenerationSettings
 @export_category("Dependencies")
 @export var object_placer : ObjectPlacer
-const v_collider = preload("res://assets/Meshes/Tiles/HexTileCollider.tscn")
+
+const COLLIDER_SCRIPT = preload("res://scripts/WorldGen/Voxel/voxel_collider.gd")
+const V_COLLIDER = preload("res://assets/Meshes/Tiles/HexTileCollider.tscn")
+
 # Test-only!
 @export var pfinder : Pathfinder
 @export var proto_unit : PackedScene
-@export var box : Node3D
 
 
 ## Starting point: Generate a random seed, create the tiles, place POI's
 func _ready() -> void:
 	init_seed()
 	generate_world()
-
 	#create_starting_units(floor(settings.radius/2))  ## prototyping pathfinding and units
 
 
@@ -65,15 +66,9 @@ func generate_world():
 	
 	if settings.debug:
 		mesh.create_debug_tangents()
-		
-	for voxel : Voxel in vg.top_voxels:
-		#var b = box.duplicate()
-		var c = v_collider.instantiate()
-		c.position = voxel.world_position
-		c.position.y += settings.voxel_height
-		add_child(c)
-		c.scale_object_local(Vector3(settings.voxel_size, 1, settings.voxel_size))
-	interval["Debug time -- "] = Time.get_ticks_msec()
+	
+	generate_colliders(vg.top_voxels)
+	interval["Generate Colliders -- "] = Time.get_ticks_msec()
 
 	### Spawn villages
 	if settings.spawn_villages:
@@ -114,3 +109,15 @@ func get_placeable_voxels() -> Array[Voxel]:
 		placeable_tiles.append(voxel)
 	print(str(placeable_tiles.size()) + " placeable tiles")
 	return placeable_tiles
+
+
+func generate_colliders(valid_voxels):
+	for voxel : Voxel in valid_voxels:
+		var c = V_COLLIDER.instantiate()
+		c.position = voxel.world_position
+		c.position.y += settings.voxel_height
+		add_child(c)
+		c.scale_object_local(Vector3(settings.voxel_size, 1, settings.voxel_size))
+		c.set_script(COLLIDER_SCRIPT)
+		c.add_to_group("voxels")
+		c.voxel = voxel

@@ -3,15 +3,12 @@
 [resource]
 specular_mode = 1
 albedo_color = Color(0.822421, 0.490329, 0.267515, 1)
-metallic_specular = 0.0
+roughness = 0.7
 normal_scale = 8.08
-rim = 0.22
-anisotropy = 0.02
-ao_light_affect = 0.41
 heightmap_scale = 3.905
 subsurf_scatter_strength = 0.35
 refraction_scale = 1.0
 grow_amount = 0.691
-point_size = 5.4
+point_size = 17.8
 distance_fade_min_distance = 116.36
 distance_fade_max_distance = 0.0

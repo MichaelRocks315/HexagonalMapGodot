@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://bbqxpsy3vniy8"]
+[gd_scene load_steps=14 format=3 uid="uid://bbqxpsy3vniy8"]
 
 [ext_resource type="Script" uid="uid://b28iyxlwylpa5" path="res://scripts/camera_script.gd" id="1_1xefc"]
 [ext_resource type="Texture2D" uid="uid://dvbkqw12i4obk" path="res://assets/Materials/textures/SkyBG.png" id="2_l7mlp"]
@@ -8,8 +8,9 @@
 [ext_resource type="PackedScene" uid="uid://grijaagmqw4" path="res://scenes/Units/prototype_unit.tscn" id="8_r58of"]
 [ext_resource type="Script" uid="uid://bjsxytbel52oi" path="res://scripts/WorldGen/object_placer.gd" id="9_p13dw"]
 [ext_resource type="Script" uid="uid://dwpdw57g80u0i" path="res://scripts/pathfinder.gd" id="10_0b4my"]
+[ext_resource type="PackedScene" uid="uid://xm2lgya4capr" path="res://scenes/Cursors/hexagon_cursor.tscn" id="10_6pl24"]
+[ext_resource type="PackedScene" uid="uid://cqxjxq25t6wuy" path="res://scenes/Cursors/unit_cursor.tscn" id="11_w22tq"]
 [ext_resource type="Script" uid="uid://ym76xrk8f3fr" path="res://scripts/interaction.gd" id="12_tt8b8"]
-[ext_resource type="Material" uid="uid://dmi1l2yaecsqy" path="res://assets/Materials/hex_cursor_mat.tres" id="13_w22tq"]
 
 [sub_resource type="Environment" id="Environment_f2ci6"]
 background_mode = 3
@@ -76,12 +77,12 @@ stretch_mode = 4
 
 [node name="Builder" type="Node" parent="."]
 
-[node name="WorldGenerator" type="Node" parent="Builder" node_paths=PackedStringArray("object_placer", "box")]
+[node name="WorldGenerator" type="Node" parent="Builder" node_paths=PackedStringArray("object_placer", "pfinder")]
 script = ExtResource("3_davhy")
 settings = ExtResource("4_58wc8")
 object_placer = NodePath("../ObjectPlacer")
+pfinder = NodePath("../Pathfinder")
 proto_unit = ExtResource("8_r58of")
-box = NodePath("../../CSGBox3D")
 
 [node name="ObjectPlacer" type="Node" parent="Builder"]
 script = ExtResource("9_p13dw")
@@ -90,9 +91,9 @@ village = ExtResource("7_yrli1")
 [node name="Pathfinder" type="Node" parent="Builder"]
 script = ExtResource("10_0b4my")
 
-[node name="Interaction_tracker" type="Node3D" parent="Builder"]
+[node name="Interaction_tracker" type="Node3D" parent="Builder" node_paths=PackedStringArray("main_camera", "p_finder")]
 script = ExtResource("12_tt8b8")
-
-[node name="CSGBox3D" type="CSGBox3D" parent="."]
-transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, -0.388571, -3.8633, -1.36748)
-material_override = ExtResource("13_w22tq")
+voxel_cursor_scene = ExtResource("10_6pl24")
+unit_cursor_scene = ExtResource("11_w22tq")
+main_camera = NodePath("../../CameraParent/Camera3D")
+p_finder = NodePath("../Pathfinder")

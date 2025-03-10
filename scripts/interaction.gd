@@ -19,6 +19,10 @@ func _ready() -> void:
 	if not unit_cursor:
 		unit_cursor = unit_cursor_scene.instantiate()
 		add_child(unit_cursor)
+		
+	var scalar = WorldMap.world_settings.voxel_size
+	voxel_cursor.scale_object_local(Vector3(scalar, 1.0, scalar))
+	unit_cursor.scale_object_local(Vector3(scalar, 1.0, scalar))
 	deselect()
 
 
@@ -37,11 +41,11 @@ func _input(event: InputEvent) -> void:
 			attempt_move_unit(hit_object)
 
 
-func raycast_at_mouse(origin, end) -> Node3D:
+func raycast_at_mouse(origin, end) -> VoxelCollider:
 		var query = PhysicsRayQueryParameters3D.create(origin, end)
 		var collision = get_world_3d().direct_space_state.intersect_ray(query)
 		if collision and collision.has("collider"):
-			var hit = collision.collider.get_parent()
+			var hit = collision.collider#.get_parent()
 			return hit
 		else:
 			deselect()
@@ -89,7 +93,7 @@ func highlight_voxel(voxel):
 	move_cursor(voxel_cursor, voxel.global_position)
 	voxel_cursor.visible = true
 	animate_cursor(voxel_cursor)
-	print(voxel.biome)
+	#print(voxel.voxel.type) # voxel of the collider
 
 
 func highlight_unit(unit):
