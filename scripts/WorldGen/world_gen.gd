@@ -4,9 +4,9 @@ extends Node
 @export var settings : GenerationSettings
 @export_category("Dependencies")
 @export var object_placer : ObjectPlacer
-
+const v_collider = preload("res://assets/Meshes/Tiles/HexTileCollider.tscn")
 # Test-only!
-#@export var pfinder : Pathfinder
+@export var pfinder : Pathfinder
 @export var proto_unit : PackedScene
 @export var box : Node3D
 
@@ -65,12 +65,15 @@ func generate_world():
 	
 	if settings.debug:
 		mesh.create_debug_tangents()
-		for voxel : Voxel in vg.top_voxels:
-			var b = box.duplicate()
-			b.position = voxel.world_position
-			b.position.y += settings.voxel_height
-			add_child(b)
-		interval["Debug time -- "] = Time.get_ticks_msec()
+		
+	for voxel : Voxel in vg.top_voxels:
+		#var b = box.duplicate()
+		var c = v_collider.instantiate()
+		c.position = voxel.world_position
+		c.position.y += settings.voxel_height
+		add_child(c)
+		c.scale_object_local(Vector3(settings.voxel_size, 1, settings.voxel_size))
+	interval["Debug time -- "] = Time.get_ticks_msec()
 
 	### Spawn villages
 	if settings.spawn_villages:
