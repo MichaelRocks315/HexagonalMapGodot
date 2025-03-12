@@ -70,7 +70,7 @@ func attempt_select(hit : Node3D):
 		select_unit(hit.get_parent())
 
 
-func attempt_move_unit(hit : VoxelCollider):
+func attempt_move_unit(hit):
 	if hit is not VoxelCollider:
 		print("not a voxelcollider")
 		return

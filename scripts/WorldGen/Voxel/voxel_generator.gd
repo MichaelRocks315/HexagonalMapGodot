@@ -53,7 +53,6 @@ func generate_chunk(_map : Array[Voxel], interval) -> Mesh:
 
 
 func correct_geometry() -> Vector2i:
-	var settings = WorldMap.world_settings
 	var passes = 0
 	var remove = 1
 	var total = 0

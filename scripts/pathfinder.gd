@@ -1,7 +1,6 @@
 extends Node
 class_name Pathfinder
 
-var neighbor_positions = WorldMap.HEXAGONAL_NEIGHBOR_DIRECTIONS
 @export var highlight_marker : PackedScene
 var markers = []
 
