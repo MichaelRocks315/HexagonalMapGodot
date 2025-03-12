@@ -54,22 +54,29 @@ func generate_chunk(_map : Array[Voxel], interval) -> Mesh:
 
 func correct_geometry() -> Vector2i:
 	var passes = 0
-	var remove = 1
+	var remove = 0
 	var total = 0
+	var bytes : PackedByteArray
+	bytes.resize(map.size())
+	bytes.fill(0) #0 is solid, 1 is air
 
-	while remove > 0 or passes > 50:
-		remove = 0
-
-		#Adjust all solid voxels
-		for prism in map:
-			if prism.type == Voxel.biome.AIR:
+	while true:
+		# Adjust all solid voxels
+		for i in range(map.size()):
+			if bytes[i] == 1:
+				continue
+				
+			var prism = map[i]
+			if prism.type == prism.biome.AIR:
+				bytes[i] = 1
 				continue
 				
 			# Flatten buffer
 			if prism.buffer and settings.flat_buffer:
 				if prism.grid_position.y > 0:
-					prism.type = Voxel.biome.AIR
+					prism.type = prism.biome.AIR
 					remove += 1
+					bytes[i] = 1
 					continue
 	
 			# Ensure no overhang
@@ -78,25 +85,31 @@ func correct_geometry() -> Vector2i:
 			if neighbor_pos.y < 1:
 				continue
 			if air_at_pos(neighbor_pos):
-				prism.type = Voxel.biome.AIR
+				prism.type = prism.biome.AIR
 				remove += 1
+				bytes[i] = 1
 				continue
 	
 			# Ensure terrace
 			if settings.terrace_steps < 1:
 				continue
-			var table = WorldMap.get_tile_neighbor_table(prism.grid_position_xyz.x)
+			var table = WorldMap.get_tile_neighbor_table(prism.grid_position_xz.x)
 			for dir in table:
-				neighbor_pos = prism.grid_position_xyz
-				neighbor_pos.x += dir.x
-				neighbor_pos.z += dir.y
-				neighbor_pos.y -= settings.terrace_steps
+				neighbor_pos = Vector3i(prism.grid_position_xyz.x + dir.x,
+										prism.grid_position_xyz.y - settings.terrace_steps,
+										prism.grid_position_xyz.z + dir.y)
 				if air_at_pos(neighbor_pos):
 					prism.type = Voxel.biome.AIR
 					remove += 1
+					bytes[i] = 1
 					break
+		
+		if remove < 1 or passes > 50:
+			break
 		passes += 1
 		total += remove
+		remove = 0  # Reset remove counter for next pass
+		
 	return Vector2i(passes, total)
 
 
