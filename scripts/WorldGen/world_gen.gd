@@ -66,8 +66,9 @@ func generate_world():
 	if settings.debug:
 		mesh.create_debug_tangents()
 	
-	generate_colliders(vg.top_voxels)
-	interval["Generate Colliders -- "] = Time.get_ticks_msec()
+	WorldMap.set_map(vg.top_voxels)
+	init_voxels(vg.top_voxels)
+	interval["Generate Colliders and neighbors -- "] = Time.get_ticks_msec()
 
 	### Spawn villages
 	if settings.spawn_villages:
@@ -75,7 +76,7 @@ func generate_world():
 		object_placer.place_villages(placeable, settings.spacing)
 		interval["Spawn Villages -- "] = Time.get_ticks_msec()
 	
-	WorldMap.set_map(vg.top_voxels)
+
 	print_generation_results(starttime, interval)
 
 
@@ -111,8 +112,16 @@ func get_placeable_voxels() -> Array[Voxel]:
 	return placeable_tiles
 
 
-func generate_colliders(valid_voxels):
+func init_voxels(valid_voxels):
 	for voxel : Voxel in valid_voxels:
+		# set neighbors
+		var table = WorldMap.get_tile_neighbor_table(voxel.grid_position.x)
+		for dir in table:
+			var neighbor_pos = Vector2i(voxel.grid_position.x + dir.x, voxel.grid_position.z + dir.y)
+			var neighbor = WorldMap.map_as_dict.get(neighbor_pos)
+			if neighbor:
+				voxel.neighbors.append(WorldMap.map_as_dict[neighbor_pos])
+		
 		var c = V_COLLIDER.instantiate()
 		c.position = voxel.world_position
 		c.position.y += settings.voxel_height
@@ -122,3 +131,4 @@ func generate_colliders(valid_voxels):
 		c.add_to_group("voxels")
 		c.voxel = voxel
 		voxel.collider = c
+		
