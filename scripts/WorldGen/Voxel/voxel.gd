@@ -1,7 +1,9 @@
 class_name Voxel
 enum biome {GRASS, SAND, WATER, ICE, STONE, AIR, DEBUG}
 
-var grid_position : Vector3i
+var grid_position_xyz : Vector3i
+var grid_position_xz : Vector2i
+
 var world_position : Vector3
 var type : biome
 var noise : float

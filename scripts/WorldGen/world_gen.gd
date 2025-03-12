@@ -115,13 +115,14 @@ func get_placeable_voxels() -> Array[Voxel]:
 func init_voxels(valid_voxels):
 	for voxel : Voxel in valid_voxels:
 		# set neighbors
-		var table = WorldMap.get_tile_neighbor_table(voxel.grid_position.x)
+		var table = WorldMap.get_tile_neighbor_table(voxel.grid_position_xyz.x)
 		for dir in table:
-			var neighbor_pos = Vector2i(voxel.grid_position.x + dir.x, voxel.grid_position.z + dir.y)
+			var neighbor_pos = Vector2i(voxel.grid_position_xz.x + dir.x, voxel.grid_position_xz.y + dir.y)
 			var neighbor = WorldMap.map_as_dict.get(neighbor_pos)
 			if neighbor:
 				voxel.neighbors.append(WorldMap.map_as_dict[neighbor_pos])
 		
+		#Add and setup colliders
 		var c = V_COLLIDER.instantiate()
 		c.position = voxel.world_position
 		c.position.y += settings.voxel_height

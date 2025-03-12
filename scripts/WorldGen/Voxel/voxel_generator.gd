@@ -25,7 +25,7 @@ func generate_chunk(_map : Array[Voxel], interval) -> Mesh:
 	
 	for voxel in map:
 		verts.append_array(get_verts(voxel.world_position))
-		map_dict[voxel.grid_position] = voxel
+		map_dict[voxel.grid_position_xyz] = voxel
 	create_uvs(uvs, map.size())
 	interval["Setup vertex positions -- "] = Time.get_ticks_msec()	
 	
@@ -73,7 +73,7 @@ func correct_geometry() -> Vector2i:
 					continue
 	
 			# Ensure no overhang
-			var neighbor_pos : Vector3i = prism.grid_position
+			var neighbor_pos : Vector3i = prism.grid_position_xyz
 			neighbor_pos.y -= 1
 			if neighbor_pos.y < 1:
 				continue
@@ -85,9 +85,9 @@ func correct_geometry() -> Vector2i:
 			# Ensure terrace
 			if settings.terrace_steps < 1:
 				continue
-			var table = WorldMap.get_tile_neighbor_table(prism.grid_position.x)
+			var table = WorldMap.get_tile_neighbor_table(prism.grid_position_xyz.x)
 			for dir in table:
-				neighbor_pos = prism.grid_position
+				neighbor_pos = prism.grid_position_xyz
 				neighbor_pos.x += dir.x
 				neighbor_pos.z += dir.y
 				neighbor_pos.y -= settings.terrace_steps
@@ -106,14 +106,14 @@ func build_geometry(indices: PackedInt32Array, prism_count: int):
 		var prism_start = prism * 13  # Each prism has 13 vertices
 		var current_prism : Voxel = map[prism]
 		var neutral_neighbor : Vector3i #Same height neighbor
-		var dirs = WorldMap.get_tile_neighbor_table(current_prism.grid_position.x)
+		var dirs = WorldMap.get_tile_neighbor_table(current_prism.grid_position_xyz.x)
 		
 		if current_prism.type == Voxel.biome.AIR:
 			continue
 
 		## Construct sides
 		for i in range(6):
-			neutral_neighbor = current_prism.grid_position
+			neutral_neighbor = current_prism.grid_position_xyz
 			neutral_neighbor.x += dirs[i].x 
 			neutral_neighbor.z += dirs[i].y
 			if draw_face(neutral_neighbor):
@@ -128,7 +128,7 @@ func build_geometry(indices: PackedInt32Array, prism_count: int):
 				indices.append(prism_start + sides + i)           # Top vertex
 		
 		## Construct top
-		var top_neighbor = current_prism.grid_position
+		var top_neighbor = current_prism.grid_position_xyz
 		top_neighbor.y += 1
 		if draw_face(top_neighbor):
 			top_voxels.append(current_prism)
@@ -184,6 +184,7 @@ func draw_face(neighbor_pos : Vector3i) -> bool:
 		else:
 			return false
 	return true
+
 
 func air_at_pos(pos) -> bool:
 	var neighbor : Voxel = map_dict.get(pos)

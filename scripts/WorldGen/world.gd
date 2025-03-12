@@ -1,7 +1,7 @@
 extends Node
 
 #var map : Array[Voxel]
-var map_as_dict : Dictionary = {}
+var map_as_dict : Dictionary[Vector2i, Voxel] = {}
 var top_layer_voxels : Array[Voxel]
 var is_map_staggered = false
 var world_settings : GenerationSettings
@@ -49,7 +49,7 @@ var neighbor_positions = HEXAGONAL_NEIGHBOR_DIRECTIONS
 ## Construct a dictionary for our 2d top layer of voxels
 func set_map(voxels):
 	for voxel : Voxel in voxels:
-		map_as_dict[Vector2i(voxel.grid_position.x, voxel.grid_position.z)] = voxel
+		map_as_dict[Vector2i(voxel.grid_position_xz.x, voxel.grid_position_xz.y)] = voxel
 
 
 ## Handy function for finding all neigbors of a tile

@@ -47,23 +47,24 @@ func generate_map(bounds: Callable, stagger: bool, buffer_filter: Callable, shap
 
 
 func generate_voxel(pos, stagger) -> Voxel:
-	var new_pos = Voxel.new()
-	new_pos.world_position = tile_to_world(pos, stagger)
-	new_pos.grid_position = Vector3(pos.x, pos.y, pos.z)
-	return new_pos
+	var new = Voxel.new()
+	new.world_position = tile_to_world(pos, stagger)
+	new.grid_position_xyz = Vector3i(pos.x, pos.y, pos.z)
+	new.grid_position_xz = Vector2i(pos.x, pos.z)
+	return new
 
 
 ## Apply ocean noise, hills noise and find buffer tiles
 func modify_voxel(voxel : Voxel, buffer_filter):
-	var c = voxel.grid_position.x
-	var r = voxel.grid_position.z
-	voxel.noise = noise_at_tile(voxel.grid_position, settings.noise)
+	var c = voxel.grid_position_xz.x
+	var r = voxel.grid_position_xz.y
+	voxel.noise = noise_at_tile(voxel.grid_position_xyz, settings.noise)
 	
 	if buffer_filter.call(c, r, settings.radius - settings.map_edge_buffer):
 		voxel.buffer = true
 	
 	# Bottom layer must always be solid
-	if voxel.grid_position.y != 0:
+	if voxel.grid_position_xyz.y != 0:
 		if voxel.noise < settings.noise_strength: ## Transparancy test
 			voxel.type = Voxel.biome.AIR
 
