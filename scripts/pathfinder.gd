@@ -12,25 +12,25 @@ func find_reachable_voxels(start : Voxel, movement_range: int) -> Array[Voxel]:
 
 	# Start from the initial Voxel
 	queue.append({"Voxel": start, "distance": 0})
-	visited.append(Vector2(start.grid_position.x, start.grid_position.y))
+	visited.append(Vector2(start.grid_position_xz.x, start.grid_position_xz.y))
 
 	while queue.size() > 0:
 		var current = queue.pop_front()
-		var current_Voxel : Voxel = current["Voxel"]
+		var current_voxel : Voxel = current["Voxel"]
 		var current_distance : int = current["distance"]
 		
 		if current_distance > movement_range:
 			continue
 		
 		# Add the current Voxel to the reachable list
-		reachable_voxels.append(current_Voxel)
-		var current_pos = current_Voxel.grid_position
+		reachable_voxels.append(current_voxel)
+		var current_pos = current_voxel.grid_position_xz
 		
 		var neighbor_positions = WorldMap.get_tile_neighbor_table(current_pos.x)
 		# Explore neighbors
 		for direction : Vector2i in neighbor_positions:
-			var neighbor_coords = Vector2i(current_pos.x + int(direction.x), current_pos.z + int(direction.y))
-			if not is_voxel_valid(neighbor_coords) or visited.has(neighbor_coords):
+			var neighbor_coords = current_pos + direction
+			if not is_voxel_valid(neighbor_coords, current_voxel.grid_position_xyz) or visited.has(neighbor_coords):
 				continue
 			var neighbor_voxel = WorldMap.map_as_dict[neighbor_coords]
 			queue.append({"Voxel": neighbor_voxel, "distance": current_distance + 1})
@@ -39,16 +39,15 @@ func find_reachable_voxels(start : Voxel, movement_range: int) -> Array[Voxel]:
 	return reachable_voxels
 
 
-func is_voxel_valid(coords : Vector2i) -> bool:
-	var valid = false
-	if not WorldMap.map_as_dict.has(coords):
-		print("Voxel not in map!")
-		return false
-	var voxel = WorldMap.map_as_dict[coords]
+func is_voxel_valid(coords : Vector2i, current_pos : Vector3i) -> bool:
+	var voxel : Voxel = WorldMap.map_as_dict.get(coords)
 	if voxel:
+		var diff = voxel.grid_position_xyz.y - current_pos.y
+		if abs(diff) > 2:
+			return false
 		if voxel.occupier == null and voxel.type != Voxel.biome.WATER:
-			valid = true
-	return valid
+			return true
+	return false
 
 
 func clear_highlight():

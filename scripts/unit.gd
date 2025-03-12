@@ -1,12 +1,16 @@
 extends Node3D
 class_name Unit
 
+@export_category("Data")
 @export var unit_name : String = "Unit"
 @export var max_health: int = 10
 var current_health: int = 10
-@export var movement_range: int = 3
-@export var model: PackedScene
 @export var ground_offset : float
+
+@export_category("Movement")
+@export var movement_range: int = 3
+@export var max_height_movement = 1
+@export var model: PackedScene
 
 var occupied_voxel : Voxel
 var team # which "team" does this unit belong to
