@@ -1,11 +1,12 @@
-[gd_scene load_steps=15 format=3 uid="uid://bbqxpsy3vniy8"]
+[gd_scene load_steps=16 format=3 uid="uid://bbqxpsy3vniy8"]
 
 [ext_resource type="Script" uid="uid://b28iyxlwylpa5" path="res://scripts/camera_script.gd" id="1_1xefc"]
 [ext_resource type="Texture2D" uid="uid://dvbkqw12i4obk" path="res://assets/Materials/textures/SkyBG.png" id="2_l7mlp"]
 [ext_resource type="Script" uid="uid://cp30k8d5w2ytu" path="res://scripts/WorldGen/world_gen.gd" id="3_davhy"]
 [ext_resource type="Resource" uid="uid://bulbwto8ivwib" path="res://Resources/GenerationSettings/Default.tres" id="4_58wc8"]
+[ext_resource type="PackedScene" uid="uid://cy2m34v6lul5u" path="res://scenes/Units/proto_scout.tscn" id="5_w22tq"]
 [ext_resource type="PackedScene" uid="uid://5hq7deseilvo" path="res://scenes/POI/VillageScene.tscn" id="7_yrli1"]
-[ext_resource type="PackedScene" uid="uid://grijaagmqw4" path="res://scenes/Units/prototype_unit.tscn" id="8_r58of"]
+[ext_resource type="PackedScene" uid="uid://grijaagmqw4" path="res://scenes/Units/proto_warrior.tscn" id="8_r58of"]
 [ext_resource type="PackedScene" uid="uid://bb3hit25an5ti" path="res://scenes/Cursors/path_overlay.tscn" id="9_6pl24"]
 [ext_resource type="Script" uid="uid://bjsxytbel52oi" path="res://scripts/WorldGen/object_placer.gd" id="9_p13dw"]
 [ext_resource type="Script" uid="uid://dwpdw57g80u0i" path="res://scripts/pathfinder.gd" id="10_0b4my"]
@@ -83,7 +84,8 @@ script = ExtResource("3_davhy")
 settings = ExtResource("4_58wc8")
 object_placer = NodePath("../ObjectPlacer")
 pfinder = NodePath("../Pathfinder")
-proto_unit = ExtResource("8_r58of")
+unit1 = ExtResource("5_w22tq")
+unit2 = ExtResource("8_r58of")
 
 [node name="ObjectPlacer" type="Node" parent="Builder"]
 script = ExtResource("9_p13dw")

@@ -10,7 +10,8 @@ const V_COLLIDER = preload("res://assets/Meshes/Tiles/HexTileCollider.tscn")
 
 # Test-only!
 @export var pfinder : Pathfinder
-@export var proto_unit : PackedScene
+@export var unit1 : PackedScene
+@export var unit2 : PackedScene
 
 
 ## Starting point: Generate a random seed, create the tiles, place POI's
@@ -39,7 +40,9 @@ func create_starting_units(count : int):
 		if voxel.type == Voxel.biome.WATER or voxel.occupier != null:
 			safety_count += 1
 			continue
-		var unit : Unit = proto_unit.instantiate()
+		var r = randf()
+		
+		var unit : Unit = unit1.instantiate() if r < 0.5 else unit2.instantiate()
 		add_child(unit)
 		unit.place_unit(voxel.world_position, voxel.collider)
 		count -= 1

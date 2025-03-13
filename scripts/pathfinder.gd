@@ -68,6 +68,6 @@ func highlight_voxel(selected_nodes : Array[Voxel]):
 	for i in range(selected_nodes.size()):
 		var marker = markers[i]
 		var voxel : Voxel = selected_nodes[i]
-		marker.position = voxel.world_position
-		marker.position.y += 0.5
+		marker.position = voxel.collider.position
+		marker.position.y += 0.05
 		marker.visible = true
