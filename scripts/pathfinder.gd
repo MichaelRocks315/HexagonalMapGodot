@@ -5,7 +5,7 @@ class_name Pathfinder
 var markers = []
 
 
-func find_reachable_voxels(start : Voxel, movement_range: int) -> Array[Voxel]:
+func find_reachable_voxels(start : Voxel, movement_range: int, step: int) -> Array[Voxel]:
 	var queue = []
 	var visited = []
 	var reachable_voxels : Array[Voxel]
@@ -30,7 +30,7 @@ func find_reachable_voxels(start : Voxel, movement_range: int) -> Array[Voxel]:
 		# Explore neighbors
 		for direction : Vector2i in neighbor_positions:
 			var neighbor_coords = current_pos + direction
-			if not is_voxel_valid(neighbor_coords, current_voxel.grid_position_xyz) or visited.has(neighbor_coords):
+			if not is_voxel_valid(neighbor_coords, current_voxel.grid_position_xyz, step) or visited.has(neighbor_coords):
 				continue
 			var neighbor_voxel = WorldMap.map_as_dict[neighbor_coords]
 			queue.append({"Voxel": neighbor_voxel, "distance": current_distance + 1})
@@ -39,11 +39,11 @@ func find_reachable_voxels(start : Voxel, movement_range: int) -> Array[Voxel]:
 	return reachable_voxels
 
 
-func is_voxel_valid(coords : Vector2i, current_pos : Vector3i) -> bool:
+func is_voxel_valid(coords : Vector2i, current_pos : Vector3i, step: int) -> bool:
 	var voxel : Voxel = WorldMap.map_as_dict.get(coords)
 	if voxel:
 		var diff = voxel.grid_position_xyz.y - current_pos.y
-		if abs(diff) > 2:
+		if abs(diff) > step:
 			return false
 		if voxel.occupier == null and voxel.type != Voxel.biome.WATER:
 			return true
@@ -56,7 +56,7 @@ func clear_highlight():
 			m.visible = false
 
 
-func highlight_voxel(selected_nodes : Array[Voxel]):#: Array[Node3D]):
+func highlight_voxel(selected_nodes : Array[Voxel]):
 	#Ensure correct marker count
 	var marker_diff = selected_nodes.size() - markers.size()
 	for m in range(marker_diff):
@@ -69,5 +69,5 @@ func highlight_voxel(selected_nodes : Array[Voxel]):#: Array[Node3D]):
 		var marker = markers[i]
 		var voxel : Voxel = selected_nodes[i]
 		marker.position = voxel.world_position
-		marker.position.y += 0.4
+		marker.position.y += 0.5
 		marker.visible = true

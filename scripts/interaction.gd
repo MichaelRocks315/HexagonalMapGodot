@@ -88,7 +88,7 @@ func select_unit(unit : Unit):
 	hide_cursor(voxel_cursor)
 	if unit is Unit:
 		highlight_unit(unit)
-		unit_moves = p_finder.find_reachable_voxels(unit.occupied_voxel, unit.movement_range)
+		unit_moves = p_finder.find_reachable_voxels(unit.occupied_voxel, unit.movement_range, unit.max_height_movement)
 		p_finder.highlight_voxel(unit_moves)
 
 

@@ -4,8 +4,9 @@
 [ext_resource type="Material" uid="uid://bqpqgl2qyphv7" path="res://assets/Materials/triplanar_mat.tres" id="1_ojq8q"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_ojq8q"]
-frequency = 0.0716
-fractal_lacunarity = 0.5
+frequency = 0.0933
+fractal_octaves = 6
+fractal_lacunarity = 0.625
 fractal_gain = 0.765
 
 [resource]
@@ -13,15 +14,15 @@ script = ExtResource("1_30d36")
 map_shape = 0
 map_seed = 0
 radius = 20
-max_height = 5
-terrace_steps = 1
+max_height = 8
+terrace_steps = 3
 noise_strength = 0.4
 flat_buffer = false
 debug = false
 material = ExtResource("1_ojq8q")
 noise = SubResource("FastNoiseLite_ojq8q")
 voxel_size = 1.0
-voxel_height = 0.5
+voxel_height = 0.6
 shading = -1
 spawn_villages = true
 map_edge_buffer = 2
