@@ -1,4 +1,6 @@
-[gd_scene load_steps=6 format=3 uid="uid://cqxjxq25t6wuy"]
+[gd_scene load_steps=7 format=3 uid="uid://cqxjxq25t6wuy"]
+
+[ext_resource type="PackedScene" uid="uid://deb8extfc0fxd" path="res://assets/Meshes/unit_cursor_mesh.tscn" id="1_myqsi"]
 
 [sub_resource type="Curve" id="Curve_sacgp"]
 _data = [Vector2(0.0217391, 0.956044), 0.0, 0.0233304, 0, 0, Vector2(0.992754, 0.010989), -2.30506, 0.0, 0, 0]
@@ -39,7 +41,10 @@ orientation = 1
 
 [node name="GPUParticles3D" type="GPUParticles3D" parent="."]
 amount = 20
+lifetime = 0.5
 preprocess = 1.0
 local_coords = true
 process_material = SubResource("ParticleProcessMaterial_ipejf")
 draw_pass_1 = SubResource("QuadMesh_ul1iq")
+
+[node name="unit_cursor_mesh" parent="." instance=ExtResource("1_myqsi")]

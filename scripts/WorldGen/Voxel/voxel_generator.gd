@@ -73,7 +73,7 @@ func correct_geometry() -> Vector2i:
 				
 			# Flatten buffer
 			if prism.buffer and settings.flat_buffer:
-				if prism.grid_position.y > 0:
+				if prism.grid_position_xyz.y > 0:
 					prism.type = prism.biome.AIR
 					remove += 1
 					bytes[i] = 1

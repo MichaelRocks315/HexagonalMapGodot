@@ -4,11 +4,14 @@
 transparency = 1
 blend_mode = 1
 cull_mode = 2
-shading_mode = 0
+shading_mode = 2
 specular_mode = 2
 disable_ambient_light = true
 disable_fog = true
 albedo_color = Color(0.478426, 0.995173, 1, 0.172549)
+emission_enabled = true
+emission = Color(0.439011, 0.667184, 0.653482, 1)
+emission_energy_multiplier = 5.0
 disable_receive_shadows = true
 grow_amount = -2.438
 proximity_fade_distance = 10.0
