@@ -12,7 +12,6 @@ enum shape {HEXAGONAL, RECTANGULAR, DIAMOND, CIRCLE}
 @export_range(0, 1) var noise_strength : float = 0.5
 @export var flat_buffer = true
 @export var debug : bool = false
-
 @export var noise : FastNoiseLite
 
 @export_category("Voxel")

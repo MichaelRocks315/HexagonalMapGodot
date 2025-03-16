@@ -95,22 +95,25 @@ func print_generation_results(start : float, dict : Dictionary):
 	label.text = ""
 	var last_val = start
 	var total = 0
+	var unit = "ms"
+	
 	for key in dict:
 		var val = dict[key]
 		if val == start:
-			print(key)
+			#print(key)
 			continue
 		var passed = val - last_val
-		print(key, str(passed) + "ms")
+		#print(key, str(passed) + "ms")
 		label.text += "[b]" + str(key) + "[/b]" + "[i]" + str(passed) + "ms\n" + "[/i]"
 		last_val = val
 		total += passed
-	var s = "ms"
+
 	if total > 999: 
-		s = "s"
+		unit = "s"
 		total *= 0.001
-	print("Total completion time: [/b][i]", total, s, "[/i]")
-	label.text += "[b]Total completion time: [/b][i]" + str(total) + s + "[/i]"
+
+	print("Total completion time: ", total, unit)
+	label.text += "[b]Total completion time: [/b][i]" + str(total) + unit + "[/i]"
 
 
 ## Ignore buffer and ocean to return for object placer
