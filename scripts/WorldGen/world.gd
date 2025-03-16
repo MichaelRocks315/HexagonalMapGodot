@@ -48,6 +48,7 @@ var neighbor_positions = HEXAGONAL_NEIGHBOR_DIRECTIONS
 
 ## Construct a dictionary for our 2d top layer of voxels
 func set_map(voxels):
+	map_as_dict.clear()
 	for voxel : Voxel in voxels:
 		map_as_dict[Vector2i(voxel.grid_position_xz.x, voxel.grid_position_xz.y)] = voxel
 

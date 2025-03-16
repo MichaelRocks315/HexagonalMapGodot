@@ -10,19 +10,22 @@ var unit_moves : Array[Voxel]
 # Cursors
 var voxel_cursor : Node3D
 var unit_cursor : Node3D
+var initialized = false
 
-
-func _ready() -> void:
+func init():
+	if initialized:
+		return
 	if not voxel_cursor or voxel_cursor == null:
 		voxel_cursor = voxel_cursor_scene.instantiate()
 		add_child(voxel_cursor)
 	if not unit_cursor:
 		unit_cursor = unit_cursor_scene.instantiate()
 		add_child(unit_cursor)
-		
+	
 	var scalar = WorldMap.world_settings.voxel_size
 	voxel_cursor.scale_object_local(Vector3(scalar, 1.0, scalar))
 	deselect()
+	initialized = true
 
 
 func _input(event: InputEvent) -> void:

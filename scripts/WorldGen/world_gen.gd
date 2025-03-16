@@ -4,6 +4,8 @@ extends Node
 @export var settings : GenerationSettings
 @export_category("Dependencies")
 @export var object_placer : ObjectPlacer
+@onready var interaction_tracker: Node3D = $"../Interaction_tracker"
+@onready var label: RichTextLabel = $"../../Control/VBoxContainer/RichTextLabel"
 
 const COLLIDER_SCRIPT = preload("res://scripts/WorldGen/Voxel/voxel_collider.gd")
 const V_COLLIDER = preload("res://assets/Meshes/Tiles/HexTileCollider.tscn")
@@ -16,9 +18,12 @@ const V_COLLIDER = preload("res://assets/Meshes/Tiles/HexTileCollider.tscn")
 
 ## Starting point: Generate a random seed, create the tiles, place POI's
 func _ready() -> void:
-	init_seed()
-	generate_world()
-	create_starting_units(floor(settings.radius/2))  ## prototyping pathfinding and units
+	var children = get_children()
+	for c in children:
+		c.free()
+	object_placer.clear_objects()
+	call_deferred("generate_world")
+	call_deferred("create_starting_units", floor(settings.radius/2))
 
 
 # Randomize if no seed has been set
@@ -50,6 +55,7 @@ func create_starting_units(count : int):
 
 ## Start of world_generation, time each step
 func generate_world():
+	init_seed()
 	var starttime = Time.get_ticks_msec()
 	var interval = {"Start of Generation!" : starttime}
 	
@@ -78,14 +84,15 @@ func generate_world():
 		var placeable = get_placeable_voxels()
 		object_placer.place_villages(placeable, settings.spacing)
 		interval["Spawn Villages -- "] = Time.get_ticks_msec()
-	
 
 	print_generation_results(starttime, interval)
+	interaction_tracker.init()
 
 
 ## This mess of a function loops through the timing results of generate_world and prints them
 func print_generation_results(start : float, dict : Dictionary):
 	print("\n")
+	label.text = ""
 	var last_val = start
 	var total = 0
 	for key in dict:
@@ -95,13 +102,15 @@ func print_generation_results(start : float, dict : Dictionary):
 			continue
 		var passed = val - last_val
 		print(key, str(passed) + "ms")
+		label.text += "[b]" + str(key) + "[/b]" + "[i]" + str(passed) + "ms\n" + "[/i]"
 		last_val = val
 		total += passed
 	var s = "ms"
 	if total > 999: 
 		s = "s"
 		total *= 0.001
-	print("Total completion time: ", total, s)
+	print("Total completion time: [/b][i]", total, s, "[/i]")
+	label.text += "[b]Total completion time: [/b][i]" + str(total) + s + "[/i]"
 
 
 ## Ignore buffer and ocean to return for object placer

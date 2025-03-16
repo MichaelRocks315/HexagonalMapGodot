@@ -48,6 +48,7 @@ func generate_chunk(_map : Array[Voxel], interval) -> Mesh:
 	surface.optimize_indices_for_cache()
 	surface.generate_normals()
 	surface.generate_tangents()
+	WorldMap.top_layer_voxels.clear()
 	WorldMap.top_layer_voxels.append_array(top_voxels)
 	return surface.commit()
 
@@ -153,20 +154,10 @@ func build_geometry(indices: PackedInt32Array, prism_count: int):
 
 
 func create_uvs(uvs: PackedVector2Array, prism_count: int) -> void:
-	var atlas_size = 4
-	var tile_size = 1.0 / atlas_size
-	
+	# TODO: Fix UVS
 	for prism in prism_count:
-		# Bottom vertices
-		for i in sides:
-			uvs.append(Vector2(i * tile_size, 0.0))
-		# Top vertices
-		for i in sides:
-			var angle = (float(i)/6.0) * 2.0 * PI
-			uvs.append(Vector2(0.5 + 0.5 * cos(angle), 0.5 + 0.5 * sin(angle)))
-		
-		# Top center
-		uvs.append(Vector2(0.5, 0.5))
+		for v in 13:
+			uvs.append(Vector2(0.0, 0.0))
 
 
 # Function to get the vertices for the base and top hexagon

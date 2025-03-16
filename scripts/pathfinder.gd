@@ -66,8 +66,10 @@ func highlight_voxel(selected_nodes : Array[Voxel]):
 	clear_highlight() # turn all markers invisible
 	# Iterate over selected Voxels
 	for i in range(selected_nodes.size()):
-		var marker = markers[i]
+		var marker : Node3D = markers[i]
 		var voxel : Voxel = selected_nodes[i]
 		marker.position = voxel.collider.position
+		if marker.scale.x != WorldMap.world_settings.voxel_size:
+			marker.scale *= WorldMap.world_settings.voxel_size
 		marker.position.y += 0.05
 		marker.visible = true

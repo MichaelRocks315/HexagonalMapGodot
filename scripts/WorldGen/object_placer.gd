@@ -50,3 +50,10 @@ func spawn_on_tile(tile : Voxel, scene : PackedScene):
 func position_object(object : Node3D, target_location : Vector3, add_height : float):
 	object.position = target_location
 	object.position.y += add_height
+
+
+func clear_objects():
+	var children = get_children()
+	for c in children:
+		c.free()
+		
