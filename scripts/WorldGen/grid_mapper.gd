@@ -58,7 +58,7 @@ func generate_voxel(pos, stagger) -> Voxel:
 func modify_voxel(voxel : Voxel, buffer_filter):
 	var c = voxel.grid_position_xz.x
 	var r = voxel.grid_position_xz.y
-	voxel.noise = noise_at_tile(voxel.grid_position_xyz, settings.noise)
+	voxel.noise = noise_at_tile(voxel.world_position, settings.noise)
 	
 	if buffer_filter.call(c, r, settings.radius - settings.map_edge_buffer):
 		voxel.buffer = true
@@ -88,9 +88,8 @@ func tile_to_world(pos, stagger: bool) -> Vector3:
 
 
 ## Get noise at position of tile
-func noise_at_tile(grid_position : Vector3, texture : FastNoiseLite) -> float:
-	var value : float = texture.get_noise_3dv(grid_position)
-	#return value
+func noise_at_tile(pos : Vector3, texture : FastNoiseLite) -> float:
+	var value : float = texture.get_noise_3dv(pos)
 	return (value + 1) / 2 # normalize [0, 1]
 
 
