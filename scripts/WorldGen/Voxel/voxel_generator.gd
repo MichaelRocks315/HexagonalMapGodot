@@ -106,14 +106,15 @@ func correct_geometry() -> Vector2i:
 	
 			# Ensure no overhang
 			var neighbor_pos : Vector3i = prism.grid_position_xyz
-			neighbor_pos.y -= 1
-			if neighbor_pos.y < 1:
-				continue
-			if air_at_pos(neighbor_pos):
-				prism.type = prism.biome.AIR
-				remove += 1
-				bytes[i] = 1
-				continue
+			if settings.remove_overhang:
+				neighbor_pos.y -= 1
+				if neighbor_pos.y < 1:
+					continue
+				if air_at_pos(neighbor_pos):
+					prism.type = prism.biome.AIR
+					remove += 1
+					bytes[i] = 1
+					continue
 	
 			# Ensure terrace
 			if settings.terrace_steps < 1:
