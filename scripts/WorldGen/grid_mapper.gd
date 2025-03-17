@@ -62,12 +62,6 @@ func modify_voxel(voxel : Voxel, buffer_filter):
 	
 	if buffer_filter.call(c, r, settings.radius - settings.map_edge_buffer):
 		voxel.buffer = true
-	
-	# Bottom layer must always be solid
-	if voxel.grid_position_xyz.y != 0:
-		if voxel.noise < settings.noise_strength: ## Transparancy test
-			voxel.type = Voxel.biome.AIR
-
 		
 	##We prioritize water since hills cannot be created with surrounding ocean anyway
 	#if settings.create_water and noise_at_tile(c, r, settings.ocean_noise) > settings.ocean_treshold:

@@ -9,6 +9,7 @@ var type : biome
 var noise : float
 var buffer : bool = false
 var water : bool = false
+var air_probability : float = 0
 
 var neighbors = []
 var placeable = true

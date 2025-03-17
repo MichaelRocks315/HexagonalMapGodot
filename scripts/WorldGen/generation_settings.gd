@@ -9,7 +9,8 @@ enum shape {HEXAGONAL, RECTANGULAR, DIAMOND, CIRCLE}
 @export_range(0, 64, 1) var radius: int = 5
 @export_range(1, 32, 1) var max_height: int = 3
 @export_range(0, 8) var terrace_steps = 1
-@export_range(0, 1) var noise_strength : float = 0.5
+@export_range(0.0, 1.0) var noise_height_bias : float = 0.5
+@export_range(0.0, 1.0) var ground_to_air_ratio : float = 0.5
 @export var flat_buffer = true
 @export var debug : bool = false
 @export var noise : FastNoiseLite

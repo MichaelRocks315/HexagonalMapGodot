@@ -29,6 +29,7 @@ func generate_chunk(_map : Array[Voxel], interval) -> Mesh:
 	create_uvs(uvs, map.size())
 	interval["Setup vertex positions -- "] = Time.get_ticks_msec()	
 	
+	determine_air_voxels()
 	var corrections = correct_geometry()
 	print("Correction passes: ", corrections.x, ". Total voxels removed: ", corrections.y)
 	build_geometry(indices, map.size())
@@ -53,6 +54,26 @@ func generate_chunk(_map : Array[Voxel], interval) -> Mesh:
 	return surface.commit()
 
 
+func determine_air_voxels():
+	# Find min and max noise
+	var min_noise = 999999
+	var max_noise = -999999
+	for i in range(map.size()):
+		var voxel = map[i]
+		if voxel.noise < min_noise:
+			min_noise = voxel.noise
+		elif voxel.noise >= max_noise:
+			max_noise = voxel.noise
+
+	# calculate probabilities, noise and height
+	for voxel in map:
+		var noise_contribution : float = (voxel.noise - min_noise) / (max_noise - min_noise) 
+		var y : float = voxel.grid_position_xyz.y
+		var normalized_height : float = clampf(y / settings.max_height, 0.0, 1.0)
+		var combined_probability : float = (1.0 - settings.noise_height_bias) * noise_contribution + settings.noise_height_bias * normalized_height
+		voxel.air_probability = clampf(combined_probability, 0.0, 1.0)
+
+
 func correct_geometry() -> Vector2i:
 	var passes = 0
 	var remove = 0
@@ -60,18 +81,21 @@ func correct_geometry() -> Vector2i:
 	var bytes : PackedByteArray
 	bytes.resize(map.size())
 	bytes.fill(0) #0 is solid, 1 is air
-
+	
 	while true:
 		# Adjust all solid voxels
 		for i in range(map.size()):
 			if bytes[i] == 1:
 				continue
-				
+			
+			#Convert to air
 			var prism = map[i]
-			if prism.type == prism.biome.AIR:
+			if prism.air_probability > settings.ground_to_air_ratio and prism.grid_position_xyz.y > 0:
+				prism.type = prism.biome.AIR
+				remove += 1
 				bytes[i] = 1
 				continue
-				
+
 			# Flatten buffer
 			if prism.buffer and settings.flat_buffer:
 				if prism.grid_position_xyz.y > 0:
