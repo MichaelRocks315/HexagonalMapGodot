@@ -44,7 +44,7 @@ func spawn_on_tile(tile : Voxel, scene : PackedScene):
 
 	var instance = scene.instantiate()
 	add_child(instance)
-	call_deferred("position_object", instance, tile.world_position, 1.0)
+	call_deferred("position_object", instance, tile.world_position, WorldMap.world_settings.voxel_height)
 
 
 func position_object(object : Node3D, target_location : Vector3, add_height : float):
