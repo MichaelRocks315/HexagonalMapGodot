@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="TileMeshData" load_steps=3 format=3 uid="uid://6wunq1xerf3p"]
 
 [ext_resource type="PackedScene" uid="uid://dg35dukc5y6q4" path="res://assets/Meshes/Tiles/Mountain.glb" id="1_qhnq8"]
-[ext_resource type="Script" path="res://scripts/WorldGen/tile_mesh_data.gd" id="2_7s4p0"]
+[ext_resource type="Script" uid="uid://rou5s5aylh75" path="res://scripts/WorldGen/tile_mesh_data.gd" id="2_7s4p0"]
 
 [resource]
 script = ExtResource("2_7s4p0")

@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="TileMeshData" load_steps=4 format=3 uid="uid://3nrb2x1h7p1f"]
 
 [ext_resource type="PackedScene" uid="uid://cfa50kat2g4ur" path="res://assets/Meshes/Tiles/high_res_tile.glb" id="1_comyt"]
-[ext_resource type="Script" path="res://scripts/WorldGen/tile_mesh_data.gd" id="2_vw2gs"]
+[ext_resource type="Script" uid="uid://rou5s5aylh75" path="res://scripts/WorldGen/tile_mesh_data.gd" id="2_vw2gs"]
 [ext_resource type="Material" uid="uid://b6wrdemholab3" path="res://assets/Materials/Shaders/water_shader.tres" id="3_julbp"]
 
 [resource]
