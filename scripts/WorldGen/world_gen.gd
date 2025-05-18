@@ -13,7 +13,11 @@ extends Node
 
 ## Starting point: Generate a random seed, create the tiles, place POI's
 func _ready() -> void:
-	init_seed()
+	init_seed()	
+	settings.map_shape = 0
+	settings.radius = 11
+	
+	
 	generate_world()
 	create_starting_units(floor(settings.radius/2))  ## prototyping pathfinding and units
 
